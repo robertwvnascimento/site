@@ -1,0 +1,23 @@
+# 1. Força a atualização das Políticas de Grupo (GPO)
+gpupdate /force
+
+# 2. Força a busca e instalação de atualizações do Windows
+# O módulo PSWindowsUpdate é o padrão para automação via linha de comando
+if (!(Get-Module -ListAvailable PSWindowsUpdate)) {
+    Install-Module PSWindowsUpdate -Force -Confirm:$false
+}
+Get-WindowsUpdate -Install -AcceptAll -AutoReboot
+
+# 3. Limpa o Cache de Identidade do Office (Resolve 90% dos erros de Checkout/Entrada)
+Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Common\Identity" -Name "*" -ErrorAction SilentlyContinue
+
+# 4. Executa o Reparo Completo do Office (Online Repair)
+# Nota: O DisplayLevel=False faz o processo ser silencioso
+$officePath = "C:\Program Files\Common Files\microsoft shared\ClickToRun\OfficeClickToRun.exe"
+if (Test-Path $officePath) {
+    Start-Process $officePath -ArgumentList "scenario=Repair platform=x64 culture=pt-br RepairType=FullRepair DisplayLevel=False" -Wait
+} else {
+    Write-Host "Caminho do Office não encontrado. Verifique se a versão é x86." -ForegroundColor Red
+}
+
+Write-Host "Procedimento finalizado. Recomenda-se reiniciar a máquina." -ForegroundColor Green
