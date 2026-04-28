@@ -7,6 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
+   #hero-canvas {
+  position: absolute;
+  inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+  border-radius: var(--radius-lg);
+}
+.hero > *:not(#hero-canvas) { position: relative; z-index: 1; }
 /* ═══════════════════════════════════════════════
    RESET & ROOT
 ═══════════════════════════════════════════════ */
@@ -641,6 +648,7 @@ tr.sh td {
 
 <!-- ── HERO ── -->
 <header class="hero">
+   <canvas id="hero-canvas"></canvas>
   <div class="hero-badge">🌐 Ecossistema IA Global — Abril 2026</div>
   <h1>
     <span class="h1-number">1001</span>
@@ -1839,6 +1847,67 @@ tr.sh td {
 </div><!-- /page -->
 
 <script>
+   (function () {
+  const cv = document.getElementById('hero-canvas');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H, t = 0;
+  function resize() { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const COLS = 14, ROWS = 10, SPEED = 0.0018, HORIZON = 0.46, FOV_W = 1.5, NOISE_AMP = 0.055;
+  function noise(x, y, t) {
+    return Math.sin(x*2.3+t*1.1)*Math.cos(y*1.7+t*0.9)*0.5
+          +Math.sin(x*4.1+y*2.9+t*1.4)*0.3
+          +Math.sin((x-y)*3.3+t*0.7)*0.2;
+  }
+  function project(wx, wz) {
+    const hy = H*HORIZON, scale = wz;
+    return { sx: W*0.5+wx*W*0.5/FOV_W*scale, sy: hy+(H-hy)*(1-wz) };
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    t += SPEED;
+    const offset = t % 1;
+    for (let r = 0; r <= ROWS; r++) {
+      let z = (r+offset)/ROWS; if (z>1) z-=1;
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(96,165,250,${(0.08+0.47*z).toFixed(3)})`;
+      ctx.lineWidth = 0.6+z*0.8;
+      let first = true;
+      for (let c = 0; c <= COLS; c++) {
+        const wx = (c/COLS)*2*FOV_W-FOV_W;
+        const ndx = noise(c/COLS, z, t*0.4)*NOISE_AMP*(1-z*0.5);
+        const ndz = noise(c/COLS+10, z+5, t*0.3)*NOISE_AMP*0.4*(1-z);
+        const {sx,sy} = project(wx+ndx, Math.max(0.001,z+ndz));
+        first ? (ctx.moveTo(sx,sy), first=false) : ctx.lineTo(sx,sy);
+      }
+      ctx.stroke();
+    }
+    for (let c = 0; c <= COLS; c++) {
+      const wx = (c/COLS)*2*FOV_W-FOV_W;
+      const ef = 1-Math.abs((c/COLS)-0.5)*0.6;
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(167,139,250,${(0.18*ef).toFixed(3)})`;
+      ctx.lineWidth = 0.5;
+      const ndx = noise(c/COLS,1,t*0.4)*NOISE_AMP;
+      const {sx:sx1,sy:sy1} = project(wx+ndx,0.999);
+      const {sx:sx0,sy:sy0} = project(wx,0.01);
+      ctx.moveTo(sx0,sy0); ctx.lineTo(sx1,sy1); ctx.stroke();
+    }
+    const hy = H*HORIZON;
+    const hg = ctx.createLinearGradient(0,hy,W,hy);
+    hg.addColorStop(0,'rgba(45,212,191,0)');
+    hg.addColorStop(0.2,'rgba(45,212,191,0.12)');
+    hg.addColorStop(0.5,'rgba(96,165,250,0.18)');
+    hg.addColorStop(0.8,'rgba(45,212,191,0.12)');
+    hg.addColorStop(1,'rgba(45,212,191,0)');
+    ctx.beginPath(); ctx.strokeStyle=hg; ctx.lineWidth=1.5;
+    ctx.moveTo(0,hy); ctx.lineTo(W,hy); ctx.stroke();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 // ── SCROLL PROGRESS + BACK TO TOP ──
 const scrollBar = document.getElementById('scroll-bar');
 const backTop   = document.getElementById('back-top');
