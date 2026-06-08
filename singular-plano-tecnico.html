@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Singular ERP/CRM — Plano Técnico de Produção</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --brand:#1B3F9C; --brand-700:#15317B; --brand-800:#102457; --brand-50:#EEF1FB; --brand-100:#DCE4F7; --brand-200:#BCCAEF;
+  --green:#7CB518; --green-600:#6AA00F; --green-50:#F1F7E2; --green-100:#E2EFC6;
+  --bg:#F4F5F8; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --border:#E7E9F0; --border-strong:#D6DAE4;
+  --text:#161A22; --text-2:#3D4452; --muted:#6E7686; --muted-2:#9AA1B0;
+  --amber:#C7841A; --amber-50:#FBF3E3; --red:#C13B3B; --red-50:#FBECEC; --teal:#1A8A8A; --teal-50:#E5F4F4;
+  --font:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 2px 6px rgba(16,24,40,.05);
+  --shadow-md:0 6px 18px rgba(16,24,40,.09);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+.mono{font-family:var(--mono);}
+.tnum{font-variant-numeric:tabular-nums;}
+
+/* layout */
+.shell{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;gap:0;align-items:start;}
+.toc{position:sticky;top:0;height:100vh;overflow-y:auto;padding:34px 20px 34px 28px;border-right:1px solid var(--border);}
+.toc .brand{display:flex;align-items:center;gap:5px;font-style:italic;font-weight:800;letter-spacing:-.02em;font-size:22px;color:var(--brand);margin-bottom:4px;}
+.toc .brand .dot{width:7px;height:7px;background:var(--green);border-radius:0 5px 0 5px;margin-bottom:10px;}
+.toc .kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-2);margin-bottom:26px;}
+.toc a{display:block;padding:7px 12px;border-radius:8px;color:var(--text-2);text-decoration:none;font-size:13.5px;font-weight:500;transition:all .14s;margin-bottom:2px;}
+.toc a:hover{background:#F1F3F8;color:var(--brand);}
+.toc a .n{display:inline-block;width:20px;color:var(--muted-2);font-weight:700;font-variant-numeric:tabular-nums;}
+.toc .sep{height:1px;background:var(--border);margin:14px 4px;}
+
+.content{padding:0 0 100px;background:var(--bg);}
+.page{max-width:840px;margin:0 auto;padding:48px 40px 0;}
+
+/* cover */
+.cover{background:linear-gradient(155deg,#15317B,#1B3F9C 55%,#22489E);color:#fff;border-radius:0;padding:64px 40px 56px;position:relative;overflow:hidden;}
+.cover::after{content:"";position:absolute;inset:0;opacity:.07;background-image:repeating-linear-gradient(115deg,#fff 0 2px,transparent 2px 24px);pointer-events:none;}
+.cover-inner{max-width:840px;margin:0 auto;position:relative;}
+.cover .tag{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:rgba(255,255,255,.14);padding:6px 13px;border-radius:99px;margin-bottom:22px;}
+.cover h1{font-size:40px;line-height:1.1;font-weight:800;letter-spacing:-.02em;margin:0 0 16px;}
+.cover h1 .accent{color:#A9D44E;}
+.cover p{font-size:17px;line-height:1.6;color:rgba(255,255,255,.85);margin:0;max-width:620px;}
+.cover .meta{display:flex;gap:30px;margin-top:34px;flex-wrap:wrap;}
+.cover .meta div{font-size:13px;color:rgba(255,255,255,.7);}
+.cover .meta b{display:block;font-size:15px;color:#fff;font-weight:700;margin-bottom:1px;}
+
+h2{font-size:26px;font-weight:800;letter-spacing:-.01em;margin:0 0 4px;scroll-margin-top:24px;}
+.sec-num{display:inline-block;font-size:13px;font-weight:800;color:var(--brand);background:var(--brand-50);padding:3px 11px;border-radius:99px;margin-bottom:14px;letter-spacing:.02em;}
+.sec{padding-top:52px;border-top:1px solid var(--border);margin-top:52px;}
+.sec:first-of-type{border-top:none;margin-top:0;}
+h3{font-size:18.5px;font-weight:700;margin:30px 0 10px;letter-spacing:-.01em;}
+h4{font-size:15px;font-weight:700;margin:22px 0 6px;color:var(--text);}
+p{margin:0 0 14px;}
+.lead{font-size:18px;color:var(--text-2);line-height:1.6;}
+strong{font-weight:700;color:var(--text);}
+ul,ol{margin:0 0 16px;padding-left:22px;}
+li{margin-bottom:7px;}
+a.inline{color:var(--brand);font-weight:600;}
+
+/* cards & callouts */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow-sm);margin:18px 0;}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:12px;margin:18px 0;font-size:14.5px;line-height:1.55;}
+.callout .ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;font-size:16px;}
+.callout.info{background:var(--brand-50);color:var(--brand-700);}
+.callout.info .ico{background:var(--brand);color:#fff;}
+.callout.tip{background:var(--green-50);color:#3f5e0a;}
+.callout.tip .ico{background:var(--green-600);color:#fff;}
+.callout.warn{background:var(--amber-50);color:#7a4f0a;}
+.callout.warn .ico{background:var(--amber);color:#fff;}
+.callout b{color:inherit;}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:14px;margin:18px 0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+thead th{background:var(--surface-2);text-align:left;padding:11px 15px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:1px solid var(--border);}
+tbody td{padding:12px 15px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+tbody td b{color:var(--text);}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;}
+.pill.g{background:var(--green-50);color:var(--green-600);}
+.pill.b{background:var(--brand-50);color:var(--brand);}
+.pill.a{background:var(--amber-50);color:var(--amber);}
+.pill.gr{background:#F0F1F5;color:#5C6473;}
+
+/* architecture diagram */
+.arch{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;margin:22px 0;}
+.arch-row{display:flex;align-items:stretch;gap:14px;margin-bottom:14px;}
+.arch-row:last-child{margin-bottom:0;}
+.arch-box{flex:1;border-radius:12px;padding:16px 18px;border:1.5px solid;}
+.arch-box .t{font-weight:800;font-size:14.5px;margin-bottom:3px;display:flex;align-items:center;gap:8px;}
+.arch-box .d{font-size:12.5px;line-height:1.45;opacity:.85;}
+.arch-box.fe{background:var(--brand-50);border-color:var(--brand-200);color:var(--brand-700);}
+.arch-box.api{background:var(--teal-50);border-color:#A8D8D8;color:#0f5f5f;}
+.arch-box.db{background:var(--green-50);border-color:var(--green-100);color:#3f5e0a;}
+.arch-box.infra{background:var(--surface-2);border-color:var(--border-strong);color:var(--text-2);}
+.arch-arrow{text-align:center;color:var(--muted-2);font-size:18px;margin:-6px 0;}
+
+/* code */
+pre{background:#102457;color:#E6ECF8;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.6;margin:16px 0;}
+pre .c{color:#7FA8E6;}
+pre .k{color:#A9D44E;}
+code.ic{font-family:var(--mono);background:#EEF1FB;color:var(--brand-700);padding:1px 6px;border-radius:5px;font-size:13px;font-weight:600;}
+
+/* phases */
+.phase{display:flex;gap:18px;margin:0 0 4px;}
+.phase-rail{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.phase-dot{width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;}
+.phase-line{width:2px;flex:1;background:var(--border-strong);margin:6px 0;}
+.phase:last-child .phase-line{display:none;}
+.phase-body{padding-bottom:26px;flex:1;}
+.phase-body h4{margin:5px 0 4px;font-size:16.5px;}
+.phase-body .eta{font-size:12px;font-weight:700;color:var(--green-600);background:var(--green-50);padding:2px 10px;border-radius:99px;display:inline-block;margin-bottom:8px;}
+
+/* checklist */
+.check{list-style:none;padding:0;margin:16px 0;}
+.check li{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14.5px;color:var(--text-2);}
+.check li:last-child{border-bottom:none;}
+.check .box{width:19px;height:19px;border-radius:5px;border:2px solid var(--brand-200);flex-shrink:0;margin-top:2px;}
+
+.foot{max-width:840px;margin:60px auto 0;padding:26px 40px 0;border-top:1px solid var(--border);color:var(--muted);font-size:13px;}
+
+/* responsive */
+@media(max-width:920px){
+  .shell{grid-template-columns:1fr;}
+  .toc{display:none;}
+  .cover h1{font-size:31px;}
+  .page{padding:36px 22px 0;}
+  .arch-row{flex-direction:column;}
+}
+
+/* print */
+@media print{
+  body{background:#fff;font-size:11.5pt;}
+  .toc{display:none;}
+  .shell{display:block;max-width:none;}
+  .cover{border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .card,.callout,.arch,table,pre,.arch-box,.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .sec{break-inside:avoid-page;page-break-inside:avoid;}
+  h2,h3,h4{break-after:avoid;}
+  pre,table,.callout,.card,.arch{break-inside:avoid;}
+  a{color:inherit;text-decoration:none;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="brand">Singular<span class="dot"></span></div>
+    <div class="kicker">Plano Técnico</div>
+    <a href="#contexto"><span class="n">1</span> Contexto</a>
+    <a href="#visao"><span class="n">2</span> Visão da arquitetura</a>
+    <a href="#stack"><span class="n">3</span> Stack recomendada</a>
+    <a href="#reuso"><span class="n">4</span> Do protótipo à produção</a>
+    <a href="#banco"><span class="n">5</span> Banco de dados</a>
+    <a href="#migracao"><span class="n">6</span> Migração dos dados</a>
+    <a href="#seguranca"><span class="n">7</span> Segurança &amp; permissões</a>
+    <a href="#deploy"><span class="n">8</span> Implantação no servidor</a>
+    <a href="#versoes"><span class="n">9</span> Atualizações sem perder dados</a>
+    <a href="#backup"><span class="n">10</span> Backup &amp; recuperação</a>
+    <div class="sep"></div>
+    <a href="#roadmap"><span class="n">11</span> Roadmap por fases</a>
+    <a href="#handoff"><span class="n">12</span> Checklist p/ Claude Code</a>
+    <a href="#glossario"><span class="n">13</span> Glossário</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <header class="cover">
+      <div class="cover-inner">
+        <span class="tag">📘 Documento de Arquitetura · Versão 1.0</span>
+        <h1>Do protótipo à produção:<br />plano técnico do <span class="accent">Singular ERP/CRM</span></h1>
+        <p>Como transformar o protótipo aprovado em um sistema real, multiusuário e com dados verdadeiros — e como mantê-lo evoluindo com segurança, sem perder dados nem quebrar nada.</p>
+        <div class="meta">
+          <div><b>Unidade</b>SESI · SSTQV Pouso Alegre</div>
+          <div><b>Servidor-alvo</b>Windows Server 2022</div>
+          <div><b>Premissa</b>100% open source · uso comercial</div>
+          <div><b>Usuários</b>80+ colaboradores</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+
+      <!-- 1 -->
+      <section class="sec" id="contexto">
+        <span class="sec-num">01</span>
+        <h2>Contexto</h2>
+        <p class="lead">Hoje o Singular é um <strong>protótipo funcional de alta fidelidade</strong> — todas as telas, fluxos, regras de permissão e a experiência de uso já existem e foram validados. O que falta é a “engenharia de bastidor” que o transforma num sistema de produção.</p>
+        <p>É importante entender a diferença entre o que está pronto e o que precisa ser construído, porque isso define o tamanho real do trabalho que falta:</p>
+
+        <table>
+          <thead><tr><th style="width:50%">Hoje (protótipo)</th><th>Produção (objetivo)</th></tr></thead>
+          <tbody>
+            <tr><td>Dados de exemplo num arquivo (<code class="ic">data.js</code>)</td><td><b>Banco de dados central</b> com os dados reais</td></tr>
+            <tr><td>Cada pessoa salva no próprio navegador</td><td><b>Base única</b> compartilhada por todos em tempo real</td></tr>
+            <tr><td>Login simbólico (sem senha real)</td><td><b>Autenticação segura</b> com senhas protegidas</td></tr>
+            <tr><td>Gráficos sobre amostra gerada</td><td><b>Gráficos sobre números verdadeiros</b>, automáticos</td></tr>
+            <tr><td>Roda em qualquer navegador isolado</td><td><b>Servidor</b> publicando para toda a equipe</td></tr>
+            <tr><td>Trilha de auditoria local</td><td><b>Auditoria persistente</b> e centralizada</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip">
+          <div class="ico">✓</div>
+          <div><b>A boa notícia:</b> a camada de produto — as ~30 telas e componentes, os fluxos e o design — já está construída e aprovada. Em projetos de software, essa costuma ser a maior parte do esforço (60–70%). O que falta é trabalho de infraestrutura: previsível e bem conhecido.</div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="sec" id="visao">
+        <span class="sec-num">02</span>
+        <h2>Visão geral da arquitetura</h2>
+        <p>Um sistema de produção se organiza em camadas independentes. Cada uma tem uma responsabilidade clara, e a separação entre elas é o que permite atualizar uma sem quebrar as outras.</p>
+
+        <div class="arch">
+          <div class="arch-row">
+            <div class="arch-box fe">
+              <div class="t">🖥️ Frontend — a interface</div>
+              <div class="d">O que o usuário vê e usa. É o Singular que já existe hoje (telas, gráficos, formulários). Roda no navegador de cada colaborador.</div>
+            </div>
+          </div>
+          <div class="arch-arrow">▲ ▼ &nbsp; pedidos e respostas (HTTPS/API)</div>
+          <div class="arch-row">
+            <div class="arch-box api">
+              <div class="t">⚙️ Backend / API — as regras</div>
+              <div class="d">Recebe os pedidos (“salvar contrato”, “listar propostas”), aplica permissões, valida e conversa com o banco. Aqui também moram login e a auditoria.</div>
+            </div>
+          </div>
+          <div class="arch-arrow">▲ ▼ &nbsp; leitura e gravação</div>
+          <div class="arch-row">
+            <div class="arch-box db">
+              <div class="t">🗄️ Banco de dados — a verdade</div>
+              <div class="d">Onde os dados realmente vivem, de forma permanente e única. Contratos, clientes, propostas, serviços, usuários, logs — tudo central.</div>
+            </div>
+          </div>
+          <div class="arch-arrow">▲ ▼ &nbsp; hospedagem</div>
+          <div class="arch-row">
+            <div class="arch-box infra">
+              <div class="t">🪟 Infraestrutura — Windows Server 2022</div>
+              <div class="d">O servidor da unidade que executa o backend e o banco, publica o sistema na rede e roda os backups automáticos.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <div class="ico">i</div>
+          <div><b>Por que separar em camadas?</b> Porque o <b>código</b> (frontend + backend) e os <b>dados</b> (banco) ficam independentes. Você atualiza o sistema sem tocar nos dados — esse é o segredo para evoluir sem medo, detalhado na seção 9.</div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="sec" id="stack">
+        <span class="sec-num">03</span>
+        <h2>Stack recomendada</h2>
+        <p>Todas as tecnologias abaixo são <strong>open source e com licença que permite uso comercial</strong> (MIT, Apache 2.0, PostgreSQL License ou BSD) — sem custo de licenciamento e compatíveis com Windows Server 2022.</p>
+
+        <table>
+          <thead><tr><th>Camada</th><th>Tecnologia recomendada</th><th>Licença</th></tr></thead>
+          <tbody>
+            <tr><td><b>Frontend</b></td><td><b>React</b> + Vite (build). Reaproveita a interface atual.</td><td><span class="pill g">MIT</span></td></tr>
+            <tr><td><b>Backend / API</b></td><td><b>Node.js</b> + <b>NestJS</b> (estruturado) ou Fastify (leve). <br><span style="color:var(--muted);font-size:13px">Alternativa: .NET 8 / ASP.NET Core — excelente em Windows Server.</span></td><td><span class="pill g">MIT</span></td></tr>
+            <tr><td><b>Banco de dados</b></td><td><b>PostgreSQL 16</b> — robusto, gratuito, padrão de mercado.</td><td><span class="pill g">PostgreSQL</span></td></tr>
+            <tr><td><b>ORM (acesso a dados)</b></td><td><b>Prisma</b> ou TypeORM — também cuidam das migrações.</td><td><span class="pill g">Apache 2.0</span></td></tr>
+            <tr><td><b>Autenticação</b></td><td><b>JWT</b> + bcrypt (hash de senha). Opcional: <b>Keycloak</b> para login único/LDAP.</td><td><span class="pill g">Apache 2.0</span></td></tr>
+            <tr><td><b>Servidor web / proxy</b></td><td><b>Nginx</b> (ou IIS, nativo do Windows Server) como porta de entrada + HTTPS.</td><td><span class="pill g">BSD</span></td></tr>
+            <tr><td><b>Processos / serviço</b></td><td><b>PM2</b> ou <b>NSSM</b> (roda o backend como serviço do Windows).</td><td><span class="pill g">MIT</span></td></tr>
+            <tr><td><b>Versionamento</b></td><td><b>Git</b> + repositório (GitHub, GitLab self-hosted ou Gitea interno).</td><td><span class="pill g">GPL/MIT</span></td></tr>
+            <tr><td><b>Containers <span style="font-weight:500;color:var(--muted)">(opcional)</span></b></td><td><b>Docker</b> — empacota tudo e simplifica deploy/backup.</td><td><span class="pill g">Apache 2.0</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip">
+          <div class="ico">★</div>
+          <div><b>Recomendação para o seu caso:</b> <b>React + NestJS (Node) + PostgreSQL + Nginx</b>, rodando como serviços do Windows via NSSM, com Docker opcional para padronizar. É a combinação com mais material, mais profissionais no mercado e que melhor reaproveita o frontend atual.</div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="sec" id="reuso">
+        <span class="sec-num">04</span>
+        <h2>Do protótipo à produção: o que se reaproveita</h2>
+        <p>Boa parte do que já foi feito vai direto para a produção. O trabalho novo é concentrado e bem delimitado.</p>
+
+        <h3>✅ Reaproveitado quase integralmente</h3>
+        <ul>
+          <li>Todas as <strong>telas e componentes</strong> (dashboard, contratos, clientes, pipeline, financeiro, propostas, serviços, relatórios, usuários, logs).</li>
+          <li>O <strong>design system</strong> completo: cores SESI, tipografia, tabelas, modais, gráficos, mapa térmico.</li>
+          <li>As <strong>regras de permissão</strong> por perfil (ADM / Master / Usuário) e os dashboards por setor.</li>
+          <li>Toda a <strong>lógica de interface</strong>: filtros, buscas, formulários, validações de tela, CRUD visual.</li>
+        </ul>
+
+        <h3>🔧 Construído do zero (o trabalho novo)</h3>
+        <ul>
+          <li><strong>Backend/API:</strong> os “endpoints” que cada tela vai chamar para ler e gravar de verdade.</li>
+          <li><strong>Banco de dados:</strong> modelar as tabelas (já temos o formato dos dados como guia).</li>
+          <li><strong>Autenticação real:</strong> login com senha protegida, sessões e recuperação de senha.</li>
+          <li><strong>Troca da fonte de dados:</strong> onde hoje o frontend lê <code class="ic">window.SINGULAR_DATA</code> e o <code class="ic">localStorage</code>, passa a chamar a API.</li>
+        </ul>
+
+        <div class="callout info">
+          <div class="ico">i</div>
+          <div>O frontend já foi construído <b>esperando dados estruturados</b>. A troca de “ler do arquivo” para “ler da API” é uma alteração cirúrgica numa única camada — não exige reescrever as telas.</div>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="sec" id="banco">
+        <span class="sec-num">05</span>
+        <h2>Banco de dados</h2>
+        <p>O modelo de dados já está praticamente desenhado — o protótipo trabalha com entidades bem definidas que viram tabelas quase diretamente:</p>
+
+        <table>
+          <thead><tr><th>Entidade</th><th>Vira a tabela</th><th>Relações principais</th></tr></thead>
+          <tbody>
+            <tr><td>Clientes</td><td><code class="ic">clientes</code></td><td>1 cliente → N contratos, N propostas</td></tr>
+            <tr><td>Contratos</td><td><code class="ic">contratos</code></td><td>pertence a 1 cliente; tem N serviços, N faturas</td></tr>
+            <tr><td>Propostas</td><td><code class="ic">propostas</code></td><td>pode gerar 1 contrato / 1 oportunidade</td></tr>
+            <tr><td>Serviços prestados</td><td><code class="ic">servicos</code></td><td>pertence a 1 contrato; tem 1 responsável</td></tr>
+            <tr><td>Faturas</td><td><code class="ic">faturas</code></td><td>pertence a 1 contrato</td></tr>
+            <tr><td>Oportunidades (pipeline)</td><td><code class="ic">oportunidades</code></td><td>vinculada a 1 cliente/proposta</td></tr>
+            <tr><td>Usuários</td><td><code class="ic">usuarios</code></td><td>tem 1 perfil; gera N registros de auditoria</td></tr>
+            <tr><td>Listas / cadastros</td><td><code class="ic">cadastros</code></td><td>setores, CRs, produtos, técnicos…</td></tr>
+            <tr><td>Auditoria / logs</td><td><code class="ic">auditoria</code></td><td>cada ação referencia 1 usuário</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Por que PostgreSQL</h3>
+        <ul>
+          <li><strong>Gratuito e livre para uso comercial</strong>, sem pegadinha de licença.</li>
+          <li>Lida tranquilamente com <strong>80+ usuários simultâneos</strong> e milhões de registros.</li>
+          <li>Tem <strong>transações</strong> (ou grava tudo, ou nada — evita dados pela metade) e backups maduros.</li>
+          <li>Roda nativamente em Windows Server 2022.</li>
+        </ul>
+      </section>
+
+      <!-- 6 -->
+      <section class="sec" id="migracao">
+        <span class="sec-num">06</span>
+        <h2>Migração dos dados reais</h2>
+        <p>Esta é a etapa que costuma dar <strong>mais trabalho do que parece</strong> — não pela tecnologia, mas pela qualidade dos dados de origem. Vale planejar cedo.</p>
+
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">1</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <h4>Levantar as fontes</h4>
+            <p>Mapear de onde vêm os dados verdadeiros: a planilha <code class="ic">sistema.xlsx</code> atual, o CRM, o SESIGED e qualquer controle paralelo.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">2</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <h4>Limpar e padronizar</h4>
+            <p>Corrigir nomes duplicados de empresas, CNPJs faltando, datas inconsistentes, status fora do padrão. <strong>Dado sujo que entra = relatório errado que sai.</strong></p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">3</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <h4>Script de importação</h4>
+            <p>Um programa lê a planilha limpa e insere no banco, respeitando as relações (cliente → contrato → serviço). Roda quantas vezes precisar até ficar certo, em ambiente de teste.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">4</div></div>
+          <div class="phase-body">
+            <h4>Conferência</h4>
+            <p>Comparar totais (nº de contratos, somatório de valores, vidas) entre a planilha e o sistema para garantir que nada se perdeu nem duplicou. Só então vira oficial.</p>
+          </div>
+        </div>
+
+        <div class="callout warn">
+          <div class="ico">!</div>
+          <div><b>Atenção:</b> a localização geográfica (cidade/UF) que alimenta o mapa térmico é hoje <b>estimada</b>, pois a planilha não traz esse dado. Para o mapa refletir a realidade, será preciso incluir <b>cidade do cliente</b> na origem dos dados — um campo simples de adicionar.</div>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="sec" id="seguranca">
+        <span class="sec-num">07</span>
+        <h2>Segurança &amp; permissões</h2>
+        <p>O protótipo já define os perfis; em produção eles passam a ser aplicados também no servidor (não só na tela), o que é o que torna a segurança real.</p>
+
+        <table>
+          <thead><tr><th>Item</th><th>Como fica em produção</th></tr></thead>
+          <tbody>
+            <tr><td><b>Senhas</b></td><td>Nunca guardadas em texto puro — armazenadas com <b>hash bcrypt</b> (irreversível).</td></tr>
+            <tr><td><b>Login</b></td><td>Gera um <b>token de sessão (JWT)</b> com validade; expira e exige novo login.</td></tr>
+            <tr><td><b>Permissões</b></td><td>Verificadas <b>no backend</b> a cada pedido — um usuário comum não acessa dados de admin nem “pela URL”.</td></tr>
+            <tr><td><b>Auditoria</b></td><td>Toda ação relevante gravada no banco: quem, o quê, quando. Imutável.</td></tr>
+            <tr><td><b>Tráfego</b></td><td><b>HTTPS</b> obrigatório (certificado), criptografando tudo entre navegador e servidor.</td></tr>
+            <tr><td><b>LGPD</b></td><td>Controle de acesso por perfil + trilha de auditoria já ajudam na conformidade.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip">
+          <div class="ico">★</div>
+          <div><b>Integração com o login da instituição:</b> se o SESI usa Active Directory/LDAP, dá para conectar via <b>Keycloak</b> e permitir que cada colaborador entre com o <b>mesmo usuário da rede</b> — sem criar senha nova.</div>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="sec" id="deploy">
+        <span class="sec-num">08</span>
+        <h2>Implantação no Windows Server 2022</h2>
+        <p>Passo a passo de alto nível para colocar o sistema no ar dentro do servidor da unidade:</p>
+
+        <ol>
+          <li><strong>Preparar o servidor:</strong> instalar Node.js (LTS), PostgreSQL 16 e Git. (Opcional: Docker Desktop / Docker Engine.)</li>
+          <li><strong>Criar o banco:</strong> subir o PostgreSQL, criar a base <code class="ic">singular</code> e um usuário de aplicação com senha forte.</li>
+          <li><strong>Publicar o código:</strong> clonar o repositório Git no servidor (backend + frontend).</li>
+          <li><strong>Configurar variáveis</strong> (arquivo <code class="ic">.env</code>): endereço do banco, segredo do JWT, porta. <em>Nunca</em> versionar senhas.</li>
+          <li><strong>Rodar as migrações:</strong> criam as tabelas automaticamente no banco.</li>
+          <li><strong>Importar os dados</strong> reais (seção 6).</li>
+          <li><strong>Buildar o frontend:</strong> gera os arquivos otimizados que o Nginx/IIS vai servir.</li>
+          <li><strong>Rodar como serviço do Windows</strong> (NSSM/PM2): o backend reinicia sozinho se o servidor reiniciar.</li>
+          <li><strong>Configurar o Nginx/IIS</strong> como porta de entrada, com HTTPS e o endereço interno (ex.: <code class="ic">singular.sesi.local</code>).</li>
+          <li><strong>Agendar backups</strong> automáticos do banco (seção 10).</li>
+        </ol>
+
+        <div class="callout info">
+          <div class="ico">i</div>
+          <div>Com <b>Docker</b>, os passos 1–8 viram praticamente <em>um comando</em> (<code class="ic" style="background:#1c3a6e;color:#cfe0ff">docker compose up</code>), porque tudo já vai empacotado e configurado. É o caminho mais simples de manter.</div>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="sec" id="versoes">
+        <span class="sec-num">09</span>
+        <h2>Atualizações sem perder dados nem quebrar</h2>
+        <p class="lead">Esta é a sua principal preocupação — e tem uma resposta tranquilizadora: <strong>código e dados são separados.</strong> Você atualiza o sistema (código) sem nunca tocar nos dados (banco). São independentes.</p>
+
+        <h3>O fluxo profissional de atualização</h3>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">1</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">Git</span>
+            <h4>Versionamento</h4>
+            <p>Todo o código fica no Git. Cada mudança é registrada com data e autor. Se algo der errado, você <strong>volta para a versão anterior em segundos</strong> (rollback).</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">2</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">Homologação</span>
+            <h4>Testar numa cópia, nunca no ar</h4>
+            <p>Existe um ambiente de teste idêntico ao de produção. A nova funcionalidade é validada lá primeiro. Só depois de aprovada vai para o ambiente real.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">3</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">Migração</span>
+            <h4>Quando a estrutura muda</h4>
+            <p>Se a novidade exige um campo novo (ex.: “telefone do contato”), uma <strong>migração</strong> adiciona esse campo <strong>preservando tudo que já existe</strong>. É controlada e reversível — nunca “apagar e recriar”.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">4</div></div>
+          <div class="phase-body">
+            <span class="eta">Deploy</span>
+            <h4>Publicar</h4>
+            <p>Backup do banco → publicar a nova versão do código → conferir. Poucos minutos. Os dados continuam intactos no banco o tempo todo.</p>
+          </div>
+        </div>
+
+        <h4>Exemplo de uma atualização real</h4>
+        <pre><span class="c"># 1. Pega a nova versão do código (já testada em homologação)</span>
+git pull origin main
+
+<span class="c"># 2. Backup do banco ANTES de qualquer coisa (rede de segurança)</span>
+pg_dump singular &gt; backup_<span class="k">2026-06-08</span>.sql
+
+<span class="c"># 3. Aplica mudanças de estrutura, preservando os dados</span>
+npx prisma migrate deploy
+
+<span class="c"># 4. Reconstrói e reinicia o serviço</span>
+npm run build &amp;&amp; pm2 restart singular
+
+<span class="c"># Se algo falhar: rollback em segundos</span>
+git checkout <span class="k">versão-anterior</span> &amp;&amp; pm2 restart singular</pre>
+
+        <div class="callout tip">
+          <div class="ico">✓</div>
+          <div><b>Em resumo:</b> o código é versionado e reversível; os dados ficam noutro lugar (banco) e são backupeados. Atualizar funcionalidade <b>não encosta</b> nos dados — e se algo quebrar, você volta atrás. É assim que sistemas sérios rodam por anos recebendo melhorias contínuas.</div>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="sec" id="backup">
+        <span class="sec-num">10</span>
+        <h2>Backup &amp; recuperação</h2>
+        <p>O banco é a parte insubstituível — e por isso protegida em várias camadas:</p>
+        <ul>
+          <li><strong>Backup diário automático</strong> (tarefa agendada do Windows) — uma cópia completa do banco todo dia.</li>
+          <li><strong>Backup antes de cada atualização</strong> — ponto de retorno garantido.</li>
+          <li><strong>Cópia fora do servidor</strong> — guardar os backups também em outro local/nuvem, caso o servidor físico falhe.</li>
+          <li><strong>Teste de restauração periódico</strong> — backup só vale se você já testou que consegue restaurá-lo.</li>
+          <li><strong>Retenção</strong> — manter, por exemplo, os últimos 30 diários + 12 mensais.</li>
+        </ul>
+        <div class="callout warn">
+          <div class="ico">!</div>
+          <div><b>Regra de ouro (3-2-1):</b> 3 cópias dos dados, em 2 mídias diferentes, sendo 1 fora do local. Simples e salva o projeto em qualquer imprevisto.</div>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="sec" id="roadmap">
+        <span class="sec-num">11</span>
+        <h2>Roadmap sugerido por fases</h2>
+        <p>Uma sequência segura, entregando valor a cada etapa em vez de “tudo de uma vez”. Os prazos são estimativas para orientação.</p>
+
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">1</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">~1 semana</span>
+            <h4>Fundação</h4>
+            <p>Repositório Git, banco PostgreSQL, modelagem das tabelas, ambiente de desenvolvimento. Servidor preparado.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">2</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">~1–2 semanas</span>
+            <h4>Backend + autenticação</h4>
+            <p>API dos módulos principais (contratos, clientes, propostas, serviços), login real e permissões aplicadas no servidor.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">3</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">~1 semana</span>
+            <h4>Conectar o frontend</h4>
+            <p>Trocar a fonte de dados do protótipo (arquivo → API). As telas passam a ler e gravar de verdade.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">4</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">~3–5 dias</span>
+            <h4>Migração dos dados reais</h4>
+            <p>Limpeza, importação e conferência da base verdadeira. Gráficos passam a refletir a realidade.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">5</div><div class="phase-line"></div></div>
+          <div class="phase-body">
+            <span class="eta">~3–5 dias</span>
+            <h4>Implantação + piloto</h4>
+            <p>Publicar no servidor, configurar HTTPS e backups, e rodar um piloto com um grupo pequeno antes de liberar para todos.</p>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-rail"><div class="phase-dot">6</div></div>
+          <div class="phase-body">
+            <span class="eta">contínuo</span>
+            <h4>Operação &amp; evolução</h4>
+            <p>Sistema no ar para os 80+ usuários. Novas funcionalidades entram pelo fluxo seguro da seção 9.</p>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <div class="ico">i</div>
+          <div>Estimativa total de um <b>MVP em produção</b>: aproximadamente <b>5 a 7 semanas</b> de trabalho focado de um desenvolvedor (ou você com a Claude Code), dependendo de integrações e da qualidade dos dados de origem.</div>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="sec" id="handoff">
+        <span class="sec-num">12</span>
+        <h2>Checklist para começar com a Claude Code</h2>
+        <p>Quando for pedir ajuda à Claude Code, leve este documento e estes pontos definidos. Cada item respondido acelera o trabalho e evita retrabalho.</p>
+
+        <ul class="check">
+          <li><span class="box"></span><div><b>Stack escolhida</b> — confirmar: React + NestJS (Node) + PostgreSQL? Ou prefere .NET?</div></li>
+          <li><span class="box"></span><div><b>Hospedagem</b> — confirmar que será no Windows Server 2022 da unidade, com ou sem Docker.</div></li>
+          <li><span class="box"></span><div><b>Login</b> — criar usuários no próprio sistema, ou integrar com o Active Directory/LDAP do SESI?</div></li>
+          <li><span class="box"></span><div><b>Fonte de dados real</b> — ter a planilha/exportação atualizada e definir quem é responsável pela limpeza.</div></li>
+          <li><span class="box"></span><div><b>Campo de cidade/UF</b> — decidir como obter a localização real dos clientes (para o mapa).</div></li>
+          <li><span class="box"></span><div><b>Repositório Git</b> — criar (GitHub, GitLab interno ou Gitea) e dar acesso.</div></li>
+          <li><span class="box"></span><div><b>Política de backup</b> — definir frequência, retenção e onde guardar as cópias.</div></li>
+          <li><span class="box"></span><div><b>Domínio interno</b> — definir o endereço de acesso (ex.: <code class="ic">singular.sesi.local</code>) e o certificado HTTPS.</div></li>
+        </ul>
+
+        <h4>Sugestão de primeiro pedido à Claude Code</h4>
+        <pre><span class="c">// Cole o objetivo, anexe este documento e o protótipo:</span>
+"Quero transformar este protótipo (Singular ERP/CRM, em React)
+num sistema de produção. Stack: React + NestJS + PostgreSQL,
+para rodar em Windows Server 2022. Comece pela <span class="k">Fase 1</span>:
+modele o banco a partir das entidades do protótipo e gere as
+migrações iniciais. Depois seguimos para a API e a autenticação."</pre>
+      </section>
+
+      <!-- 13 -->
+      <section class="sec" id="glossario">
+        <span class="sec-num">13</span>
+        <h2>Glossário rápido</h2>
+        <table>
+          <tbody>
+            <tr><td style="width:30%"><b>Frontend</b></td><td>A parte visual, que roda no navegador. É o Singular que você já vê.</td></tr>
+            <tr><td><b>Backend / API</b></td><td>O “cérebro” no servidor: aplica regras, valida e fala com o banco.</td></tr>
+            <tr><td><b>Banco de dados</b></td><td>Onde os dados ficam guardados de forma permanente e central.</td></tr>
+            <tr><td><b>Migração</b></td><td>Mudança controlada na estrutura do banco que preserva os dados existentes.</td></tr>
+            <tr><td><b>Deploy</b></td><td>Ato de publicar uma nova versão do sistema no servidor.</td></tr>
+            <tr><td><b>Rollback</b></td><td>Voltar para a versão anterior caso algo dê errado.</td></tr>
+            <tr><td><b>Homologação</b></td><td>Ambiente de teste idêntico ao real, onde se valida antes de publicar.</td></tr>
+            <tr><td><b>Git</b></td><td>Sistema que versiona o código e registra todo o histórico de mudanças.</td></tr>
+            <tr><td><b>Hash (de senha)</b></td><td>Transformação irreversível que protege a senha — nem o admin a vê.</td></tr>
+            <tr><td><b>JWT / token</b></td><td>“Crachá” digital temporário que comprova que o usuário está logado.</td></tr>
+            <tr><td><b>ORM</b></td><td>Ferramenta que traduz código em comandos de banco e cuida das migrações.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="foot">
+        <p><strong>Singular ERP/CRM — Plano Técnico de Produção · v1.0</strong><br />
+        SESI · SSTQV Pouso Alegre — documento de apoio à decisão e à implementação.<br />
+        As estimativas de prazo são orientativas e variam conforme escopo, integrações e qualidade dos dados de origem.</p>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>
