@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>ComandaBox — Design Brief & Protótipo v1.0</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap' rel='stylesheet'>
+<script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --or:#F97316;--or2:#EA580C;--or-bg:#FFF7ED;
+  --nv:#1E2D40;--nv2:#263B52;--nv3:#344F6B;
+  --bg:#F3F4F6;--sur:#fff;--brd:#E5E7EB;
+  --tx:#1F2937;--mu:#6B7280;
+  --ok:#16A34A;--ok-bg:#DCFCE7;
+  --er:#DC2626;--er-bg:#FEE2E2;
+  --inf:#2563EB;--inf-bg:#DBEAFE;
+  --pu:#7C3AED;--pu-bg:#F5F3FF;
+  --r:10px;--sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05)
+}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.app-hdr{background:var(--nv);height:52px;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-cb{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.logo-c{color:#fff}.logo-b{color:var(--or)}
+.logo-tag{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.8px;text-transform:uppercase;font-weight:500}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.hdr-badge{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:11px;padding:3px 10px;border-radius:12px;font-weight:500}
+.reset-btn{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit}
+.reset-btn:hover{background:rgba(255,255,255,.14);color:rgba(255,255,255,.8)}
+
+.tab-nav{background:var(--nv2);display:flex;overflow-x:auto;padding:0 16px;gap:2px;border-bottom:2px solid rgba(255,255,255,.04)}
+.tab-nav::-webkit-scrollbar{height:2px}
+.tab-btn{padding:11px 16px;border:none;background:transparent;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-size:12px;font-weight:600;transition:all .2s;margin-bottom:-2px;font-family:inherit;letter-spacing:.2px}
+.tab-btn:hover{color:rgba(255,255,255,.85)}
+.tab-btn.active{color:var(--or);border-bottom-color:var(--or)}
+
+.sec{display:none;padding:24px 20px;max-width:1320px;margin:0 auto}
+.sec.active{display:block}
+.sec-hdr{margin-bottom:20px}
+.sec-title{font-size:20px;font-weight:700;color:var(--nv)}
+.sec-sub{font-size:13px;color:var(--mu);margin-top:3px;line-height:1.5}
+
+.card{background:var(--sur);border-radius:var(--r);padding:18px;border:1px solid var(--brd);box-shadow:var(--sh)}
+.card-head{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);margin-bottom:10px}
+.card-val{font-size:28px;font-weight:700;color:var(--nv);line-height:1}
+.card-sub2{font-size:12px;color:var(--mu);margin-top:4px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all .15s;font-size:13px;font-family:inherit;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-or{background:var(--or);color:#fff}.btn-or:hover{background:var(--or2)}
+.btn-nv{background:var(--nv);color:#fff}.btn-nv:hover{background:var(--nv2)}
+.btn-gh{background:transparent;border:1px solid var(--brd);color:var(--tx)}.btn-gh:hover{background:var(--bg)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-full{width:100%}
+
+.f-grp{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.f-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--mu)}
+.f-inp{padding:8px 11px;border:1px solid var(--brd);border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;background:#fff}
+.f-inp:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(249,115,22,.12)}
+.f-hint{font-size:11px;color:var(--mu)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gap12{gap:12px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.flex{display:flex}.fac{align-items:center}.fjb{justify-content:space-between}.fwrap{flex-wrap:wrap}
+
+/* === PDV === */
+.pdv-layout{display:grid;grid-template-columns:1fr 290px;gap:14px}
+.pdv-bar{background:var(--nv);border-radius:var(--r);padding:9px 14px;display:flex;gap:20px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.pdv-s{display:flex;flex-direction:column}
+.pdv-sl{font-size:9px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.pdv-sv{font-size:14px;font-weight:700;color:#fff}
+.pdv-sv.or{color:var(--or);font-size:16px;letter-spacing:1px}
+
+.cats{display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px}
+.cats::-webkit-scrollbar{height:2px}
+.cat-p{padding:5px 13px;border-radius:20px;border:1.5px solid var(--brd);background:#fff;color:var(--tx);cursor:pointer;font-size:11px;font-weight:600;white-space:nowrap;transition:all .15s;font-family:inherit}
+.cat-p.on{background:var(--or);border-color:var(--or);color:#fff}
+.cat-p:hover:not(.on){border-color:var(--or);color:var(--or)}
+
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.pc{background:#fff;border:1.5px solid var(--brd);border-radius:9px;padding:12px 8px;cursor:pointer;transition:all .15s;user-select:none;position:relative;text-align:center}
+.pc:hover{border-color:var(--or);transform:translateY(-2px);box-shadow:0 4px 10px rgba(249,115,22,.14)}
+.pc:active{transform:scale(.95)}
+.pc-n{font-size:11px;font-weight:600;margin-bottom:4px;line-height:1.3}
+.pc-p{color:var(--or);font-weight:700;font-size:13px}
+.pc-c{font-size:9px;color:var(--mu);margin-top:3px}
+.pc-q{position:absolute;top:4px;right:4px;background:var(--or);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+.ci{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid var(--brd)}
+.ci:last-child{border:none}
+.ci-i{flex:1;min-width:0}
+.ci-n{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ci-p{font-size:10px;color:var(--mu)}
+.qc{display:flex;align-items:center;gap:4px}
+.qb{width:22px;height:22px;border:none;border-radius:50%;background:var(--or);color:#fff;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.qn{font-weight:700;min-width:16px;text-align:center;font-size:12px}
+.pay-row{display:flex;gap:6px;margin-bottom:10px}
+.pay-o{flex:1;padding:6px;border:1.5px solid var(--brd);border-radius:7px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;font-family:inherit}
+.pay-o.on{border-color:var(--or);background:var(--or-bg);color:var(--or2)}
+.empty-cart{text-align:center;color:var(--mu);font-size:12px;padding:20px 0}
+
+/* === RECEIPT / FICHA === */
+.rcpt{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;line-height:1.65;background:#FDFCE8;border:1px solid #D4C584;border-radius:3px;padding:14px 11px;width:200px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.rcpt::before,.rcpt::after{content:'';display:block;height:7px;background:repeating-linear-gradient(90deg,transparent,transparent 5px,#E8E0A0 5px,#E8E0A0 10px);margin:-14px -11px 10px}
+.rcpt::after{margin:10px -11px -14px}
+.rc{text-align:center}.rb{font-weight:700}.rl{border:none;border-top:1px dashed #B8A830;margin:5px 0}
+.rn{font-size:15px;font-weight:700;text-align:center}.rcode{font-size:13px;font-weight:700;color:#C2590A;text-align:center;letter-spacing:2px}
+.ritem{font-size:12px;font-weight:700;text-align:center;margin:4px 0}
+.rprice{text-align:center;color:#444}
+.rtot{font-size:14px;font-weight:700;text-align:center}
+.rfooter{text-align:center;font-size:10px;color:#888}
+.r-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}
+.r-lbl{font-size:10px;font-weight:600;color:var(--mu)}
+@keyframes rSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.r-in{animation:rSlide .3s ease both}
+
+.fichas-row{display:flex;gap:14px;flex-wrap:wrap;padding:4px 0}
+
+/* === COMPROVANTE (visual diferente da ficha) === */
+.rcpt-comp{font-family:'JetBrains Mono','Courier New',monospace;font-size:11px;line-height:1.65;background:#fff;border:2px solid var(--nv);border-radius:8px;padding:0 11px 12px;width:200px;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.rcpt-comp-hdr{background:var(--nv);color:var(--or);text-align:center;font-weight:700;font-size:11px;padding:6px 11px;margin:0 -11px 10px;border-radius:5px 5px 0 0;letter-spacing:2px}
+.rl-comp{border:none;border-top:1px solid #DDD;margin:6px 0}
+
+/* === MODAL === */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.mo.open{display:flex}
+.mo-box{background:#fff;border-radius:16px;padding:22px;max-width:940px;width:100%;margin-top:20px;animation:moIn .22s ease}
+@keyframes moIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.mo-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.mo-title{font-size:16px;font-weight:700}
+.mo-x{width:30px;height:30px;border:none;background:var(--bg);border-radius:50%;cursor:pointer;font-size:15px}
+.mo-info{background:var(--or-bg);border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--or2);margin-bottom:16px}
+
+/* === DASHBOARD === */
+.kpi-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:var(--r);padding:16px;border:1px solid var(--brd);box-shadow:var(--sh)}
+.kpi-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+.kpi-or .kpi-ic{background:var(--or-bg)}.kpi-bl .kpi-ic{background:var(--inf-bg)}.kpi-gn .kpi-ic{background:var(--ok-bg)}.kpi-pu .kpi-ic{background:var(--pu-bg)}
+.kpi-v{font-size:24px;font-weight:700;color:var(--nv)}
+.kpi-l{font-size:12px;color:var(--mu);margin-top:2px}
+.kpi-d{font-size:11px;font-weight:600;margin-top:5px;color:var(--ok)}
+.ch-card{background:#fff;border-radius:var(--r);padding:16px;border:1px solid var(--brd);box-shadow:var(--sh)}
+.ch-t{font-size:13px;font-weight:600;color:var(--nv);margin-bottom:14px}
+
+/* === REPORTS === */
+.fbar{background:#fff;border-radius:var(--r);padding:14px;border:1px solid var(--brd);display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--mu)}
+.fs{padding:7px 10px;border:1px solid var(--brd);border-radius:7px;font-size:12px;font-family:inherit;outline:none;background:#fff;cursor:pointer}
+.fs:focus{border-color:var(--or)}
+.tbl{overflow-x:auto;border-radius:var(--r);border:1px solid var(--brd)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{padding:9px 12px;background:var(--bg);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);border-bottom:1px solid var(--brd);white-space:nowrap;text-align:left}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--brd);color:var(--tx)}
+tbody tr:last-child td{border:none}
+tbody tr:hover td{background:#FAFAFA}
+.bdg{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
+.b-pix{background:var(--inf-bg);color:#1D4ED8}
+.b-cas{background:var(--ok-bg);color:#15803D}
+.b-crd{background:var(--pu-bg);color:#6D28D9}
+.b-or{background:var(--or-bg);color:var(--or2)}
+.b-nv{background:#EDF2F7;color:var(--nv)}
+
+/* === OVERVIEW === */
+.var-card{background:#fff;border-radius:14px;padding:22px;border:2px solid var(--brd);transition:border-color .2s}
+.var-card.hl{border-color:var(--or);box-shadow:0 0 0 4px rgba(249,115,22,.08)}
+.var-badge{display:inline-block;padding:3px 10px;background:var(--or);color:#fff;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:10px;letter-spacing:.3px}
+.var-badge.pro{background:var(--nv)}
+.var-price{font-size:24px;font-weight:700;color:var(--or);margin-top:16px;padding-top:14px;border-top:1px solid var(--brd)}
+.var-ps{font-size:11px;color:var(--mu)}
+.spec-li{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.spec-li li{display:flex;gap:7px;font-size:12px;align-items:flex-start;line-height:1.4}
+.spec-li li::before{content:'✓';color:var(--or);font-weight:700;flex-shrink:0}
+.flow-steps{display:flex;gap:0;margin:20px 0}
+.fs-step{flex:1;background:#fff;border:1px solid var(--brd);padding:18px;position:relative}
+.fs-step:first-child{border-radius:10px 0 0 10px}
+.fs-step:last-child{border-radius:0 10px 10px 0}
+.fs-step::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--or);font-weight:700;z-index:1}
+.fs-step:last-child::after{display:none}
+.fs-num{width:28px;height:28px;background:var(--or);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;margin-bottom:8px}
+.fs-t{font-weight:700;font-size:13px;margin-bottom:3px}
+.fs-s{font-size:11px;color:var(--mu);line-height:1.5}
+
+/* === TECH === */
+.code-blk{background:#0F172A;color:#E2E8F0;border-radius:var(--r);padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8;overflow-x:auto}
+.ck{color:#93C5FD}.cv{color:#A7F3D0}.cs{color:#FDE68A}.cn{color:#FCA5A5}.cc{color:#6B7280}
+.api-row td:first-child{font-family:'JetBrains Mono',monospace;font-size:11px}
+.mth{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mth-g{background:var(--ok-bg);color:#065F46}.mth-p{background:var(--inf-bg);color:#1E40AF}
+.bom-table td:nth-child(4){font-weight:700;color:var(--or)}
+.info-box{background:var(--or-bg);border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--or2);line-height:1.6}
+.info-box.bl{background:var(--inf-bg);border-color:rgba(37,99,235,.2);color:#1E40AF}
+.info-box.gn{background:var(--ok-bg);border-color:rgba(22,163,74,.2);color:#15803D}
+.daily-badge{background:var(--nv);color:var(--or);font-size:28px;font-weight:900;letter-spacing:5px;text-align:center;padding:14px;border-radius:9px;margin:10px 0;font-family:'JetBrains Mono',monospace}
+
+/* === TOAST === */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--nv);color:#fff;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:9999;transform:translateY(60px);opacity:0;transition:all .28s}
+.toast.on{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){.pdv-layout{grid-template-columns:1fr}.kpi-g{grid-template-columns:1fr 1fr}.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.sec{padding:14px}.g2,.g3{grid-template-columns:1fr}.flow-steps{flex-direction:column}.fs-step::after{display:none}}
+</style>
+</head>
+<body>
+<div id='toast' class='toast'></div>
+
+<header class='app-hdr'>
+  <div class='logo'>
+    <div class='logo-cb'><span class='logo-c'>Comanda</span><span class='logo-b'>Box</span></div>
+    <div class='logo-tag'>Design Brief v1.0</div>
+  </div>
+  <div class='hdr-right'>
+    <span class='hdr-badge'>Protótipo Interativo</span>
+    <button class='reset-btn' onclick='App.reset()'>↺ Reset Demo</button>
+  </div>
+</header>
+
+<nav class='tab-nav'>
+  <button class='tab-btn active' onclick='showTab("overview")'>🏠 Visão Geral</button>
+  <button class='tab-btn' onclick='showTab("pdv")'>🖥️ Terminal PDV</button>
+  <button class='tab-btn' onclick='showTab("fichas")'>🖨️ Fichas</button>
+  <button class='tab-btn' onclick='showTab("admin")'>⚙️ Admin</button>
+  <button class='tab-btn' onclick='showTab("dash")'>📊 Dashboard</button>
+  <button class='tab-btn' onclick='showTab("rep")'>📋 Relatórios</button>
+  <button class='tab-btn' onclick='showTab("tech")'>🔧 Técnico</button>
+</nav>
+
+<div id='sec-overview' class='sec active'>
+  <div class='sec-hdr'>
+    <div class='sec-title'>ComandaBox — Visão Geral do Produto</div>
+    <div class='sec-sub'>PDV offline para festas, quermesses e eventos sazonais. Sem internet, sem mensalidade, sem driver.</div>
+  </div>
+
+  <div class='g2 mb24'>
+    <div class='var-card'>
+      <div class='var-badge'>STICK</div>
+      <div style='font-size:18px;font-weight:700;color:var(--nv);margin-bottom:6px'>ComandaBox Stick</div>
+      <div style='font-size:12px;color:var(--mu);line-height:1.6'>Conecta via cabo Ethernet em qualquer impressora de rede. Gera Wi-Fi AP para o operador acessar o PDV pelo celular ou tablet. <strong>1 unidade = 1 caixa = 1 impressora.</strong></div>
+      <ul class='spec-li'>
+        <li>ESP32-ETH01 (Wi-Fi + Ethernet)</li>
+        <li>Alimentação USB-C 5V</li>
+        <li>Funciona com qualquer impressora com porta de rede (TCP 9100)</li>
+        <li>Servidor web embarcado no LittleFS</li>
+        <li>Dimensões: ~65 × 40 × 18 mm</li>
+        <li>Custo de produção: R$ 35–55</li>
+      </ul>
+      <div class='var-price'>R$ 35–55 <span class='var-ps'>custo de produção / unidade</span></div>
+    </div>
+    <div class='var-card hl'>
+      <div class='var-badge pro'>PRO</div>
+      <div style='font-size:18px;font-weight:700;color:var(--nv);margin-bottom:6px'>ComandaBox Pro</div>
+      <div style='font-size:12px;color:var(--mu);line-height:1.6'>Stick + Impressora térmica 58mm em um único produto. Plug & play — tire da caixa, ligue e use. <strong>1 unidade = 1 caixa = 1 impressora.</strong></div>
+      <ul class='spec-li'>
+        <li>ComandaBox Stick incluído</li>
+        <li>Impressora térmica 58mm integrada (TTL ou Ethernet)</li>
+        <li>Fonte 5V/2A inclusa</li>
+        <li>Sem cabos extras — tudo conectado internamente</li>
+        <li>Caixa plástica personalizada com marca CB</li>
+        <li>Velocidade: ~80mm/s | Papel: 58mm</li>
+        <li>Precisa de 2 caixas? Compra 2 unidades.</li>
+      </ul>
+      <div class='var-price'>R$ 280–380 <span class='var-ps'>custo de produção / unidade</span></div>
+    </div>
+  </div>
+
+  <div class='card mb20'>
+    <div class='card-head'>Fluxo de uso — 3 passos</div>
+    <div class='flow-steps'>
+      <div class='fs-step'>
+        <div class='fs-num'>1</div>
+        <div class='fs-t'>Configurar</div>
+        <div class='fs-s'>Celular conecta no Wi-Fi <strong>PDV-Festa</strong>. Acessa 192.168.4.1/admin. Define produtos, preços, senha do dia e nome do evento.</div>
+      </div>
+      <div class='fs-step'>
+        <div class='fs-num'>2</div>
+        <div class='fs-t'>Lançar pedidos</div>
+        <div class='fs-s'>Operador acessa 192.168.4.1 no navegador. Seleciona itens e quantidades. Confirma com forma de pagamento.</div>
+      </div>
+      <div class='fs-step'>
+        <div class='fs-num'>3</div>
+        <div class='fs-t'>Imprimir fichas</div>
+        <div class='fs-s'>Sistema imprime <strong>1 ficha por item</strong> + comprovante total. Cliente entrega as fichas nos balcões para retirar cada item.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class='g3 mb20'>
+    <div class='card'>
+      <div class='card-head'>Modelo de comanda</div>
+      <div style='font-size:13px;color:var(--tx);line-height:1.7'>
+        Cada item do pedido gera uma ficha individual (ex: <strong>2x Cachorro Quente</strong>). Ao final, um comprovante total. O cliente entrega a ficha correta em cada balcão.<br><br>
+        <strong>Por quê?</strong> Facilita organização em eventos com múltiplos pontos de retirada (lanches, bebidas, doces).
+      </div>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Senha do dia</div>
+      <div style='font-size:13px;color:var(--tx);line-height:1.7'>
+        Uma palavra ou código definido no painel admin antes de abrir o caixa. Impressa em destaque em toda ficha. <br><br>
+        <strong>Objetivo:</strong> Invalidar fichas de dias anteriores automaticamente. Se a senha de hoje é <code style='background:var(--bg);padding:1px 5px;border-radius:4px'>FOGUEIRA</code>, não adianta apresentar ficha de ontem com <code style='background:var(--bg);padding:1px 5px;border-radius:4px'>MILHO</code>.
+      </div>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Dashboard e relatórios</div>
+      <div style='font-size:13px;color:var(--tx);line-height:1.7'>
+        Todos os pedidos são salvos no dispositivo. O painel admin exibe:<br><br>
+        • Faturamento do dia<br>
+        • Ranking de produtos<br>
+        • Filtros por data, produto e pagamento<br>
+        • Exportação CSV
+      </div>
+    </div>
+  </div>
+
+  <div class='card'>
+    <div class='card-head'>Telas do sistema</div>
+    <div style='display:flex;gap:20px;flex-wrap:wrap;margin-top:8px'>
+      <div style='flex:1;min-width:180px'>
+        <div style='font-size:13px;font-weight:600;margin-bottom:4px;color:var(--nv)'>/ (index.html) — PDV</div>
+        <div style='font-size:12px;color:var(--mu);line-height:1.6'>Tela de pedidos para o operador de caixa. Produtos em grade, carrinho lateral, formas de pagamento e botão de impressão.</div>
+      </div>
+      <div style='flex:1;min-width:180px'>
+        <div style='font-size:13px;font-weight:600;margin-bottom:4px;color:var(--nv)'>/admin.html — Admin</div>
+        <div style='font-size:12px;color:var(--mu);line-height:1.6'>Configurações do estabelecimento, senha do dia, cadastro de produtos, dashboard e relatórios de vendas.</div>
+      </div>
+      <div style='flex:1;min-width:180px'>
+        <div style='font-size:13px;font-weight:600;margin-bottom:4px;color:var(--nv)'>API REST</div>
+        <div style='font-size:12px;color:var(--mu);line-height:1.6'>Endpoints: /api/products, /api/settings, /api/order, /api/printer-ping, /api/test-print. JSON sobre HTTP na porta 80.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id='sec-pdv' class='sec'>
+  <div class='sec-hdr'>
+    <div class='sec-title'>Terminal PDV — Tela de Pedidos</div>
+    <div class='sec-sub'>Interface usada pelo operador de caixa. Toque nos produtos, ajuste quantidades e confirme. <strong>Totalmente funcional neste protótipo.</strong></div>
+  </div>
+
+  <div class='pdv-bar'>
+    <div class='pdv-s'><span class='pdv-sl'>Estabelecimento</span><span class='pdv-sv' id='pdv-store'>Festa Junina 2025</span></div>
+    <div class='pdv-s'><span class='pdv-sl'>Terminal</span><span class='pdv-sv' id='pdv-id'>PDV-01</span></div>
+    <div class='pdv-s'><span class='pdv-sl'>Senha do dia</span><span class='pdv-sv or' id='pdv-code'>FOGUEIRA</span></div>
+    <div class='pdv-s' style='margin-left:auto'><span class='pdv-sl'>Próximo pedido</span><span class='pdv-sv or' id='pdv-num'>#043</span></div>
+  </div>
+
+  <div class='pdv-layout'>
+    <div>
+      <div class='cats' id='pdv-cats'></div>
+      <div class='pg' id='pdv-grid'></div>
+    </div>
+    <div>
+      <div class='card' style='height:100%;display:flex;flex-direction:column'>
+        <div class='flex fac fjb mb12'>
+          <div style='font-size:13px;font-weight:700'>Pedido atual</div>
+          <button class='btn btn-sm btn-gh' onclick='App.cart=[];renderPDV()'>Limpar</button>
+        </div>
+        <div id='cart-list' style='flex:1;overflow-y:auto;max-height:260px'></div>
+        <div class='flex fjb' style='padding:10px 0;border-top:2px solid var(--brd);margin-top:8px'>
+          <span style='font-weight:600;font-size:13px'>Total</span>
+          <span style='font-size:20px;font-weight:700;color:var(--or)' id='cart-tot'>R$0,00</span>
+        </div>
+        <div class='pay-row'>
+          <button class='pay-o on' onclick='setPay("Dinheiro",this)'>Dinheiro</button>
+          <button class='pay-o' onclick='setPay("PIX",this)'>PIX</button>
+          <button class='pay-o' onclick='setPay("Cartão",this)'>Cartão</button>
+        </div>
+        <div class='f-grp mb12'>
+          <label class='f-lbl'>Cliente (opcional)</label>
+          <input class='f-inp' id='cust-name' placeholder='Nome do cliente...'>
+        </div>
+        <button class='btn btn-or btn-full' id='btn-conf' onclick='confirmOrder()' disabled>
+          🖨️ Confirmar e Imprimir Fichas
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id='sec-fichas' class='sec'>
+  <div class='sec-hdr'>
+    <div class='sec-title'>Fichas de Impressão — Formato e Especificação</div>
+    <div class='sec-sub'>O sistema gera <strong>1 ficha por item</strong> do pedido, mais 1 comprovante total. O cliente apresenta a ficha específica em cada balcão de retirada.</div>
+  </div>
+
+  <div class='info-box mb20'>
+    💡 <strong>Por que uma ficha por item?</strong> Em eventos com múltiplos balcões (lanches, bebidas, doces), o cliente recebe cada ficha individualmente e vai ao balcão certo sem precisar mostrar o comprovante completo. Isso agiliza a retirada e evita confusão.
+  </div>
+
+  <div class='g2 mb24'>
+    <div class='card'>
+      <div class='card-head'>Exemplo de pedido</div>
+      <div style='background:var(--bg);border-radius:8px;padding:12px;font-size:13px;margin-bottom:12px'>
+        <div style='font-weight:700;margin-bottom:8px'>Pedido #043 — Dinheiro</div>
+        <div style='display:flex;flex-direction:column;gap:5px'>
+          <div class='flex fac fjb'><span>2x Cachorro Quente</span><span style='font-weight:600'>R$20,00</span></div>
+          <div class='flex fac fjb'><span>1x Refrigerante</span><span style='font-weight:600'>R$5,00</span></div>
+          <div class='flex fac fjb'><span>1x Pipoca</span><span style='font-weight:600'>R$4,00</span></div>
+          <div class='flex fac fjb' style='border-top:1px solid var(--brd);padding-top:8px;margin-top:4px'><span style='font-weight:700'>TOTAL</span><span style='font-weight:700;color:var(--or)'>R$29,00</span></div>
+        </div>
+      </div>
+      <div class='info-box gn' style='font-size:11px'>Sistema imprime: 3 fichas de item + 1 comprovante = <strong>4 folhas no total</strong></div>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Fluxo de retirada</div>
+      <div style='display:flex;flex-direction:column;gap:10px;font-size:12px'>
+        <div class='flex fac' style='gap:10px'><div style='width:28px;height:28px;background:var(--or);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0'>1</div><div>Caixa confirma pedido. Sistema imprime todas as fichas automaticamente.</div></div>
+        <div class='flex fac' style='gap:10px'><div style='width:28px;height:28px;background:var(--or);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0'>2</div><div>Cliente recebe as fichas. Cada ficha tem o item, a quantidade e a senha do dia.</div></div>
+        <div class='flex fac' style='gap:10px'><div style='width:28px;height:28px;background:var(--or);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0'>3</div><div>Cliente vai ao balcão correto e apresenta a ficha do item. Balconista entrega e retém a ficha.</div></div>
+        <div class='flex fac' style='gap:10px'><div style='width:28px;height:28px;background:var(--nv);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0'>✓</div><div>Comprovante total fica com o cliente como confirmação do pagamento.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class='card mb20'>
+    <div class='card-head'>Simulação — Fichas do pedido #043</div>
+    <div class='fichas-row' id='demo-fichas'></div>
+  </div>
+
+  <div class='g2'>
+    <div class='card'>
+      <div class='card-head'>Especificação da ficha de item</div>
+      <table style='width:100%;font-size:12px;border-collapse:collapse'>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Largura papel</td><td style='padding:7px 0;font-weight:600'>58mm (32 colunas)</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Fonte</td><td style='padding:7px 0;font-weight:600'>Courier 9pt / ESC/POS</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Cabeçalho</td><td style='padding:7px 0;font-weight:600'>Nome estabelecimento</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Número comanda</td><td style='padding:7px 0;font-weight:600'>COMANDA #NNN (bold, grande)</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Senha do dia</td><td style='padding:7px 0;font-weight:600'>FOGUEIRA (extra bold, destaque)</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Item</td><td style='padding:7px 0;font-weight:600'>QTD x NOME — subtotal</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Rodapé</td><td style='padding:7px 0;font-weight:600'>ID do terminal</td></tr>
+        <tr><td style='padding:7px 0;color:var(--mu)'>Corte</td><td style='padding:7px 0;font-weight:600'>Automático (GS V 42 00)</td></tr>
+      </table>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Especificação do comprovante total</div>
+      <table style='width:100%;font-size:12px;border-collapse:collapse'>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Cabeçalho</td><td style='padding:7px 0;font-weight:600'>COMPROVANTE + nome</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Número pedido</td><td style='padding:7px 0;font-weight:600'>PEDIDO #NNN</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Senha</td><td style='padding:7px 0;font-weight:600'>SENHA: FOGUEIRA</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Itens</td><td style='padding:7px 0;font-weight:600'>Lista completa com subtotais</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Total</td><td style='padding:7px 0;font-weight:600'>R$ XX,XX (bold, grande)</td></tr>
+        <tr style='border-bottom:1px solid var(--brd)'><td style='padding:7px 0;color:var(--mu)'>Pagamento</td><td style='padding:7px 0;font-weight:600'>Dinheiro / PIX / Cartão</td></tr>
+        <tr><td style='padding:7px 0;color:var(--mu)'>Cliente</td><td style='padding:7px 0;font-weight:600'>Nome (se informado)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id='sec-admin' class='sec'>
+  <div class='sec-hdr'>
+    <div class='sec-title'>Painel de Administração</div>
+    <div class='sec-sub'>Configurações do estabelecimento, abertura do dia, gestão de produtos. <strong>Funcional — dados salvos localmente.</strong></div>
+  </div>
+  <div class='g2 mb20'>
+    <div>
+      <div class='card mb16'>
+        <div class='card-head'>Configurações do estabelecimento</div>
+        <div class='f-grp'><label class='f-lbl'>Nome do estabelecimento</label><input class='f-inp' id='a-store' placeholder='Ex: Festa Junina 2025'></div>
+        <div class='f-grp'><label class='f-lbl'>ID do terminal (PDV)</label><input class='f-inp' id='a-pdv' placeholder='Ex: PDV-01, Caixa Principal'></div>
+        <div class='f-grp'><label class='f-lbl'>Data do evento</label><input class='f-inp' type='date' id='a-date'></div>
+        <div class='f-grp'><label class='f-lbl'>IP da impressora</label><input class='f-inp' id='a-ip' placeholder='Ex: 192.168.1.100'><div class='f-hint'>Impressora de rede (porta TCP 9100)</div></div>
+        <button class='btn btn-or btn-full' onclick='saveSettings()'>Salvar configurações</button>
+      </div>
+      <div class='card'>
+        <div class='card-head'>Impressora</div>
+        <div class='g2 gap12 mb12'>
+          <button class='btn btn-nv btn-full' onclick='pingPrinter()'>🔌 Testar conexão</button>
+          <button class='btn btn-gh btn-full' onclick='testPrint()'>🖨️ Página de teste</button>
+        </div>
+        <div id='ping-result' style='font-size:12px;display:none'></div>
+      </div>
+    </div>
+    <div>
+      <div class='card mb16'>
+        <div class='card-head'>Senha do dia</div>
+        <div class='daily-badge' id='a-code-badge'>FOGUEIRA</div>
+        <div class='f-grp mb12'><label class='f-lbl'>Nova senha</label><input class='f-inp' id='a-newcode' placeholder='Ex: ARRAIA, MILHO-42...'></div>
+        <div class='g2 gap12 mb12'>
+          <button class='btn btn-gh btn-full' onclick='genCode()'>🎲 Aleatória</button>
+          <button class='btn btn-or btn-full' onclick='saveCode()'>✅ Aplicar</button>
+        </div>
+        <div class='info-box' style='font-size:11px'>⚠ Aplicar a senha zera o contador de pedidos para o dia.</div>
+      </div>
+      <div class='card'>
+        <div class='card-head'>Estatísticas rápidas</div>
+        <div id='quick-stats' style='font-size:13px;display:flex;flex-direction:column;gap:8px'></div>
+      </div>
+    </div>
+  </div>
+
+  <div class='card'>
+    <div class='flex fac fjb mb16'>
+      <div class='card-head' style='margin:0'>Produtos cadastrados (<span id='prod-count'>0</span>)</div>
+      <button class='btn btn-or btn-sm' onclick='showAddProd()'>+ Novo produto</button>
+    </div>
+    <div id='add-prod-form' style='display:none;background:var(--bg);border-radius:8px;padding:14px;margin-bottom:14px'>
+      <div class='g4 gap12 mb12'>
+        <div class='f-grp' style='margin:0'><label class='f-lbl'>Nome</label><input class='f-inp' id='np-name' placeholder='Cachorro Quente'></div>
+        <div class='f-grp' style='margin:0'><label class='f-lbl'>Preço (R$)</label><input class='f-inp' type='number' id='np-price' step='0.50' placeholder='0,00'></div>
+        <div class='f-grp' style='margin:0'><label class='f-lbl'>Categoria</label><input class='f-inp' id='np-cat' placeholder='Lanches'></div>
+        <div class='f-grp' style='margin:0;align-self:flex-end'><button class='btn btn-or btn-full' onclick='addProduct()'>+ Adicionar</button></div>
+      </div>
+    </div>
+    <div class='tbl'><table><thead><tr><th>Nome</th><th>Preço</th><th>Categoria</th><th></th></tr></thead><tbody id='prod-tbody'></tbody></table></div>
+  </div>
+</div>
+
+<div id='sec-dash' class='sec'>
+  <div class='sec-hdr'><div class='sec-title'>Dashboard de Vendas</div>
+  <div class='sec-sub'>Resumo do dia com graficos em tempo real. Calculado automaticamente dos pedidos registrados.</div></div>
+  <div class='flex fac' style='gap:10px;margin-bottom:16px;flex-wrap:wrap'>
+    <span style='font-size:13px;font-weight:600;color:var(--mu)'>Periodo:</span>
+    <button class='btn btn-or btn-sm' onclick='setDashPeriod("hoje",this)' id='dp-hoje'>Hoje</button>
+    <button class='btn btn-gh btn-sm' onclick='setDashPeriod("ontem",this)' id='dp-ontem'>Ontem</button>
+    <button class='btn btn-gh btn-sm' onclick='setDashPeriod("tudo",this)' id='dp-tudo'>Tudo</button>
+  </div>
+  <div class='kpi-g mb20'>
+    <div class='kpi kpi-or'><div class='kpi-ic'>💰</div><div class='kpi-v' id='kpi-rev'>—</div><div class='kpi-l'>Faturamento</div><div class='kpi-d' id='kpi-rev-d'></div></div>
+    <div class='kpi kpi-bl'><div class='kpi-ic'>🧾</div><div class='kpi-v' id='kpi-ord'>—</div><div class='kpi-l'>Pedidos</div><div class='kpi-d' id='kpi-ord-d'></div></div>
+    <div class='kpi kpi-gn'><div class='kpi-ic'>📈</div><div class='kpi-v' id='kpi-avg'>—</div><div class='kpi-l'>Ticket medio</div><div class='kpi-d' id='kpi-avg-d'></div></div>
+    <div class='kpi kpi-pu'><div class='kpi-ic'>⭐</div><div class='kpi-v' id='kpi-top'>—</div><div class='kpi-l'>Mais vendido</div><div class='kpi-d' id='kpi-top-d'></div></div>
+  </div>
+  <div class='g2 mb16'>
+    <div class='ch-card' style='grid-column:1/3'><div class='ch-t'>Faturamento por hora</div><canvas id='ch-hourly' height='80'></canvas></div>
+  </div>
+  <div class='g2 mb16'>
+    <div class='ch-card'><div class='ch-t'>Top produtos por receita</div><canvas id='ch-prods' height='180'></canvas></div>
+    <div class='ch-card'><div class='ch-t'>Formas de pagamento</div><div style='display:flex;justify-content:center;margin-top:8px'><canvas id='ch-pay' style='max-width:220px;max-height:220px'></canvas></div></div>
+  </div>
+  <div class='g2'>
+    <div class='card'><div class='card-head'>Por terminal</div><div class='tbl'><table><thead><tr><th>Terminal</th><th>Pedidos</th><th>Itens</th><th>Faturamento</th></tr></thead><tbody id='pdv-table'></tbody></table></div></div>
+    <div class='card'><div class='card-head'>Top 5 produtos (qtd)</div><div class='tbl'><table><thead><tr><th>Produto</th><th>Qtd</th><th>Receita</th></tr></thead><tbody id='top-table'></tbody></table></div></div>
+  </div>
+</div>
+
+<div id='sec-rep' class='sec'>
+  <div class='sec-hdr'><div class='sec-title'>Relatorios de Vendas</div>
+  <div class='sec-sub'>Historico completo de pedidos com filtros avancados.</div></div>
+  <div class='fbar'>
+    <div class='fg'><label class='fl'>Data</label><input type='date' class='fs' id='f-date' onchange='renderReports()'></div>
+    <div class='fg'><label class='fl'>Produto</label><input type='text' class='fs' id='f-prod' placeholder='Buscar...' oninput='renderReports()' style='width:140px'></div>
+    <div class='fg'><label class='fl'>Categoria</label><select class='fs' id='f-cat' onchange='renderReports()'><option value=''>Todas</option></select></div>
+    <div class='fg'><label class='fl'>Pagamento</label><select class='fs' id='f-pay' onchange='renderReports()'><option value=''>Todos</option><option>Dinheiro</option><option>PIX</option><option>Cartao</option></select></div>
+    <div class='fg'><label class='fl'>Terminal</label><select class='fs' id='f-pdv' onchange='renderReports()'><option value=''>Todos</option></select></div>
+    <div class='fg'><label class='fl'>Senha</label><input type='text' class='fs' id='f-code' placeholder='FOGUEIRA' oninput='renderReports()' style='width:110px'></div>
+    <button class='btn btn-gh btn-sm' onclick='clearFilters()'>Limpar</button>
+    <button class='btn btn-nv btn-sm' onclick='exportCSV()' style='margin-left:auto'>&#8595; CSV</button>
+  </div>
+  <div class='g3 mb16'>
+    <div class='card'><div class='card-head'>Faturamento filtrado</div><div class='card-val' id='r-rev'>—</div></div>
+    <div class='card'><div class='card-head'>Pedidos filtrados</div><div class='card-val' id='r-ord'>—</div></div>
+    <div class='card'><div class='card-head'>Itens vendidos</div><div class='card-val' id='r-items'>—</div></div>
+  </div>
+  <div class='tbl'><table><thead><tr><th>#</th><th>Data/Hora</th><th>Terminal</th><th>Itens do pedido</th><th>Pagamento</th><th>Senha</th><th>Total</th></tr></thead><tbody id='rep-tbody'></tbody></table></div>
+</div>
+
+<div id='sec-tech' class='sec'>
+  <div class='sec-hdr'><div class='sec-title'>Especificacao Tecnica Completa</div>
+  <div class='sec-sub'>Documentacao de referencia para o desenvolvimento do firmware e hardware do ComandaBox.</div></div>
+
+  <div class='card mb20'>
+    <div class='card-head'>BOM — Lista de materiais (por unidade ComandaBox Stick)</div>
+    <div class='tbl'><table class='bom-table'><thead><tr><th>Componente</th><th>Especificacao</th><th>Fornecedor</th><th>Custo aprox.</th><th>Observacao</th></tr></thead><tbody>
+      <tr><td><strong>Microcontrolador</strong></td><td>ESP32-ETH01 (LAN8720)</td><td>AliExpress</td><td>R$ 32</td><td>Wi-Fi + Ethernet simultaneos</td></tr>
+      <tr><td><strong>Case</strong></td><td>Caixa ABS 65x40x20mm</td><td>Mercado Livre</td><td>R$ 8</td><td>Com furo para RJ45 e USB</td></tr>
+      <tr><td><strong>Conector</strong></td><td>USB-C Power Board 5V</td><td>AliExpress</td><td>R$ 4</td><td>Alimentacao do ESP32</td></tr>
+      <tr><td><strong>Impressora (Pro)</strong></td><td>Termica 58mm TTL/Ethernet</td><td>AliExpress / Elgin</td><td>R$ 180</td><td>Apenas para variante Pro</td></tr>
+      <tr><td><strong>Fonte (Pro)</strong></td><td>5V / 2A plug P4</td><td>Nacional</td><td>R$ 22</td><td>Apenas para variante Pro</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class='g2 mb20'>
+    <div class='card'>
+      <div class='card-head'>Arquitetura do firmware (PlatformIO)</div>
+      <div class='code-blk'>
+<span class='cc'>pdv-festa/</span>
+<span class='ck'>├── platformio.ini</span>
+<span class='cc'>│   espressif32, LittleFS</span>
+<span class='ck'>├── src/</span>
+<span class='cs'>│   ├── main.cpp      </span><span class='cc'>boot + ETH + AP</span>
+<span class='cs'>│   ├── config.h      </span><span class='cc'>pinos, IPs, senhas</span>
+<span class='cs'>│   ├── storage.cpp   </span><span class='cc'>LittleFS JSON r/w</span>
+<span class='cs'>│   ├── printer.cpp   </span><span class='cc'>ESC/POS via TCP</span>
+<span class='cs'>│   └── api.cpp       </span><span class='cc'>REST endpoints</span>
+<span class='ck'>└── data/</span>
+<span class='cs'>    ├── index.html    </span><span class='cc'>PDV (operador)</span>
+<span class='cs'>    └── admin.html    </span><span class='cc'>Admin + relatorios</span>
+      </div>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Configuracao de rede (simultanea)</div>
+      <div class='code-blk'>
+<span class='cc'>// Wi-Fi Access Point</span>
+<span class='ck'>SSID:</span> <span class='cs'>PDV-Festa</span>
+<span class='ck'>IP:</span>   <span class='cn'>192.168.4.1</span>
+<span class='ck'>Clientes:</span> <span class='cs'>1 operador (celular/tablet)</span>
+
+<span class='cc'>// Ethernet (LAN8720)</span>
+<span class='ck'>GPIO MDC:</span>  <span class='cn'>23</span>
+<span class='ck'>GPIO MDIO:</span> <span class='cn'>18</span>
+<span class='ck'>GPIO CLK:</span>  <span class='cn'>0 (ext. osc)</span>
+<span class='ck'>GPIO PWR:</span>  <span class='cn'>16</span>
+<span class='ck'>PHY addr:</span>  <span class='cn'>1</span>
+
+<span class='cc'>// Impressora</span>
+<span class='ck'>Protocolo:</span> <span class='cs'>TCP RAW</span>
+<span class='ck'>Porta:</span>     <span class='cn'>9100</span>
+<span class='ck'>IP:</span>        <span class='cs'>configuravel</span>
+      </div>
+    </div>
+  </div>
+
+  <div class='card mb20'>
+    <div class='card-head'>API REST — Endpoints</div>
+    <div class='tbl'><table class='api-row'><thead><tr><th>Metodo</th><th>Endpoint</th><th>Body / Params</th><th>Resposta</th><th>Auth</th></tr></thead><tbody>
+      <tr><td><span class='mth mth-g'>GET</span></td><td>/api/products</td><td>—</td><td>Array de produtos JSON</td><td>—</td></tr>
+      <tr><td><span class='mth mth-p'>POST</span></td><td>/api/products</td><td>Array JSON completo</td><td>{ok:true}</td><td>X-Admin-Password</td></tr>
+      <tr><td><span class='mth mth-g'>GET</span></td><td>/api/settings</td><td>—</td><td>Objeto settings JSON</td><td>—</td></tr>
+      <tr><td><span class='mth mth-p'>POST</span></td><td>/api/settings</td><td>Campos a atualizar</td><td>{ok:true}</td><td>X-Admin-Password</td></tr>
+      <tr><td><span class='mth mth-p'>POST</span></td><td>/api/order</td><td>items[], total, payment</td><td>{ok:true, order_num:N}</td><td>—</td></tr>
+      <tr><td><span class='mth mth-g'>GET</span></td><td>/api/printer-ping</td><td>—</td><td>{ok:bool}</td><td>—</td></tr>
+      <tr><td><span class='mth mth-p'>POST</span></td><td>/api/test-print</td><td>—</td><td>{ok:true}</td><td>—</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class='g2 mb20'>
+    <div class='card'>
+      <div class='card-head'>Modelo de dados — settings.json</div>
+      <div class='code-blk'>
+{
+  <span class='ck'>"store_name"</span>:    <span class='cs'>"Festa Junina 2025"</span>,
+  <span class='ck'>"pdv_id"</span>:        <span class='cs'>"PDV-01"</span>,
+  <span class='ck'>"daily_code"</span>:    <span class='cs'>"FOGUEIRA"</span>,
+  <span class='ck'>"order_counter"</span>: <span class='cn'>42</span>,
+  <span class='ck'>"printer_ip"</span>:    <span class='cs'>"192.168.1.100"</span>,
+  <span class='ck'>"printer_port"</span>:  <span class='cn'>9100</span>,
+  <span class='ck'>"event_date"</span>:    <span class='cs'>"2025-06-21"</span>
+}
+      </div>
+    </div>
+    <div class='card'>
+      <div class='card-head'>Modelo de dados — products.json</div>
+      <div class='code-blk'>
+[
+  {
+    <span class='ck'>"id"</span>:       <span class='cn'>1</span>,
+    <span class='ck'>"name"</span>:     <span class='cs'>"Cachorro Quente"</span>,
+    <span class='ck'>"price"</span>:    <span class='cn'>10.00</span>,
+    <span class='ck'>"category"</span>: <span class='cs'>"Lanches"</span>
+  },
+  <span class='cc'>/* ... mais produtos */</span>
+]
+      </div>
+    </div>
+  </div>
+
+  <div class='card mb20'>
+    <div class='card-head'>Formato ESC/POS — Ficha de item (sequencia de bytes)</div>
+    <div class='code-blk'>
+ESC @ (init)           1B 40
+ESC t 02 (CP850)       1B 74 02
+ESC a 01 (center)      1B 61 01
+ESC E 01 (bold on)     1B 45 01
+GS ! 11 (double size)  1D 21 11  <span class='cc'>← senha do dia e num comanda</span>
+GS ! 00 (normal)       1D 21 00
+ESC E 00 (bold off)    1B 45 00
+ESC a 00 (left)        1B 61 00
+GS V 42 00 (cut)       1D 56 42 00
+    </div>
+  </div>
+
+  <div class='info-box'>
+    <strong>Proximos passos para o firmware:</strong> (1) Adaptar o HTML standalone para LittleFS — remover CDNs externos e empacotar Chart.js localmente ou usar versao simplificada de graficos em SVG. (2) Adaptar a API de pedidos para salvar em LittleFS com limite de ~500 pedidos. (3) Implementar relatorio por TCP (impressao de fechamento de caixa). (4) Adicionar OTA update via endpoint /api/update.
+  </div>
+</div>
+
+<div id='print-modal' class='mo'>
+  <div class='mo-box'>
+    <div class='mo-hdr'>
+      <div class='mo-title' id='mo-title'>Fichas do pedido</div>
+      <button class='mo-x' onclick='closeModal()'>✕</button>
+    </div>
+    <div class='mo-info' id='mo-info'></div>
+    <div class='fichas-row' id='fichas-container'></div>
+    <div style='margin-top:20px;display:flex;gap:10px;justify-content:flex-end'>
+      <button class='btn btn-gh' onclick='closeModal()'>Fechar</button>
+      <button class='btn btn-nv' onclick='goToPDV()'>Novo pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DEFAULTS ====================
+const DEF_PRODS = [
+  {id:1,name:'Cachorro Quente',price:10.00,category:'Lanches'},
+  {id:2,name:'Hamburguer',price:14.00,category:'Lanches'},
+  {id:3,name:'Misto Quente',price:8.50,category:'Lanches'},
+  {id:4,name:'Pastel',price:7.00,category:'Salgados'},
+  {id:5,name:'Coxinha',price:5.00,category:'Salgados'},
+  {id:6,name:'Pipoca',price:4.00,category:'Salgados'},
+  {id:7,name:'Refrigerante',price:5.00,category:'Bebidas'},
+  {id:8,name:'Agua',price:3.00,category:'Bebidas'},
+  {id:9,name:'Suco Natural',price:6.00,category:'Bebidas'},
+  {id:10,name:'Canjica',price:8.00,category:'Doces'},
+  {id:11,name:'Pe de Moleque',price:5.00,category:'Doces'},
+  {id:12,name:'Brigadeiro',price:4.00,category:'Doces'}
+];
+const DEF_SETT = {
+  storeName:'Festa Junina 2025',pdvId:'PDV-01',
+  dailyCode:'FOGUEIRA',orderCounter:42,
+  eventDate:'2025-06-21',printerIp:'192.168.1.100'
+};
+const WORDS = ['FOGUEIRA','ARRAIA','MILHO','QUADRILHA','FORRÓ','BALAO','LAMPIAO','VIOLEIRO','BARRACA','FOGAREU'];
+
+function genDemoOrders(products,settings){
+  const pays=['Dinheiro','PIX','Cartao'];
+  const pdvs=['PDV-01','PDV-02'];
+  const codes=['FOGUEIRA','MILHO'];
+  const orders=[];
+  const base=new Date('2025-06-21');
+  for(let day=0;day<2;day++){
+    const d=new Date(base);
+    d.setDate(d.getDate()-day);
+    const ds=d.toISOString().split('T')[0];
+    const n=day===0?26:19;
+    for(let i=0;i<n;i++){
+      const h=10+Math.floor(Math.random()*12);
+      const m=Math.floor(Math.random()*60);
+      const np=1+Math.floor(Math.random()*4);
+      const items=[];
+      for(let j=0;j<np;j++){
+        const p=products[Math.floor(Math.random()*products.length)];
+        const ex=items.find(x=>x.id===p.id);
+        if(ex){ex.qty++;}
+        else{items.push({id:p.id,name:p.name,price:p.price,category:p.category,qty:1+Math.floor(Math.random()*2)});}
+      }
+      const tot=parseFloat(items.reduce((s,it)=>s+it.price*it.qty,0).toFixed(2));
+      const on=42+orders.length+1;
+      orders.push({
+        id:orders.length+1,orderNum:on,
+        date:ds,time:pad2(h)+':'+pad2(m),
+        datetime:ds+'T'+pad2(h)+':'+pad2(m)+':00',
+        pdv:pdvs[day%2],items,
+        payment:pays[Math.floor(Math.random()*3)],
+        dailyCode:codes[day],total:tot
+      });
+    }
+  }
+  return orders.sort((a,b)=>new Date(b.datetime)-new Date(a.datetime));
+}
+function pad2(n){return String(n).padStart(2,'0');}
+function fmtR(n){return 'R$'+n.toFixed(2).replace('.',',');}
+
+// ==================== APP STATE ====================
+const App={
+  products:[],settings:{},orders:[],cart:[],
+  activePayment:'Dinheiro',activeCat:'Todos',
+  charts:{},dashPeriod:'hoje',
+  init(){
+    try{this.products=JSON.parse(localStorage.getItem('cb_products'))||[...DEF_PRODS];}catch(e){this.products=[...DEF_PRODS];}
+    try{this.settings=JSON.parse(localStorage.getItem('cb_settings'))||{...DEF_SETT};}catch(e){this.settings={...DEF_SETT};}
+    try{const o=JSON.parse(localStorage.getItem('cb_orders'));this.orders=o&&o.length?o:genDemoOrders(this.products,this.settings);}catch(e){this.orders=genDemoOrders(this.products,this.settings);}
+  },
+  save(k){try{localStorage.setItem('cb_'+k,JSON.stringify(this[k]));}catch(e){}},
+  reset(){
+    localStorage.clear();
+    this.products=[...DEF_PRODS];this.settings={...DEF_SETT};
+    this.orders=genDemoOrders(this.products,this.settings);
+    this.cart=[];this.save('products');this.save('settings');this.save('orders');
+    renderAll();showToast('Demo restaurado com sucesso!');
+  }
+};
+
+// ==================== TABS ====================
+function showTab(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  const idx={'overview':0,'pdv':1,'fichas':2,'admin':3,'dash':4,'rep':5,'tech':6};
+  document.querySelectorAll('.tab-btn')[idx[id]].classList.add('active');
+  if(id==='pdv')renderPDV();
+  if(id==='fichas')renderDemoFichas();
+  if(id==='admin')loadAdmin();
+  if(id==='dash')renderDashboard();
+  if(id==='rep')renderReports();
+}
+
+// ==================== TOAST ====================
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2400);
+}
+
+// ==================== PDV ====================
+function renderPDV(){
+  const s=App.settings;
+  document.getElementById('pdv-store').textContent=s.storeName||'Festa';
+  document.getElementById('pdv-id').textContent=s.pdvId||'PDV-01';
+  document.getElementById('pdv-code').textContent=s.dailyCode||'—';
+  document.getElementById('pdv-num').textContent='#'+pad2(+(s.orderCounter||0)+1);
+  const cats=['Todos',...new Set(App.products.map(p=>p.category))];
+  document.getElementById('pdv-cats').innerHTML=cats.map(c=>
+    `<button class="cat-p ${c===App.activeCat?'on':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+  const fp=App.activeCat==='Todos'?App.products:App.products.filter(p=>p.category===App.activeCat);
+  document.getElementById('pdv-grid').innerHTML=fp.map(p=>{
+    const ci=App.cart.find(c=>c.id===p.id);
+    return `<div class="pc" onclick="addToCart(${p.id})">
+      ${ci?`<div class="pc-q">${ci.qty}</div>`:''}
+      <div class="pc-n">${p.name}</div>
+      <div class="pc-p">${fmtR(p.price)}</div>
+      <div class="pc-c">${p.category}</div>
+    </div>`;
+  }).join('');
+  renderCart();
+}
+function setCat(c){App.activeCat=c;renderPDV();}
+function addToCart(id){
+  const p=App.products.find(x=>x.id===id);if(!p)return;
+  const ex=App.cart.find(x=>x.id===id);
+  if(ex)ex.qty++;else App.cart.push({...p,qty:1});
+  renderPDV();showToast('+ '+p.name);
+}
+function changeQty(id,d){
+  const it=App.cart.find(x=>x.id===id);if(!it)return;
+  it.qty+=d;if(it.qty<=0)App.cart=App.cart.filter(x=>x.id!==id);
+  renderPDV();
+}
+function setPay(m,el){
+  App.activePayment=m;
+  document.querySelectorAll('.pay-o').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+function renderCart(){
+  const list=document.getElementById('cart-list');
+  const tot=App.cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('cart-tot').textContent=fmtR(tot);
+  const btn=document.getElementById('btn-conf');
+  if(!App.cart.length){
+    list.innerHTML='<div class="empty-cart">Nenhum item adicionado.<br>Toque em um produto para adicionar.</div>';
+    btn.disabled=true;return;
+  }
+  btn.disabled=false;
+  list.innerHTML=App.cart.map(it=>`
+    <div class="ci">
+      <div class="ci-i"><div class="ci-n">${it.name}</div><div class="ci-p">${fmtR(it.price)} cada</div></div>
+      <div class="qc">
+        <button class="qb" onclick="changeQty(${it.id},-1)">−</button>
+        <span class="qn">${it.qty}</span>
+        <button class="qb" onclick="changeQty(${it.id},1)">+</button>
+      </div>
+    </div>`).join('');
+}
+function confirmOrder(){
+  if(!App.cart.length)return;
+  App.settings.orderCounter=(App.settings.orderCounter||42)+1;
+  App.save('settings');
+  const num=App.settings.orderCounter;
+  const tot=App.cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const cn=document.getElementById('cust-name').value.trim();
+  const now=new Date();
+  const order={
+    id:App.orders.length+1,orderNum:num,
+    date:now.toISOString().split('T')[0],
+    time:pad2(now.getHours())+':'+pad2(now.getMinutes()),
+    datetime:now.toISOString(),
+    pdv:App.settings.pdvId,
+    items:App.cart.map(i=>({...i})),
+    payment:App.activePayment,
+    customerName:cn,
+    dailyCode:App.settings.dailyCode,
+    total:parseFloat(tot.toFixed(2))
+  };
+  App.orders.unshift(order);App.save('orders');
+  showPrintModal(order);
+  App.cart=[];
+  document.getElementById('cust-name').value='';
+  document.getElementById('pdv-num').textContent='#'+pad2(num+1);
+  renderCart();renderPDV();
+}
+
+// ==================== PRINT MODAL ====================
+function showPrintModal(order){
+  const mo=document.getElementById('print-modal');
+  // Expande por quantidade: 1 ficha por unidade
+  const fichas=[];
+  order.items.forEach(item=>{for(let u=0;u<item.qty;u++)fichas.push({...item,qty:1});});
+  const nf=fichas.length;
+  document.getElementById('mo-title').textContent=
+    `Pedido #${pad2(order.orderNum)} — ${nf} ficha(s) + comprovante`;
+  document.getElementById('mo-info').innerHTML=
+    `🖨️ Impressora imprimiria <strong>${nf+1} folhas</strong>: ${nf} ficha(s) (1 por unidade) + 1 comprovante. `+
+    `Senha <strong>${order.dailyCode}</strong> em destaque em cada ficha.`;
+  const cont=document.getElementById('fichas-container');
+  cont.innerHTML='';
+  fichas.forEach((item,idx)=>{
+    const w=document.createElement('div');
+    w.className='r-wrap';
+    w.innerHTML=`<div class="r-lbl">FICHA ${idx+1}/${nf}</div>${buildItemFicha(order,item)}`;
+    setTimeout(()=>w.querySelector('.rcpt').classList.add('r-in'),idx*160);
+    cont.appendChild(w);
+  });
+  const tw=document.createElement('div');
+  tw.className='r-wrap';
+  tw.innerHTML=`<div class="r-lbl">COMPROVANTE</div>${buildTotalFicha(order)}`;
+  cont.appendChild(tw);
+  mo.classList.add('open');
+}
+function buildItemFicha(order,item){
+  const num=pad2(order.orderNum);
+  const store=App.settings.storeName;
+  return `<div class="rcpt">
+<div class="rc" style="font-size:9px;opacity:.6">${store}</div>
+<hr class="rl">
+<div class="rn">COMANDA #${num}</div>
+<div class="rcode">★ ${order.dailyCode} ★</div>
+<hr class="rl">
+<div class="ritem" style="font-size:13px">${item.name.toUpperCase()}</div>
+<div class="rprice" style="font-size:14px;font-weight:700;margin-top:3px">${fmtR(item.price)}</div>
+<hr class="rl">
+<div class="rc" style="font-size:9px">${App.settings.pdvId}</div>
+<div class="rc" style="font-weight:700;font-size:11px;margin-top:3px;letter-spacing:.5px">RETIRE NO BALCAO</div>
+</div>`;
+}
+function buildTotalFicha(order){
+  const num=pad2(order.orderNum);
+  const store=App.settings.storeName;
+  // Agrupa itens (caso tenham sido expandidos) mostrando qtd original
+  const grouped={};
+  order.items.forEach(it=>{
+    if(!grouped[it.id])grouped[it.id]={...it,qty:0};
+    grouped[it.id].qty+=it.qty;
+  });
+  const lines=Object.values(grouped).map(it=>{
+    const nm=it.name.length>12?it.name.slice(0,12)+'…':it.name;
+    return `${it.qty}x ${nm.padEnd(13)} ${fmtR(it.price*it.qty)}`;
+  }).join('\n');
+  return `<div class="rcpt-comp r-in">
+<div class="rcpt-comp-hdr">— COMPROVANTE —</div>
+<div class="rc" style="font-size:9px;opacity:.7;margin-bottom:2px">${store}</div>
+<hr class="rl-comp">
+<div style="font-size:14px;font-weight:700;text-align:center">PEDIDO #${num}</div>
+<div style="font-size:10px;text-align:center;margin:3px 0;letter-spacing:1px">SENHA: ${order.dailyCode}</div>
+<hr class="rl-comp">
+<pre style="font-size:9.5px;line-height:1.7;margin:0">${lines}</pre>
+<hr class="rl-comp">
+<div style="font-size:16px;font-weight:700;text-align:center">${fmtR(order.total)}</div>
+<div style="font-size:10px;text-align:center;margin-top:2px">${order.payment}</div>
+${order.customerName?`<div style="font-size:9px;text-align:center;opacity:.7;margin-top:2px">${order.customerName}</div>`:''}
+<hr class="rl-comp">
+<div style="text-align:center;font-size:10px;color:#888">Obrigado! Volte sempre :)</div>
+</div>`;
+}
+function closeModal(){document.getElementById('print-modal').classList.remove('open');}
+function goToPDV(){closeModal();showTab('pdv');}
+
+// ==================== DEMO FICHAS (sec-fichas) ====================
+function renderDemoFichas(){
+  const demoOrder={
+    orderNum:43,dailyCode:App.settings.dailyCode||'FOGUEIRA',
+    items:[
+      {id:1,name:'Cachorro Quente',price:10,qty:2,category:'Lanches'},
+      {id:7,name:'Refrigerante',price:5,qty:1,category:'Bebidas'},
+      {id:6,name:'Pipoca',price:4,qty:1,category:'Salgados'}
+    ],
+    total:29,payment:'Dinheiro',customerName:''
+  };
+  const cont=document.getElementById('demo-fichas');
+  if(!cont)return;
+  cont.innerHTML='';
+  // Expande por quantidade: 1 ficha por unidade
+  const fichas=[];
+  demoOrder.items.forEach(item=>{for(let u=0;u<item.qty;u++)fichas.push({...item,qty:1});});
+  const nf=fichas.length;
+  fichas.forEach((item,idx)=>{
+    const w=document.createElement('div');
+    w.className='r-wrap';
+    w.innerHTML=`<div class="r-lbl">FICHA ${idx+1}/${nf}</div>${buildItemFicha(demoOrder,item)}`;
+    cont.appendChild(w);
+  });
+  const tw=document.createElement('div');
+  tw.className='r-wrap';
+  tw.innerHTML=`<div class="r-lbl">COMPROVANTE</div>${buildTotalFicha(demoOrder)}`;
+  cont.appendChild(tw);
+}
+
+// ==================== ADMIN ====================
+function loadAdmin(){
+  const s=App.settings;
+  document.getElementById('a-store').value=s.storeName||'';
+  document.getElementById('a-pdv').value=s.pdvId||'';
+  document.getElementById('a-date').value=s.eventDate||'';
+  document.getElementById('a-ip').value=s.printerIp||'';
+  document.getElementById('a-code-badge').textContent=s.dailyCode||'—';
+  renderProdTable();
+  renderQuickStats();
+}
+function saveSettings(){
+  App.settings.storeName=document.getElementById('a-store').value.trim();
+  App.settings.pdvId=document.getElementById('a-pdv').value.trim();
+  App.settings.eventDate=document.getElementById('a-date').value;
+  App.settings.printerIp=document.getElementById('a-ip').value.trim();
+  App.save('settings');showToast('Configuracoes salvas!');
+}
+function genCode(){
+  const w=WORDS[Math.floor(Math.random()*WORDS.length)];
+  const n=100+Math.floor(Math.random()*900);
+  document.getElementById('a-newcode').value=w+'-'+n;
+}
+function saveCode(){
+  const nc=document.getElementById('a-newcode').value.trim().toUpperCase();
+  if(!nc){showToast('Digite uma senha primeiro.');return;}
+  App.settings.dailyCode=nc;App.settings.orderCounter=0;
+  App.save('settings');
+  document.getElementById('a-code-badge').textContent=nc;
+  showToast('Senha do dia: '+nc+' — contador zerado!');
+}
+function pingPrinter(){
+  const el=document.getElementById('ping-result');
+  el.style.display='block';
+  el.style.color='var(--mu)';el.textContent='Testando conexao...';
+  setTimeout(()=>{
+    el.style.color='var(--ok)';
+    el.textContent='✓ Impressora respondeu em 12ms (simulado)';
+  },900);
+}
+function testPrint(){showToast('Pagina de teste enviada para a impressora (simulado)');}
+function renderQuickStats(){
+  const today=App.orders[0]?.date||new Date().toISOString().split('T')[0];
+  const td=App.orders.filter(o=>o.date===today);
+  const rev=td.reduce((s,o)=>s+o.total,0);
+  document.getElementById('quick-stats').innerHTML=`
+    <div class="flex fjb"><span style="color:var(--mu)">Pedidos hoje</span><strong>${td.length}</strong></div>
+    <div class="flex fjb"><span style="color:var(--mu)">Faturamento hoje</span><strong style="color:var(--or)">${fmtR(rev)}</strong></div>
+    <div class="flex fjb"><span style="color:var(--mu)">Ticket medio</span><strong>${td.length?fmtR(rev/td.length):'—'}</strong></div>
+    <div class="flex fjb"><span style="color:var(--mu)">Total geral</span><strong>${App.orders.length} pedidos</strong></div>
+  `;
+}
+function renderProdTable(){
+  document.getElementById('prod-count').textContent=App.products.length;
+  document.getElementById('prod-tbody').innerHTML=App.products.map(p=>`
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${fmtR(p.price)}</td>
+      <td><span class="bdg b-nv">${p.category}</span></td>
+      <td><button class="btn btn-sm" style="background:var(--er-bg);color:var(--er);border:none" onclick="delProduct(${p.id})">✕</button></td>
+    </tr>`).join('');
+}
+function showAddProd(){
+  const f=document.getElementById('add-prod-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+function addProduct(){
+  const name=document.getElementById('np-name').value.trim();
+  const price=parseFloat(document.getElementById('np-price').value);
+  const cat=document.getElementById('np-cat').value.trim();
+  if(!name||!price||!cat){showToast('Preencha todos os campos.');return;}
+  const id=Math.max(0,...App.products.map(p=>p.id))+1;
+  App.products.push({id,name,price,category:cat});
+  App.save('products');renderProdTable();
+  document.getElementById('np-name').value='';document.getElementById('np-price').value='';document.getElementById('np-cat').value='';
+  showToast('Produto adicionado!');
+}
+function delProduct(id){
+  App.products=App.products.filter(p=>p.id!==id);
+  App.save('products');renderProdTable();showToast('Produto removido.');
+}
+
+// ==================== DASHBOARD ====================
+function getOrdersForPeriod(period){
+  const dates=App.orders.map(o=>o.date);
+  const allDates=[...new Set(dates)].sort().reverse();
+  const today=allDates[0]||new Date().toISOString().split('T')[0];
+  const yesterday=allDates[1]||'';
+  if(period==='hoje')return App.orders.filter(o=>o.date===today);
+  if(period==='ontem')return App.orders.filter(o=>o.date===yesterday);
+  if(period==='semana')return App.orders;
+  return App.orders;
+}
+function setDashPeriod(p,btn){
+  App.dashPeriod=p;
+  document.querySelectorAll('#sec-dash .btn').forEach(b=>{b.className='btn btn-gh btn-sm';});
+  btn.className='btn btn-or btn-sm';
+  renderDashboard();
+}
+function renderDashboard(){
+  const orders=getOrdersForPeriod(App.dashPeriod);
+  const rev=orders.reduce((s,o)=>s+o.total,0);
+  const cnt=orders.length;
+  const avg=cnt?rev/cnt:0;
+  const pq={};
+  orders.forEach(o=>o.items.forEach(it=>{pq[it.name]=(pq[it.name]||0)+it.qty;}));
+  const top=Object.entries(pq).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('kpi-rev').textContent=fmtR(rev);
+  document.getElementById('kpi-rev-d').textContent=cnt+' pedidos no periodo';
+  document.getElementById('kpi-ord').textContent=cnt;
+  document.getElementById('kpi-ord-d').textContent=fmtR(avg)+' ticket medio';
+  document.getElementById('kpi-avg').textContent=fmtR(avg);
+  document.getElementById('kpi-avg-d').textContent='por pedido';
+  document.getElementById('kpi-top').textContent=top?top[0]:'—';
+  document.getElementById('kpi-top-d').textContent=top?top[1]+' unidades vendidas':'';
+  // Hourly chart
+  const hrs=Array(13).fill(0);
+  orders.forEach(o=>{const h=parseInt(o.time.split(':')[0]);if(h>=10&&h<=22)hrs[h-10]+=o.total;});
+  renderHourlyChart(hrs);
+  renderTopProdsChart(orders);
+  renderPayChart(orders);
+  renderPDVTable(orders);
+  renderTopTable(pq);
+}
+function renderHourlyChart(data){
+  const ctx=document.getElementById('ch-hourly');if(!ctx)return;
+  if(App.charts.hourly)App.charts.hourly.destroy();
+  App.charts.hourly=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:['10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h'],
+      datasets:[{label:'Faturamento',data,borderColor:'#F97316',backgroundColor:'rgba(249,115,22,.1)',fill:true,tension:.4,pointBackgroundColor:'#F97316',pointRadius:4}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'R$'+v.toFixed(0)}}}}
+  });
+}
+function renderTopProdsChart(orders){
+  const ctx=document.getElementById('ch-prods');if(!ctx)return;
+  const pr={};
+  orders.forEach(o=>o.items.forEach(it=>{pr[it.name]=(pr[it.name]||0)+it.price*it.qty;}));
+  const sorted=Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  if(App.charts.prods)App.charts.prods.destroy();
+  App.charts.prods=new Chart(ctx,{
+    type:'bar',
+    data:{labels:sorted.map(x=>x[0]),datasets:[{data:sorted.map(x=>x[1]),backgroundColor:'#F97316',borderRadius:5}]},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>'R$'+v.toFixed(0)}}}}
+  });
+}
+function renderPayChart(orders){
+  const ctx=document.getElementById('ch-pay');if(!ctx)return;
+  const pc={};
+  orders.forEach(o=>{pc[o.payment]=(pc[o.payment]||0)+1;});
+  if(App.charts.pay)App.charts.pay.destroy();
+  App.charts.pay=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:Object.keys(pc),datasets:[{data:Object.values(pc),backgroundColor:['#F97316','#1E2D40','#16A34A','#7C3AED'],borderWidth:0}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'62%'}
+  });
+}
+function renderPDVTable(orders){
+  const pdvs={};
+  orders.forEach(o=>{
+    if(!pdvs[o.pdv])pdvs[o.pdv]={cnt:0,items:0,rev:0};
+    pdvs[o.pdv].cnt++;
+    pdvs[o.pdv].items+=o.items.reduce((s,i)=>s+i.qty,0);
+    pdvs[o.pdv].rev+=o.total;
+  });
+  document.getElementById('pdv-table').innerHTML=Object.entries(pdvs).map(([k,v])=>`
+    <tr><td><span class="bdg b-or">${k}</span></td><td>${v.cnt}</td><td>${v.items}</td><td><strong>${fmtR(v.rev)}</strong></td></tr>`).join('');
+}
+function renderTopTable(pq){
+  const pr={};
+  getOrdersForPeriod(App.dashPeriod).forEach(o=>o.items.forEach(it=>{
+    if(!pr[it.name])pr[it.name]={qty:0,rev:0};
+    pr[it.name].qty+=it.qty;pr[it.name].rev+=it.price*it.qty;
+  }));
+  const sorted=Object.entries(pr).sort((a,b)=>b[1].qty-a[1].qty).slice(0,5);
+  document.getElementById('top-table').innerHTML=sorted.map(([k,v])=>`
+    <tr><td>${k}</td><td><strong>${v.qty}</strong></td><td>${fmtR(v.rev)}</td></tr>`).join('');
+}
+
+// ==================== REPORTS ====================
+function renderReports(){
+  const orders=filterOrders();
+  const rev=orders.reduce((s,o)=>s+o.total,0);
+  const items=orders.reduce((s,o)=>s+o.items.reduce((si,i)=>si+i.qty,0),0);
+  document.getElementById('r-rev').textContent=fmtR(rev);
+  document.getElementById('r-ord').textContent=orders.length;
+  document.getElementById('r-items').textContent=items;
+  const tbody=document.getElementById('rep-tbody');
+  if(!orders.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Nenhum pedido encontrado</td></tr>';return;}
+  tbody.innerHTML=orders.map(o=>{
+    const summ=o.items.map(it=>it.qty+'x '+it.name).join(', ');
+    const short=summ.length>45?summ.slice(0,45)+'…':summ;
+    const pb={'PIX':'b-pix','Dinheiro':'b-cas','Cartao':'b-crd'}[o.payment]||'b-or';
+    return `<tr>
+      <td><strong>#${pad2(o.orderNum||o.id)}</strong></td>
+      <td>${o.date}<br><small style="color:#999">${o.time}</small></td>
+      <td><span class="bdg b-or">${o.pdv}</span></td>
+      <td style="max-width:200px">${short}</td>
+      <td><span class="bdg ${pb}">${o.payment}</span></td>
+      <td><code style="background:var(--bg);padding:2px 5px;border-radius:4px;font-size:10px">${o.dailyCode}</code></td>
+      <td><strong style="color:var(--or)">${fmtR(o.total)}</strong></td>
+    </tr>`;
+  }).join('');
+}
+function filterOrders(){
+  const date=document.getElementById('f-date').value;
+  const prod=document.getElementById('f-prod').value.toLowerCase();
+  const cat=document.getElementById('f-cat').value;
+  const pay=document.getElementById('f-pay').value;
+  const pdv=document.getElementById('f-pdv').value;
+  const code=document.getElementById('f-code').value.toUpperCase();
+  return App.orders.filter(o=>{
+    if(date&&o.date!==date)return false;
+    if(prod&&!o.items.some(it=>it.name.toLowerCase().includes(prod)))return false;
+    if(cat&&!o.items.some(it=>it.category===cat))return false;
+    if(pay&&o.payment!==pay)return false;
+    if(pdv&&o.pdv!==pdv)return false;
+    if(code&&!o.dailyCode.includes(code))return false;
+    return true;
+  });
+}
+function clearFilters(){
+  ['f-date','f-prod','f-cat','f-pay','f-pdv','f-code'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  renderReports();
+}
+function populateRepFilters(){
+  const cats=[...new Set(App.products.map(p=>p.category))];
+  const pdvs=[...new Set(App.orders.map(o=>o.pdv))];
+  const cs=document.getElementById('f-cat');
+  const ps=document.getElementById('f-pdv');
+  if(cs)cs.innerHTML='<option value="">Todas</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+  if(ps)ps.innerHTML='<option value="">Todos</option>'+pdvs.map(p=>`<option>${p}</option>`).join('');
+}
+function exportCSV(){
+  const orders=filterOrders();
+  const rows=[['#','Data','Hora','Terminal','Itens','Pagamento','Senha','Total']];
+  orders.forEach(o=>{
+    rows.push([
+      o.orderNum||o.id,o.date,o.time,o.pdv,
+      o.items.map(it=>it.qty+'x '+it.name).join(' | '),
+      o.payment,o.dailyCode,o.total.toFixed(2)
+    ]);
+  });
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='comandabox_pedidos.csv';a.click();
+  URL.revokeObjectURL(url);showToast('CSV exportado!');
+}
+
+// ==================== INIT ====================
+function renderAll(){
+  renderPDV();loadAdmin();renderDashboard();renderReports();populateRepFilters();renderDemoFichas();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  App.init();renderPDV();populateRepFilters();renderDemoFichas();
+});
+</script>
+</body>
+</html>
