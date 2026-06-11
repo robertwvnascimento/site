@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ComandaBox — Plano Tecnico Completo v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--or:#F97316;--or2:#EA580C;--or-bg:#FFF7ED;--nv:#1E2D40;--nv2:#263B52;--bg:#F3F4F6;--sur:#fff;--brd:#E5E7EB;--tx:#1F2937;--mu:#6B7280;--ok:#16A34A;--ok-bg:#DCFCE7;--er:#DC2626;--er-bg:#FEE2E2;--inf:#2563EB;--inf-bg:#DBEAFE;--pu:#7C3AED;--pu-bg:#F5F3FF;--am:#D97706;--am-bg:#FEF3C7}
+body{font-family:"Inter",-apple-system,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.6}
+.app-hdr{background:var(--nv);padding:0 24px;height:54px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}.logo .c{color:#fff}.logo .b{color:var(--or)}
+.hdr-tag{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase}
+.hdr-v{margin-left:auto;background:rgba(249,115,22,.15);color:var(--or);border:1px solid rgba(249,115,22,.3);font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600}
+.tab-nav{background:var(--nv2);display:flex;overflow-x:auto;padding:0 16px;gap:2px;border-bottom:2px solid rgba(255,255,255,.04)}
+.tab-nav::-webkit-scrollbar{height:0}
+.tb{padding:11px 18px;border:none;background:transparent;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-size:12px;font-weight:600;transition:all .2s;margin-bottom:-2px;font-family:inherit}
+.tb:hover{color:rgba(255,255,255,.85)}.tb.on{color:var(--or);border-bottom-color:var(--or)}
+.sec{display:none;padding:28px 20px;max-width:1360px;margin:0 auto}.sec.on{display:block}
+.pg-title{font-size:22px;font-weight:700;color:var(--nv);margin-bottom:4px}
+.pg-sub{font-size:13px;color:var(--mu);margin-bottom:24px;line-height:1.6}
+.card{background:var(--sur);border-radius:12px;padding:18px;border:1px solid var(--brd);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card-hd{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.flex{display:flex}.fac{align-items:center}.fjb{justify-content:space-between}.fwrap{flex-wrap:wrap}.gap8{gap:8px}.gap12{gap:12px}
+.code-blk{background:#0F172A;color:#E2E8F0;border-radius:10px;padding:16px;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.8;overflow-x:auto;margin:0}
+.ck{color:#93C5FD}.cv{color:#A7F3D0}.cs{color:#FDE68A}.cn{color:#FCA5A5}.cc{color:#64748B}.cp{color:#F0ABFC}
+.info-box{background:var(--or-bg);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--or2);line-height:1.6}
+.info-box.bl{background:var(--inf-bg);border-color:rgba(37,99,235,.2);color:#1E40AF}
+.info-box.gn{background:var(--ok-bg);border-color:rgba(22,163,74,.2);color:#15803D}
+.info-box.er{background:var(--er-bg);border-color:rgba(220,38,38,.2);color:var(--er)}
+.info-box.am{background:var(--am-bg);border-color:rgba(217,119,6,.2);color:var(--am)}
+.info-box.pu{background:var(--pu-bg);border-color:rgba(124,58,237,.2);color:var(--pu)}
+.bdg{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600}
+.b-or{background:var(--or-bg);color:var(--or2)}.b-gn{background:var(--ok-bg);color:var(--ok)}.b-bl{background:var(--inf-bg);color:#1E40AF}
+.b-pu{background:var(--pu-bg);color:var(--pu)}.b-nv{background:#EEF2F7;color:var(--nv)}.b-er{background:var(--er-bg);color:var(--er)}
+.b-am{background:var(--am-bg);color:var(--am)}
+.tbl-w{overflow-x:auto;border-radius:10px;border:1px solid var(--brd)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{padding:9px 12px;background:var(--bg);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);border-bottom:1px solid var(--brd);text-align:left;white-space:nowrap}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--brd);color:var(--tx);vertical-align:top}
+tbody tr:last-child td{border:none}
+tbody tr:hover td{background:#FAFAFA}
+.mth{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.m-g{background:var(--ok-bg);color:#065F46}.m-p{background:var(--inf-bg);color:#1E40AF}.m-pu{background:var(--pu-bg);color:#6D28D9}.m-d{background:var(--er-bg);color:#991B1B}
+/* version cards */
+.ver-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px}
+.ver-card{background:#fff;border-radius:14px;padding:22px;border:2px solid var(--brd);transition:border-color .2s;cursor:default}
+.ver-card.hl-stick{border-color:#F97316}
+.ver-card.hl-pro{border-color:#7C3AED}
+.ver-card.hl-rpi{border-color:#2563EB}
+.ver-badge{display:inline-block;padding:4px 12px;border-radius:10px;font-size:10px;font-weight:700;margin-bottom:10px;letter-spacing:.3px}
+.vb-or{background:var(--or-bg);color:var(--or2)}
+.vb-pu{background:var(--pu-bg);color:var(--pu)}
+.vb-bl{background:var(--inf-bg);color:#1E40AF}
+.ver-title{font-size:17px;font-weight:700;color:var(--nv);margin-bottom:5px}
+.ver-desc{font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:14px}
+.ver-specs{list-style:none;display:flex;flex-direction:column;gap:5px}
+.ver-specs li{display:flex;gap:7px;font-size:12px;align-items:flex-start}
+.ver-specs li::before{content:"✓";color:var(--or);font-weight:700;flex-shrink:0}
+.ver-price{margin-top:16px;padding-top:12px;border-top:1px solid var(--brd)}
+.price-val{font-size:22px;font-weight:700;color:var(--or)}
+.price-sub{font-size:11px;color:var(--mu)}
+/* arch diagram */
+.arch-box{border:2px solid var(--brd);border-radius:10px;padding:16px;position:relative;background:#fff}
+.arch-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.arch-inner{display:flex;gap:10px;flex-wrap:wrap}
+.arch-chip{border:1px solid var(--brd);border-radius:7px;padding:7px 11px;font-size:11px;font-weight:600;color:var(--nv);background:var(--bg)}
+.arch-chip.or{background:var(--or-bg);border-color:rgba(249,115,22,.3);color:var(--or2)}
+.arch-chip.bl{background:var(--inf-bg);border-color:rgba(37,99,235,.2);color:#1E40AF}
+.arch-chip.gn{background:var(--ok-bg);border-color:rgba(22,163,74,.2);color:#15803D}
+.arch-chip.pu{background:var(--pu-bg);border-color:rgba(124,58,237,.2);color:var(--pu)}
+.arch-chip.am{background:var(--am-bg);border-color:rgba(217,119,6,.2);color:var(--am)}
+.arrow-down{text-align:center;font-size:20px;color:var(--mu);margin:6px 0;line-height:1}
+/* flow diagram */
+.flow-wrap{display:flex;gap:0;margin:16px 0}
+.flow-step{flex:1;background:#fff;border:1px solid var(--brd);padding:14px;position:relative}
+.flow-step:first-child{border-radius:10px 0 0 10px}
+.flow-step:last-child{border-radius:0 10px 10px 0}
+.flow-step::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--or);font-weight:700;z-index:1;background:var(--bg);padding:2px}
+.flow-step:last-child::after{display:none}
+.flow-num{width:26px;height:26px;background:var(--or);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;margin-bottom:7px}
+.flow-t{font-weight:700;font-size:12px;margin-bottom:2px}
+.flow-s{font-size:11px;color:var(--mu);line-height:1.5}
+/* RPi network diagram */
+.net-diagram{background:#0F172A;border-radius:14px;padding:20px;color:#E2E8F0;font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.9}
+.net-rpi{border:2px solid #F97316;border-radius:8px;padding:12px;margin:8px 0;display:inline-block}
+.net-lbl{color:rgba(255,255,255,.4);font-size:10px}
+/* install steps */
+.install-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--brd)}
+.install-step:last-child{border:none}
+.step-num{width:28px;height:28px;background:var(--nv);color:var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;margin-top:2px}
+.step-content{flex:1}
+.step-title{font-weight:700;font-size:13px;color:var(--nv);margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:8px}
+/* print routing diagram */
+.route-diagram{background:var(--bg);border-radius:10px;padding:16px}
+.route-order{background:#fff;border:2px solid var(--nv);border-radius:8px;padding:12px;text-align:center;margin-bottom:8px}
+.route-items{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex-wrap:wrap}
+.route-item{background:#fff;border:1px solid var(--brd);border-radius:6px;padding:6px 10px;font-size:11px;font-weight:600}
+.route-printers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.route-printer{background:#fff;border:2px solid var(--brd);border-radius:8px;padding:10px 14px;font-size:11px;font-weight:600;text-align:center}
+.route-printer.usb{border-color:#F97316;color:var(--or2)}
+.route-printer.net{border-color:#2563EB;color:#1E40AF}
+.route-arrow{text-align:center;color:var(--mu);font-size:12px;margin:4px 0}
+@media(max-width:900px){.ver-cards{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="app-hdr">
+  <div class="logo"><span class="c">Comanda</span><span class="b">Box</span></div>
+  <div class="hdr-tag">Plano Tecnico Completo</div>
+  <div class="hdr-v">Documento v2.0</div>
+</header>
+<nav class="tab-nav">
+  <button class="tb on" onclick="showTab('overview')">&#127968; Visao Geral</button>
+  <button class="tb" onclick="showTab('stick')">&#128204; ESP32 Stick</button>
+  <button class="tb" onclick="showTab('pro')">&#11036; ESP32 Pro</button>
+  <button class="tb" onclick="showTab('rpi')">&#129383; RPi Server</button>
+  <button class="tb" onclick="showTab('compare')">&#9881; Comparativo</button>
+</nav>
+
+<div id="sec-overview" class="sec on">
+  <div class="pg-title">ComandaBox — Tres Versoes, Um Sistema</div>
+  <div class="pg-sub">Escolha a versao adequada ao porte do evento. Todas compartilham o mesmo fluxo de uso: fichas por item, senha do dia, painel de senhas e relatorios.</div>
+
+  <div class="ver-cards">
+    <div class="ver-card hl-stick">
+      <div class="ver-badge vb-or">STICK</div>
+      <div class="ver-title">ComandaBox Stick</div>
+      <div class="ver-desc">Embarcado minimalista. Um caixa, uma impressora de rede. Ideal para bancas e pequenos eventos.</div>
+      <ul class="ver-specs">
+        <li>ESP32-ETH01 (Wi-Fi + Ethernet)</li>
+        <li>Impressora de rede existente (TCP 9100)</li>
+        <li>1 operador por unidade</li>
+        <li>Sem fio, sem driver, sem internet</li>
+        <li>LittleFS — armazenamento local</li>
+        <li>Wi-Fi SSID: COMANDABOX-XXXX (MAC)</li>
+      </ul>
+      <div class="ver-price"><div class="price-val">R$ 35–55</div><div class="price-sub">custo de producao</div></div>
+    </div>
+    <div class="ver-card hl-pro">
+      <div class="ver-badge vb-pu">PRO</div>
+      <div class="ver-title">ComandaBox Pro</div>
+      <div class="ver-desc">Bundle completo. Stick + impressora termica 58mm integrada. Plug & play sem configurar impressora de rede.</div>
+      <ul class="ver-specs">
+        <li>ESP32-ETH01 com impressora interna TTL</li>
+        <li>Impressora 58mm 80mm/s inclusa</li>
+        <li>1 operador por unidade</li>
+        <li>Pronto para usar: tire da caixa, ligue</li>
+        <li>Mesma arquitetura de firmware do Stick</li>
+        <li>Factory reset via GPIO32</li>
+      </ul>
+      <div class="ver-price"><div class="price-val">R$ 280–380</div><div class="price-sub">custo de producao (bundle)</div></div>
+    </div>
+    <div class="ver-card hl-rpi">
+      <div class="ver-badge vb-bl">SERVER</div>
+      <div class="ver-title">ComandaBox Server</div>
+      <div class="ver-desc">Servidor Linux completo. Multiplos operadores, multiplas impressoras USB e de rede, roteamento de impressao por categoria.</div>
+      <ul class="ver-specs">
+        <li>Raspberry Pi 3 Model B (Linux)</li>
+        <li>Impressora USB direta + N impressoras de rede</li>
+        <li>Multiplos operadores simultaneos</li>
+        <li>Roteamento de fichas por categoria/operador</li>
+        <li>SQLite + Node.js + Socket.io</li>
+        <li>Painel de senhas em TV via WebSocket</li>
+      </ul>
+      <div class="ver-price"><div class="price-val">R$ 750–1.200</div><div class="price-sub">custo de producao (kit basico)</div></div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Fluxo de uso — identico nas tres versoes</div>
+    <div class="flow-wrap">
+      <div class="flow-step"><div class="flow-num">1</div><div class="flow-t">Configurar</div><div class="flow-s">Define produtos, senha do dia e nome do evento no painel admin.</div></div>
+      <div class="flow-step"><div class="flow-num">2</div><div class="flow-t">Lancar pedido</div><div class="flow-s">Operador acessa a interface pelo celular, seleciona itens e confirma.</div></div>
+      <div class="flow-step"><div class="flow-num">3</div><div class="flow-t">Imprimir fichas</div><div class="flow-s">1 ficha por unidade (vai ao cliente) + 1 comprovante (fica no caixa/cozinha).</div></div>
+      <div class="flow-step"><div class="flow-num">4</div><div class="flow-t">Chamar no painel</div><div class="flow-s">Quando pronto, operador chama o numero no painel eletronico. Cliente retira.</div></div>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="card"><div class="card-hd">Quando usar o Stick</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.7">
+        &#10003; Banca unica em festa pequena<br>&#10003; Ja tem impressora de rede<br>&#10003; Orcamento limitado<br>&#10003; 1 atendente por ponto<br>&#10005; Nao suporta varios caixas simultaneos
+      </div>
+    </div>
+    <div class="card"><div class="card-hd">Quando usar o Pro</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.7">
+        &#10003; Nao tem impressora de rede<br>&#10003; Quer tudo em um so dispositivo<br>&#10003; Plug & play sem configuracao<br>&#10003; Banca unica ou pequeno evento<br>&#10005; Nao suporta varios caixas simultaneos
+      </div>
+    </div>
+    <div class="card"><div class="card-hd">Quando usar o Server</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.7">
+        &#10003; Multiplos caixas simultaneos<br>&#10003; Balcoes diferentes (lanche, bebida, doce)<br>&#10003; Evento medio/grande ou fixo<br>&#10003; Quer relatorios avancados<br>&#10003; Quer impressao por categoria/balcao
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-stick" class="sec">
+  <div class="pg-title">ComandaBox Stick — ESP32-ETH01</div>
+  <div class="pg-sub">Sistema embarcado minimalista. Firmware em C++ (PlatformIO). Interface web servida do LittleFS. 1 operador por unidade.</div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Hardware principal — ESP32-ETH01</div>
+      <div class="tbl-w"><table><tbody>
+        <tr><td style="color:var(--mu)">SoC</td><td><strong>ESP32-D0WD</strong> dual-core Xtensa LX6 240MHz</td></tr>
+        <tr><td style="color:var(--mu)">RAM</td><td>520KB SRAM (320KB disponivel para app)</td></tr>
+        <tr><td style="color:var(--mu)">Flash</td><td>4MB SPI Flash (particionamento customizado)</td></tr>
+        <tr><td style="color:var(--mu)">Ethernet</td><td>LAN8720 RMII — 10/100Mbps</td></tr>
+        <tr><td style="color:var(--mu)">Wi-Fi</td><td>802.11 b/g/n 2.4GHz — modo AP simultaneo</td></tr>
+        <tr><td style="color:var(--mu)">SSID</td><td><code style="background:var(--bg);padding:1px 5px;border-radius:4px">COMANDABOX-XXXX</code> (ultimos 4 hex do MAC)</td></tr>
+        <tr><td style="color:var(--mu)">IP local</td><td>192.168.4.1 (AP) | DHCP (ETH)</td></tr>
+        <tr><td style="color:var(--mu)">Alimentacao</td><td>5V via USB-C / GPIO VIN</td></tr>
+        <tr><td style="color:var(--mu)">Corrente</td><td>~180mA idle, ~280mA ativo</td></tr>
+        <tr><td style="color:var(--mu)">Dimensoes</td><td>~65 x 40 x 18mm (com case ABS)</td></tr>
+      </tbody></table></div>
+    </div>
+    <div>
+      <div class="card mb12">
+        <div class="card-hd">BOM — Stick</div>
+        <div class="tbl-w"><table><thead><tr><th>Componente</th><th>Spec</th><th>Custo</th></tr></thead><tbody>
+          <tr><td><strong>ESP32-ETH01</strong></td><td>LAN8720, 4MB flash</td><td style="color:var(--or);font-weight:700">R$ 32</td></tr>
+          <tr><td>Case ABS</td><td>65x40x18mm c/ furos RJ45/USB</td><td>R$ 8</td></tr>
+          <tr><td>USB-C Power Board</td><td>5V / 2A input</td><td>R$ 5</td></tr>
+          <tr><td>Cabo RJ45</td><td>Cat5e 0.5m</td><td>R$ 6</td></tr>
+          <tr><td>Parafusos/montagem</td><td>M2 x4</td><td>R$ 2</td></tr>
+          <tr style="font-weight:700;background:var(--or-bg)"><td>TOTAL</td><td></td><td style="color:var(--or2)">R$ 53</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="info-box gn" style="font-size:11px">
+        O Stick conecta via Ethernet diretamente na porta LAN da impressora de rede. Nao requer switch — cabo crossover ou direto dependendo da impressora.
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Pinout ESP32-ETH01 — pinos usados pelo Ethernet</div>
+      <div class="code-blk"><span class="cc">// Pinos RMII reservados pelo LAN8720</span>
+<span class="ck">GPIO MDC</span>  = <span class="cn">23</span>   <span class="cc">// Management Data Clock</span>
+<span class="ck">GPIO MDIO</span> = <span class="cn">18</span>   <span class="cc">// Management Data I/O</span>
+<span class="ck">GPIO CLK</span>  = <span class="cn">0</span>    <span class="cc">// Ext oscillator (MUST be HIGH at boot)</span>
+<span class="ck">GPIO PWR</span>  = <span class="cn">16</span>   <span class="cc">// PHY power enable</span>
+<span class="ck">GPIO TX0</span>  = <span class="cn">19</span>   <span class="ck">TX1</span> = <span class="cn">22</span>
+<span class="ck">GPIO RX0</span>  = <span class="cn">25</span>   <span class="ck">RX1</span> = <span class="cn">26</span>
+<span class="ck">GPIO CRS</span>  = <span class="cn">27</span>   <span class="ck">TX_EN</span> = <span class="cn">21</span>
+
+<span class="cc">// GPIOs livres para uso geral</span>
+<span class="cv">GPIO32</span>, <span class="cv">GPIO33</span>  <span class="cc">// botao reset factory / LED</span>
+<span class="cv">GPIO34</span>, <span class="cv">GPIO35</span>  <span class="cc">// input-only (sem pullup)</span>
+<span class="cv">GPIO17</span>          <span class="cc">// UART2 TX (impressora serial)</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Geracao de SSID dinamico (C++)</div>
+      <div class="code-blk"><span class="cc">// main.cpp — setup()</span>
+<span class="cs">uint8_t</span> mac[<span class="cn">6</span>];
+esp_efuse_mac_get_default(mac);
+
+<span class="cs">char</span> apSSID[<span class="cn">24</span>];
+snprintf(apSSID, <span class="cn">24</span>,
+  <span class="cs">"COMANDABOX-%02X%02X"</span>,
+  mac[<span class="cn">4</span>], mac[<span class="cn">5</span>]);
+<span class="cc">// ex: "COMANDABOX-A4F2"</span>
+
+<span class="cs">String</span> apPass = nvs.getString(
+  <span class="cs">"ap_pass"</span>, <span class="cs">"COMANDABOX"</span>);
+
+WiFi.softAP(apSSID, apPass.c_str());
+ETH.begin(<span class="cn">1</span>, <span class="cn">16</span>, <span class="cn">23</span>, <span class="cn">18</span>,
+  ETH_PHY_LAN8720,
+  ETH_CLOCK_GPIO0_IN);
+
+<span class="cc">// Ambos ativos simultaneamente ✓</span></div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Factory reset via GPIO32</div>
+      <div class="code-blk"><span class="cc">// Detecta GPIO32 pressionado no boot</span>
+<span class="cs">const int</span> RST_PIN = <span class="cn">32</span>;
+pinMode(RST_PIN, INPUT_PULLUP);
+
+<span class="cs">if</span> (digitalRead(RST_PIN) == LOW) {
+  <span class="cs">unsigned long</span> t = millis();
+  <span class="cs">while</span> (digitalRead(RST_PIN) == LOW) {
+    <span class="cs">if</span> (millis() - t > <span class="cn">5000</span>) {
+      <span class="cc">// 5s segurados: factory reset</span>
+      nvs.clear();
+      LittleFS.remove(<span class="cs">"/settings.json"</span>);
+      LittleFS.remove(<span class="cs">"/products.json"</span>);
+      LittleFS.remove(<span class="cs">"/orders.json"</span>);
+      <span class="cc">// pisca LED 3x e reinicia</span>
+      ESP.restart();
+    }
+    digitalWrite(<span class="cn">2</span>, !digitalRead(<span class="cn">2</span>));
+    delay(<span class="cn">300</span>);
+  }
+}</div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Analise de memoria (4MB Flash)</div>
+      <div class="tbl-w"><table><thead><tr><th>Regiao</th><th>Tamanho</th><th>Uso</th></tr></thead><tbody>
+        <tr><td>nvs</td><td>24KB</td><td>Senha Wi-Fi, config basica</td></tr>
+        <tr><td>phy_init</td><td>4KB</td><td>LAN8720 calibracao</td></tr>
+        <tr><td>factory (firmware)</td><td>2.5MB</td><td>~583KB usados, 1.9MB livre ✓</td></tr>
+        <tr><td>LittleFS</td><td>1.4MB</td><td>HTML+JSON ~200KB, 1.2MB livre ✓</td></tr>
+        <tr><td colspan="2"><strong>RAM aplicacao</strong></td><td>~179KB / 320KB disponiveis ✓</td></tr>
+      </tbody></table></div>
+      <div class="info-box er" style="font-size:11px;margin-top:10px">
+        &#9888; Chart.js (600KB+) e Google Fonts nao podem ser incluidos no firmware. Substitua por graficos SVG leves (~12KB) e system fonts no HTML embarcado.
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Estrutura do firmware (PlatformIO)</div>
+      <div class="code-blk"><span class="cp">pdv-festa/</span>
+<span class="ck">├── platformio.ini     </span><span class="cc">espressif32, LittleFS</span>
+<span class="ck">├── partitions.csv     </span><span class="cc">layout customizado 4MB</span>
+<span class="ck">├── src/</span>
+<span class="cs">│   ├── main.cpp       </span><span class="cc">boot, ETH, AP, HTTP</span>
+<span class="cs">│   ├── config.h       </span><span class="cc">pinos, defaults, versao</span>
+<span class="cs">│   ├── storage.cpp    </span><span class="cc">LittleFS r/w JSON</span>
+<span class="cs">│   ├── printer.cpp    </span><span class="cc">ESC/POS via TCP:9100</span>
+<span class="cs">│   ├── api.cpp        </span><span class="cc">REST endpoints</span>
+<span class="cs">│   └── wifi.cpp       </span><span class="cc">AP setup, NVS password</span>
+<span class="ck">└── data/</span>
+<span class="cs">    ├── index.html.gz  </span><span class="cc">PDV operador (minificado)</span>
+<span class="cs">    └── admin.html.gz  </span><span class="cc">Admin + relatorios</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">API REST — 8 endpoints</div>
+      <div class="tbl-w"><table><thead><tr><th>Metodo</th><th>Rota</th><th>Auth</th><th>Descricao</th></tr></thead><tbody>
+        <tr><td><span class="mth m-g">GET</span></td><td>/api/products</td><td>—</td><td>Lista produtos</td></tr>
+        <tr><td><span class="mth m-p">POST</span></td><td>/api/products</td><td>Admin</td><td>Substitui lista</td></tr>
+        <tr><td><span class="mth m-g">GET</span></td><td>/api/settings</td><td>—</td><td>Configuracoes</td></tr>
+        <tr><td><span class="mth m-p">POST</span></td><td>/api/settings</td><td>Admin</td><td>Atualiza config</td></tr>
+        <tr><td><span class="mth m-p">POST</span></td><td>/api/order</td><td>—</td><td>Cria pedido + imprime</td></tr>
+        <tr><td><span class="mth m-g">GET</span></td><td>/api/printer-ping</td><td>—</td><td>Testa TCP impressora</td></tr>
+        <tr><td><span class="mth m-p">POST</span></td><td>/api/test-print</td><td>—</td><td>Pagina de teste</td></tr>
+        <tr><td><span class="mth m-p">POST</span></td><td>/api/wifi-password</td><td>Admin</td><td>Altera senha AP</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">ESC/POS — sequencia de bytes para impressao</div>
+    <div class="g2">
+      <div class="code-blk" style="font-size:11px"><span class="cc">// printer.cpp — printItemFicha()</span>
+ESC @ (init printer)        1B 40
+ESC t 02 (charset CP850)    1B 74 02  <span class="cc">← PT-BR acentos</span>
+ESC a 01 (centralizar)      1B 61 01
+ESC E 01 (bold on)          1B 45 01
+GS ! 11 (2x width+height)   1D 21 11  <span class="cc">← COMANDA #NNN</span>
+[texto numero da comanda]
+GS ! 00 (normal)            1D 21 00
+[texto senha do dia]
+GS ! 10 (2x height)         1D 21 10  <span class="cc">← nome do item</span>
+ESC E 00 (bold off)         1B 45 00
+GS ! 00 (normal)            1D 21 00
+[preco unitario]
+ESC a 00 (esquerda)         1B 61 00
+[rodape: PDV-ID + RETIRE NO BALCAO]
+GS V 42 00 (corte parcial)  1D 56 42 00  <span class="cc">← so no comprovante</span></div>
+      <div>
+        <div class="info-box am" style="font-size:11px;margin-bottom:10px">
+          &#9998; Corte automatico (GS V) so e enviado apos o <strong>comprovante</strong> (ultimo a imprimir). As fichas de item NAO cortam — impressora libera papel suficiente entre elas via feed de linha.
+        </div>
+        <div class="info-box bl" style="font-size:11px">
+          Conexao TCP: <code>WiFiClient client;<br>client.connect(printerIp, 9100);<br>client.write(escpos_bytes, len);<br>client.flush();<br>client.stop();</code><br><br>Reconecta por pedido — nao mantem conexao persistente.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-pro" class="sec">
+  <div class="pg-title">ComandaBox Pro — Bundle ESP32 + Impressora</div>
+  <div class="pg-sub">Mesmo firmware do Stick. Diferenca: impressora 58mm TTL conectada internamente via Serial2 (GPIO17 TX). Produto fechado, plug & play.</div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">BOM completo — Pro</div>
+      <div class="tbl-w"><table><thead><tr><th>Componente</th><th>Especificacao</th><th>Fornecedor</th><th>Custo</th></tr></thead><tbody>
+        <tr><td><strong>ESP32-ETH01</strong></td><td>LAN8720, 4MB flash</td><td>AliExpress</td><td style="color:var(--or);font-weight:600">R$ 32</td></tr>
+        <tr><td><strong>Impressora termica 58mm</strong></td><td>TTL 5V, 80mm/s, auto-cutter</td><td>AliExpress / Elgin</td><td style="color:var(--or);font-weight:600">R$ 160-180</td></tr>
+        <tr><td>Fonte chaveada</td><td>5V / 3A (ESP + impressora)</td><td>Nacional</td><td>R$ 28</td></tr>
+        <tr><td>Case ABS personalizado</td><td>~15x10x8cm c/ slot papel</td><td>Impressao 3D / ABS</td><td>R$ 35</td></tr>
+        <tr><td>Cabo RJ45 fixo</td><td>Cat5e 1m</td><td>—</td><td>R$ 8</td></tr>
+        <tr><td>Plug C14 + cabo</td><td>Entrada AC para fonte</td><td>—</td><td>R$ 12</td></tr>
+        <tr><td>PCB ou protoboard</td><td>Conexoes internas</td><td>—</td><td>R$ 8</td></tr>
+        <tr><td>Parafusos / standoffs</td><td>M3 x8</td><td>—</td><td>R$ 4</td></tr>
+        <tr style="font-weight:700;background:var(--or-bg)"><td>TOTAL</td><td colspan="2"></td><td style="color:var(--or2)">R$ 287–307</td></tr>
+      </tbody></table></div>
+    </div>
+    <div>
+      <div class="card mb12">
+        <div class="card-hd">Conexao ESP32-ETH01 ↔ Impressora TTL</div>
+        <div class="code-blk"><span class="cc">// Serial2 — impressora interna</span>
+<span class="ck">GPIO17</span> (TX2) → <span class="cs">RX</span> da impressora
+<span class="ck">GND</span>          → <span class="cs">GND</span> da impressora
+<span class="cc">// SEM RX do ESP (impressora nao responde)</span>
+<span class="cc">// Baud rate: 9600 ou 115200 (conf. jumper)</span>
+
+Serial2.begin(<span class="cn">9600</span>, SERIAL_8N1,
+  <span class="cn">-1</span>, <span class="cn">17</span>); <span class="cc">// rx=-1, tx=17</span>
+
+<span class="cc">// Escreve ESC/POS direto:</span>
+Serial2.write(escpos_buffer, len);</div>
+      </div>
+      <div class="info-box am" style="font-size:11px">
+        <strong>Atencao:</strong> GPIO16 e usado pelo LAN8720 como PHY power — nao pode ser usado como TX serial. GPIO17 e o unico TX serial livre compativel com Ethernet no ETH01.
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Diferencas de firmware: Stick vs Pro</div>
+      <div class="tbl-w"><table><thead><tr><th>Aspecto</th><th>Stick</th><th>Pro</th></tr></thead><tbody>
+        <tr><td>Interface impressora</td><td>TCP/IP porta 9100</td><td>Serial2 (GPIO17) TTL</td></tr>
+        <tr><td>Configuracao IP</td><td>Sim (admin)</td><td>Nao necessario</td></tr>
+        <tr><td>Velocidade impressao</td><td>Rede (depende do switch)</td><td>Direta (9600–115200 baud)</td></tr>
+        <tr><td>config.h flag</td><td>PRINTER_MODE_TCP</td><td>PRINTER_MODE_SERIAL</td></tr>
+        <tr><td>printer.cpp</td><td>WiFiClient TCP</td><td>Serial2.write()</td></tr>
+        <tr><td>Resto do firmware</td><td colspan="2" style="text-align:center">Identico &#10003;</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Especificacao da impressora 58mm recomendada</div>
+      <div class="tbl-w"><table><tbody>
+        <tr><td style="color:var(--mu)">Largura papel</td><td>58mm (48 colunas)</td></tr>
+        <tr><td style="color:var(--mu)">Velocidade</td><td>80mm/s ou superior</td></tr>
+        <tr><td style="color:var(--mu)">Interface</td><td>TTL 5V (Serial) — NAO RS232</td></tr>
+        <tr><td style="color:var(--mu)">Auto-cutter</td><td>Obrigatorio (corte parcial)</td></tr>
+        <tr><td style="color:var(--mu)">Resolucao</td><td>203 DPI</td></tr>
+        <tr><td style="color:var(--mu)">Protocolo</td><td>ESC/POS compativel</td></tr>
+        <tr><td style="color:var(--mu)">Alimentacao</td><td>5-9V DC (verificar modelo)</td></tr>
+        <tr><td style="color:var(--mu)">Temperatura</td><td>Cabeca termica direta</td></tr>
+        <tr><td style="color:var(--mu)">Modelos testados</td><td>Elgin i9, Epson TM-T20, Bematech MP-4200</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Diagrama de montagem interna — Pro</div>
+    <div class="g2" style="margin-top:10px">
+      <div>
+        <div class="arch-box mb12">
+          <div class="arch-title">&#128308; Alimentacao (5V/3A)</div>
+          <div class="arch-inner">
+            <div class="arch-chip or">AC 110/220V</div>
+            <span style="color:var(--mu)">→</span>
+            <div class="arch-chip or">Fonte 5V/3A</div>
+            <span style="color:var(--mu)">→</span>
+            <div class="arch-chip gn">VIN ESP32</div>
+            <span style="color:var(--mu)">+</span>
+            <div class="arch-chip gn">VCC Impressora</div>
+          </div>
+        </div>
+        <div class="arch-box mb12">
+          <div class="arch-title">&#128308; Comunicacao serial (TTL)</div>
+          <div class="arch-inner">
+            <div class="arch-chip bl">GPIO17 TX2</div>
+            <span style="color:var(--mu)">→</span>
+            <div class="arch-chip bl">RX Impressora</div>
+          </div>
+          <div style="font-size:11px;color:var(--mu);margin-top:6px">GND ESP32 → GND Impressora (referencia comum)</div>
+        </div>
+        <div class="arch-box">
+          <div class="arch-title">&#128308; Rede (saida externa)</div>
+          <div class="arch-inner">
+            <div class="arch-chip pu">RJ45 externo</div>
+            <span style="color:var(--mu)">→</span>
+            <div class="arch-chip pu">ESP32-ETH01</div>
+            <span style="color:var(--mu)">→</span>
+            <div class="arch-chip gn">Rede do evento</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box bl" style="font-size:11px;margin-bottom:10px">
+          A impressora 58mm com interface TTL opera a <strong>5V logico</strong>. O ESP32-ETH01 tambem e 5V tolerant nos pinos UART. Conexao direta sem nivel logico adicional.
+        </div>
+        <div class="info-box gn" style="font-size:11px;margin-bottom:10px">
+          A fonte 5V/3A suporta ambos: ESP32 (~280mA pico) + impressora (~2A no cutter + cabeca termica). Total maximo: ~2.3A, margem de seguranca com 3A.
+        </div>
+        <div class="info-box" style="font-size:11px">
+          O firmware detecta o modo de impressao via <code>#define PRINTER_MODE_SERIAL</code> em <code>config.h</code>. A mesma base de codigo compila para Stick e Pro.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-rpi" class="sec">
+  <div class="pg-title">ComandaBox Server — Raspberry Pi 3 Model B</div>
+  <div class="pg-sub">Servidor Linux completo. Multiplos operadores, multiplas impressoras, banco de dados relacional, WebSocket em tempo real. Para eventos medios, grandes ou instalacoes fixas.</div>
+
+  <div class="info-box bl mb20">
+    <strong>Conceito chave:</strong> O Raspberry Pi e ao mesmo tempo o servidor da aplicacao web E o hub de impressao. Operadores acessam via Wi-Fi/Ethernet pelo navegador. Cada operador tem uma impressora atribuida. O sistema pode ainda dividir o pedido por categoria: fichas de lanches vao para a impressora da cozinha, fichas de bebidas para o bar, comprovante fica no caixa.
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Hardware — Raspberry Pi 3 Model B</div>
+      <div class="tbl-w"><table><tbody>
+        <tr><td style="color:var(--mu)">CPU</td><td>ARM Cortex-A53 quad-core 1.2GHz 64-bit</td></tr>
+        <tr><td style="color:var(--mu)">RAM</td><td>1GB LPDDR2 900MHz</td></tr>
+        <tr><td style="color:var(--mu)">Armazenamento</td><td>microSD 32GB Class 10 (OS + DB + app)</td></tr>
+        <tr><td style="color:var(--mu)">Ethernet</td><td>100Mbps integrado (via USB interno)</td></tr>
+        <tr><td style="color:var(--mu)">Wi-Fi</td><td>802.11n 2.4GHz integrado</td></tr>
+        <tr><td style="color:var(--mu)">USB</td><td>4x USB 2.0 — impressoras diretas</td></tr>
+        <tr><td style="color:var(--mu)">Alimentacao</td><td>5V / 2.5A micro-USB (oficial)</td></tr>
+        <tr><td style="color:var(--mu)">GPIO</td><td>40 pinos (uso futuro: display, buzzer)</td></tr>
+        <tr><td style="color:var(--mu)">OS</td><td>Raspberry Pi OS Lite 64-bit (Bookworm)</td></tr>
+        <tr><td style="color:var(--mu)">Consumo</td><td>~700mA idle, ~1.2A carga total</td></tr>
+      </tbody></table></div>
+    </div>
+    <div>
+      <div class="card mb12">
+        <div class="card-hd">BOM — Server (kit basico: 1 USB + 2 rede)</div>
+        <div class="tbl-w"><table><thead><tr><th>Componente</th><th>Custo</th></tr></thead><tbody>
+          <tr><td>Raspberry Pi 3 Model B</td><td style="font-weight:700;color:var(--or)">R$ 280–350</td></tr>
+          <tr><td>microSD SanDisk 32GB A1</td><td>R$ 45</td></tr>
+          <tr><td>Fonte oficial 5V/2.5A</td><td>R$ 60</td></tr>
+          <tr><td>Case c/ ventilacao (RPi)</td><td>R$ 35</td></tr>
+          <tr><td>Impressora USB 80mm (caixa)</td><td>R$ 350–450</td></tr>
+          <tr><td>Cabo USB-A/USB-B</td><td>R$ 15</td></tr>
+          <tr><td>Switch 5p unmanaged (rede)</td><td>R$ 65</td></tr>
+          <tr><td>Impressora de rede 80mm x2</td><td>R$ 700–900</td></tr>
+          <tr style="font-weight:700;background:var(--inf-bg)"><td>TOTAL (kit 3 impressoras)</td><td style="color:#1E40AF">R$ 1.550–1.920</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Arquitetura do sistema — visao geral</div>
+    <div style="margin-top:12px">
+      <div class="arch-box mb12">
+        <div class="arch-title" style="color:var(--inf)">&#129383; Raspberry Pi 3 — Servidor ComandaBox</div>
+        <div class="g3" style="margin-top:4px">
+          <div class="arch-box" style="border-color:var(--or)">
+            <div style="font-size:10px;font-weight:700;color:var(--or2);margin-bottom:6px">APLICACAO WEB</div>
+            <div class="arch-inner">
+              <div class="arch-chip or">Express.js</div>
+              <div class="arch-chip or">Socket.io</div>
+              <div class="arch-chip or">JWT Auth</div>
+            </div>
+          </div>
+          <div class="arch-box" style="border-color:#2563EB">
+            <div style="font-size:10px;font-weight:700;color:#1E40AF;margin-bottom:6px">BANCO DE DADOS</div>
+            <div class="arch-inner">
+              <div class="arch-chip bl">SQLite3</div>
+              <div class="arch-chip bl">Migrations</div>
+            </div>
+          </div>
+          <div class="arch-box" style="border-color:var(--ok)">
+            <div style="font-size:10px;font-weight:700;color:#15803D;margin-bottom:6px">GERENCIADOR DE IMPRESSAO</div>
+            <div class="arch-inner">
+              <div class="arch-chip gn">CUPS (USB)</div>
+              <div class="arch-chip gn">TCP:9100 (rede)</div>
+              <div class="arch-chip gn">Fila por printer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="g3">
+        <div style="text-align:center">
+          <div class="arrow-down">&#8595;</div>
+          <div class="arch-box" style="border-color:var(--mu)">
+            <div style="font-size:10px;font-weight:600;color:var(--mu);margin-bottom:6px">REDE — CLIENTES</div>
+            <div class="arch-inner">
+              <div class="arch-chip am">Wi-Fi AP<br>192.168.4.x</div>
+              <div class="arch-chip am">Ethernet<br>LAN local</div>
+            </div>
+            <div style="font-size:11px;color:var(--mu);margin-top:6px">Operadores (celular, tablet, notebook)</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div class="arrow-down">&#8595;</div>
+          <div class="arch-box" style="border-color:var(--or)">
+            <div style="font-size:10px;font-weight:600;color:var(--or2);margin-bottom:6px">USB DIRETO</div>
+            <div class="arch-chip or" style="width:100%;justify-content:center">/dev/usb/lp0</div>
+            <div style="font-size:11px;color:var(--mu);margin-top:6px">Impressora caixa principal (USB)</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div class="arrow-down">&#8595;</div>
+          <div class="arch-box" style="border-color:#2563EB">
+            <div style="font-size:10px;font-weight:600;color:#1E40AF;margin-bottom:6px">TCP/IP REDE</div>
+            <div class="arch-inner">
+              <div class="arch-chip bl">192.168.1.101</div>
+              <div class="arch-chip bl">192.168.1.102</div>
+            </div>
+            <div style="font-size:11px;color:var(--mu);margin-top:6px">Impressoras cozinha + bar (rede)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Roteamento de impressao — feature exclusiva do Server</div>
+    <div class="g2" style="margin-top:10px">
+      <div>
+        <div style="font-size:12px;color:var(--tx);margin-bottom:12px;line-height:1.6">
+          O sistema usa uma hierarquia de 3 niveis para decidir qual impressora recebe cada ficha:
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border-left:3px solid var(--or)">
+            <div style="font-size:11px;font-weight:700;color:var(--or2);margin-bottom:3px">Nivel 1 — Produto especifico</div>
+            <div style="font-size:11px;color:var(--mu)">Se um produto tem impressora propria definida, usa ela. Ex: "Cerva gelada" sempre vai para o bar.</div>
+          </div>
+          <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border-left:3px solid #2563EB">
+            <div style="font-size:11px;font-weight:700;color:#1E40AF;margin-bottom:3px">Nivel 2 — Categoria</div>
+            <div style="font-size:11px;color:var(--mu)">Se a categoria tem impressora definida. Ex: "Lanches" → Cozinha, "Bebidas" → Bar.</div>
+          </div>
+          <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border-left:3px solid var(--ok)">
+            <div style="font-size:11px;font-weight:700;color:#15803D;margin-bottom:3px">Nivel 3 — Impressora do operador</div>
+            <div style="font-size:11px;color:var(--mu)">Fallback: impressora atribuida ao operador que fez o pedido.</div>
+          </div>
+        </div>
+        <div class="info-box gn" style="font-size:11px;margin-top:10px">
+          O comprovante total sempre vai para a impressora do operador (caixa), independente do roteamento das fichas.
+        </div>
+      </div>
+      <div>
+        <div class="route-diagram">
+          <div class="route-order">
+            <div style="font-size:11px;font-weight:700;color:var(--nv);margin-bottom:6px">Pedido #045 — Operador: Ana (Caixa)</div>
+            <div class="route-items">
+              <div class="route-item">2x Hamburguer <span class="bdg b-nv">Lanches</span></div>
+              <div class="route-item">1x Refrigerante <span class="bdg b-nv">Bebidas</span></div>
+              <div class="route-item">1x Canjica <span class="bdg b-nv">Doces</span></div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--mu);margin:6px 0;text-align:center">Sistema roteia por categoria &#8595;</div>
+          <div class="route-printers">
+            <div class="route-printer usb">
+              &#128247; Cozinha (USB)<br>
+              <small>Hamburguer x2</small>
+            </div>
+            <div class="route-printer net">
+              &#127995; Bar (IP .101)<br>
+              <small>Refrigerante x1</small>
+            </div>
+            <div class="route-printer net" style="border-color:var(--ok);color:#15803D">
+              &#127812; Doces (IP .102)<br>
+              <small>Canjica x1</small>
+            </div>
+            <div class="route-printer usb" style="border-color:var(--mu);color:var(--mu)">
+              &#128451; Caixa Ana (USB)<br>
+              <small>Comprovante #045</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Gestao de operadores</div>
+      <div style="font-size:12px;color:var(--tx);line-height:1.7;margin-bottom:10px">
+        Cada operador possui: nome, PIN de 4 digitos, papel (operador/gerente/admin) e impressora atribuida. Varios operadores podem estar logados simultaneamente — cada sessao e rastreada por JWT com expiracao.
+      </div>
+      <div class="tbl-w"><table><thead><tr><th>Papel</th><th>Permissoes</th></tr></thead><tbody>
+        <tr><td><span class="bdg b-bl">Operador</span></td><td>Lanca pedidos, visualiza fila propria</td></tr>
+        <tr><td><span class="bdg b-am">Gerente</span></td><td>Operador + gerencia estoque + relatorios</td></tr>
+        <tr><td><span class="bdg b-er">Admin</span></td><td>Acesso total: operadores, impressoras, config, sistema</td></tr>
+      </tbody></table></div>
+      <div class="code-blk" style="margin-top:10px;font-size:11px"><span class="cc">// Exemplo de payload JWT</span>
+{
+  <span class="ck">"sub"</span>: <span class="cn">3</span>,
+  <span class="ck">"name"</span>: <span class="cs">"Ana"</span>,
+  <span class="ck">"role"</span>: <span class="cs">"operator"</span>,
+  <span class="ck">"printer_id"</span>: <span class="cn">1</span>,
+  <span class="ck">"exp"</span>: <span class="cn">1719000000</span>
+}</div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Stack de software</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#128253;</div>
+          <div><div style="font-size:12px;font-weight:700">Node.js 20 LTS</div><div style="font-size:11px;color:var(--mu)">Runtime principal. Pre-instalavel via NodeSource APT.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#9881;</div>
+          <div><div style="font-size:12px;font-weight:700">Express.js 4 + Socket.io 4</div><div style="font-size:11px;color:var(--mu)">HTTP REST + WebSocket em tempo real para queue e painel.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#128451;</div>
+          <div><div style="font-size:12px;font-weight:700">SQLite3 (better-sqlite3)</div><div style="font-size:11px;color:var(--mu)">Banco relacional embutido. Sem servidor separado. Arquivo /data/comandabox.db.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#128247;</div>
+          <div><div style="font-size:12px;font-weight:700">CUPS + node-escpos</div><div style="font-size:11px;color:var(--mu)">CUPS para USB. TCP:9100 raw para impressoras de rede. ESC/POS customizado.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#128736;</div>
+          <div><div style="font-size:12px;font-weight:700">PM2 + systemd</div><div style="font-size:11px;color:var(--mu)">PM2 gerencia o processo Node.js. systemd inicia PM2 no boot automaticamente.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px">
+          <div style="font-size:18px">&#128225;</div>
+          <div><div style="font-size:12px;font-weight:700">hostapd + dnsmasq</div><div style="font-size:11px;color:var(--mu)">Wi-Fi AP no RPi. SSID configurable. IP fixo 192.168.4.1. DHCP local.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Esquema do banco de dados — SQLite</div>
+    <div class="g2" style="margin-top:10px">
+      <div class="code-blk" style="font-size:11px"><span class="cc">-- operators</span>
+<span class="ck">CREATE TABLE</span> operators (
+  id         INTEGER PRIMARY KEY,
+  name       TEXT NOT NULL,
+  pin        TEXT NOT NULL,        <span class="cc">-- bcrypt hash</span>
+  role       TEXT DEFAULT <span class="cs">"operator"</span>,
+  printer_id INTEGER REFERENCES printers(id),
+  active     INTEGER DEFAULT <span class="cn">1</span>,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+<span class="cc">-- printers</span>
+<span class="ck">CREATE TABLE</span> printers (
+  id         INTEGER PRIMARY KEY,
+  name       TEXT NOT NULL,
+  type       TEXT NOT NULL,        <span class="cc">-- "usb" | "network"</span>
+  connection TEXT NOT NULL,        <span class="cc">-- "/dev/usb/lp0" ou "IP:PORT"</span>
+  is_default INTEGER DEFAULT <span class="cn">0</span>,
+  status     TEXT DEFAULT <span class="cs">"unknown"</span>
+);
+
+<span class="cc">-- products</span>
+<span class="ck">CREATE TABLE</span> products (
+  id           INTEGER PRIMARY KEY,
+  name         TEXT NOT NULL,
+  price        REAL NOT NULL,
+  category     TEXT NOT NULL,
+  printer_id   INTEGER REFERENCES printers(id),
+  stock        INTEGER DEFAULT <span class="cn">-1</span>,   <span class="cc">-- -1=ilimitado</span>
+  stock_alert  INTEGER DEFAULT <span class="cn">5</span>,
+  active       INTEGER DEFAULT <span class="cn">1</span>
+);</div>
+      <div class="code-blk" style="font-size:11px"><span class="cc">-- category_printers (roteamento por categoria)</span>
+<span class="ck">CREATE TABLE</span> category_printers (
+  category   TEXT PRIMARY KEY,
+  printer_id INTEGER REFERENCES printers(id)
+);
+
+<span class="cc">-- orders</span>
+<span class="ck">CREATE TABLE</span> orders (
+  id            INTEGER PRIMARY KEY,
+  order_num     INTEGER NOT NULL,
+  operator_id   INTEGER REFERENCES operators(id),
+  payment       TEXT NOT NULL,
+  customer_name TEXT,
+  daily_code    TEXT NOT NULL,
+  total         REAL NOT NULL,
+  status        TEXT DEFAULT <span class="cs">"pending"</span>,
+  <span class="cc">-- pending|preparing|ready|collected</span>
+  created_at    TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+<span class="cc">-- order_items</span>
+<span class="ck">CREATE TABLE</span> order_items (
+  id           INTEGER PRIMARY KEY,
+  order_id     INTEGER REFERENCES orders(id),
+  product_id   INTEGER NOT NULL,
+  product_name TEXT NOT NULL,
+  category     TEXT NOT NULL,
+  price        REAL NOT NULL,
+  quantity     INTEGER NOT NULL
+);
+
+<span class="cc">-- settings</span>
+<span class="ck">CREATE TABLE</span> settings (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);</div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">API REST — Referencia completa</div>
+    <div class="tbl-w"><table><thead><tr><th>Metodo</th><th>Rota</th><th>Papel</th><th>Descricao</th></tr></thead><tbody>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/auth/login</td><td>—</td><td>Login com PIN. Retorna JWT.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/auth/logout</td><td>Todos</td><td>Invalida sessao.</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/products</td><td>Todos</td><td>Lista produtos ativos.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/products</td><td>Admin</td><td>Cria produto.</td></tr>
+      <tr><td><span class="mth m-pu">PUT</span></td><td>/api/products/:id</td><td>Gerente</td><td>Atualiza produto / estoque.</td></tr>
+      <tr><td><span class="mth m-d">DEL</span></td><td>/api/products/:id</td><td>Admin</td><td>Remove produto.</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/operators</td><td>Admin</td><td>Lista operadores.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/operators</td><td>Admin</td><td>Cria operador.</td></tr>
+      <tr><td><span class="mth m-pu">PUT</span></td><td>/api/operators/:id</td><td>Admin</td><td>Atualiza operador / muda impressora.</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/printers</td><td>Gerente</td><td>Lista impressoras e status.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/printers</td><td>Admin</td><td>Adiciona impressora.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/printers/:id/test</td><td>Admin</td><td>Testa conexao + pagina de teste.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/orders</td><td>Operador</td><td>Cria pedido + dispara impressao roteada.</td></tr>
+      <tr><td><span class="mth m-pu">PUT</span></td><td>/api/orders/:id/status</td><td>Todos</td><td>Atualiza status (preparing/ready/collected).</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/orders</td><td>Gerente</td><td>Lista pedidos com filtros (data, status, operador).</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/dashboard</td><td>Gerente</td><td>KPIs + dados para graficos.</td></tr>
+      <tr><td><span class="mth m-g">GET</span></td><td>/api/settings</td><td>Admin</td><td>Configuracoes do sistema.</td></tr>
+      <tr><td><span class="mth m-pu">PUT</span></td><td>/api/settings</td><td>Admin</td><td>Atualiza configuracoes.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/routing/categories</td><td>Admin</td><td>Define impressora por categoria.</td></tr>
+      <tr><td><span class="mth m-p">POST</span></td><td>/api/panel/call/:orderNum</td><td>Gerente</td><td>Chama numero no painel (broadcast WS).</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">WebSocket — eventos em tempo real</div>
+      <div class="tbl-w"><table><thead><tr><th>Direcao</th><th>Evento</th><th>Payload</th></tr></thead><tbody>
+        <tr><td><span class="bdg b-gn">S→C</span></td><td>order:new</td><td>{order, operator_name}</td></tr>
+        <tr><td><span class="bdg b-gn">S→C</span></td><td>order:status</td><td>{id, status, order_num}</td></tr>
+        <tr><td><span class="bdg b-gn">S→C</span></td><td>panel:call</td><td>{order_num, message}</td></tr>
+        <tr><td><span class="bdg b-gn">S→C</span></td><td>printer:status</td><td>{id, name, status}</td></tr>
+        <tr><td><span class="bdg b-gn">S→C</span></td><td>stock:update</td><td>{product_id, stock}</td></tr>
+        <tr><td><span class="bdg b-or">C→S</span></td><td>queue:subscribe</td><td>{role}</td></tr>
+        <tr><td><span class="bdg b-or">C→S</span></td><td>panel:subscribe</td><td>— (para TV)</td></tr>
+      </tbody></table></div>
+      <div class="info-box gn" style="font-size:11px;margin-top:10px">
+        A TV do painel abre uma pagina HTML estatica (/panel) e conecta via WebSocket. Recebe apenas evento <code>panel:call</code>. Funciona em qualquer smart TV com browser.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Configuracao de rede — dois modos</div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--nv);margin-bottom:5px">Modo A — RPi como ponto de acesso (Wi-Fi AP)</div>
+        <div class="code-blk" style="font-size:10.5px"><span class="cc"># /etc/hostapd/hostapd.conf</span>
+interface=wlan0
+ssid=<span class="cs">COMANDABOX</span>
+hw_mode=g
+channel=6
+wpa=2
+wpa_passphrase=<span class="cs">COMANDABOX</span>
+wpa_key_mgmt=WPA-PSK
+
+<span class="cc"># /etc/dnsmasq.conf</span>
+interface=wlan0
+dhcp-range=<span class="cn">192.168.4.100</span>,<span class="cn">192.168.4.200</span>,24h
+address=/<span class="cs">comandabox.local</span>/<span class="cn">192.168.4.1</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--nv);margin-bottom:5px">Modo B — RPi na rede existente (Ethernet)</div>
+        <div class="code-blk" style="font-size:10.5px"><span class="cc"># /etc/dhcpcd.conf</span>
+interface eth0
+static ip_address=<span class="cn">192.168.1.10</span>/24
+static routers=<span class="cn">192.168.1.1</span>
+
+<span class="cc"># Operadores acessam:</span>
+<span class="cs">http://192.168.1.10</span>  ou
+<span class="cs">http://comandabox.local</span> (mDNS)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Guia de instalacao passo a passo</div>
+    <div style="margin-top:12px">
+      <div class="install-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Flash do sistema operacional</div>
+          <div class="step-desc">Use Raspberry Pi Imager. Selecione "Raspberry Pi OS Lite (64-bit)". Configure: hostname=comandabox, SSH habilitado, usuario/senha. Escreva no microSD 32GB.</div>
+          <div class="code-blk" style="font-size:11px"><span class="cc"># Apos primeiro boot via SSH:</span>
+sudo apt update && sudo apt upgrade -y
+sudo raspi-config <span class="cc"># expand filesystem, set locale pt_BR</span></div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Instalar Node.js 20 LTS</div>
+          <div class="code-blk" style="font-size:11px">curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+sudo apt install -y nodejs
+node --version  <span class="cc"># v20.x.x</span></div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Instalar e configurar CUPS (impressora USB)</div>
+          <div class="step-desc">CUPS gerencia a impressora USB conectada diretamente no RPi.</div>
+          <div class="code-blk" style="font-size:11px">sudo apt install -y cups
+sudo usermod -a -G lpadmin pi
+sudo systemctl enable cups
+
+<span class="cc"># Adicionar impressora USB via CUPS web UI:</span>
+<span class="cc"># http://localhost:631 (acesso local)</span>
+<span class="cc"># Ou via CLI:</span>
+sudo lpadmin -p CaixaPrincipal -E   -v usb://Manufacturer/Model   -m drv:///sample.drv/generic.ppd
+
+<span class="cc"># Verificar dispositivo:</span>
+ls /dev/usb/lp*  <span class="cc"># /dev/usb/lp0</span></div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Configurar Wi-Fi AP (hostapd + dnsmasq)</div>
+          <div class="code-blk" style="font-size:11px">sudo apt install -y hostapd dnsmasq
+sudo systemctl unmask hostapd
+
+<span class="cc"># Configurar IP estatico para wlan0</span>
+sudo nano /etc/dhcpcd.conf
+<span class="cc">  interface wlan0</span>
+<span class="cc">  static ip_address=192.168.4.1/24</span>
+<span class="cc">  nohook wpa_supplicant</span>
+
+<span class="cc"># Copiar configs de hostapd e dnsmasq</span>
+<span class="cc"># (ver secao de rede acima)</span>
+sudo systemctl enable hostapd dnsmasq</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Deploy da aplicacao ComandaBox Server</div>
+          <div class="code-blk" style="font-size:11px">cd /opt
+sudo git clone https://github.com/seu-repo/comandabox-server
+sudo chown -R pi:pi /opt/comandabox-server
+cd /opt/comandabox-server
+npm install --production
+
+<span class="cc"># Inicializar banco de dados</span>
+npm run db:migrate
+npm run db:seed  <span class="cc"># cria admin padrao (PIN: 0000)</span></div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Instalar PM2 e configurar autostart</div>
+          <div class="code-blk" style="font-size:11px">sudo npm install -g pm2
+pm2 start /opt/comandabox-server/src/index.js   --name comandabox --watch
+pm2 save
+pm2 startup systemd
+<span class="cc"># Executar o comando que o PM2 sugerir</span>
+
+<span class="cc"># Verificar:</span>
+pm2 status
+pm2 logs comandabox</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">Configurar nginx como proxy reverso (porta 80)</div>
+          <div class="code-blk" style="font-size:11px">sudo apt install -y nginx
+sudo nano /etc/nginx/sites-available/comandabox
+
+<span class="cc">  server {</span>
+<span class="cc">    listen 80;</span>
+<span class="cc">    server_name comandabox.local _;</span>
+<span class="cc">    location / {</span>
+<span class="cc">      proxy_pass http://127.0.0.1:3000;</span>
+<span class="cc">      proxy_http_version 1.1;</span>
+<span class="cc">      proxy_set_header Upgrade $http_upgrade;</span>
+<span class="cc">      proxy_set_header Connection "upgrade";</span>
+<span class="cc">    }</span>
+<span class="cc">  }</span>
+
+sudo ln -s /etc/nginx/sites-available/comandabox   /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <div class="step-title">Primeiro acesso e configuracao inicial</div>
+          <div class="step-desc">Acesse http://192.168.4.1 (ou http://comandabox.local) de qualquer dispositivo na rede.</div>
+          <div class="code-blk" style="font-size:11px"><span class="cc"># Credenciais padrao (TROCAR AO PRIMEIRO ACESSO):</span>
+Admin PIN: <span class="cs">0000</span>
+
+<span class="cc"># Sequencia de configuracao:</span>
+<span class="cn">1.</span> Admin > Impressoras > Adicionar USB e rede
+<span class="cn">2.</span> Admin > Roteamento > Mapear categorias
+<span class="cn">3.</span> Admin > Operadores > Criar operadores + atribuir impressoras
+<span class="cn">4.</span> Admin > Produtos > Cadastrar cardapio
+<span class="cn">5.</span> Senha do dia > Definir senha de abertura
+<span class="cn">6.</span> Testar impressora em cada ponto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-hd">Topologia de rede — evento tipico</div>
+      <div class="net-diagram">
+<span class="net-lbl">[ EVENTO ]</span>
+
+Celulares/tablets dos operadores
+    |          |          |
+  Wi-Fi AP  Wi-Fi AP  Wi-Fi AP
+    |________________________|
+              |
+    <span style="color:#F97316">[ Raspberry Pi 3B ]</span>
+       192.168.4.1 (wlan0 AP)
+       192.168.1.10 (eth0)
+              |
+    __________|__________
+   |          |          |
+USB lp0   TCP:9100   TCP:9100
+   |          |          |
+Caixa     Cozinha      Bar
+(USB)    (IP .101)  (IP .102)
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Escalabilidade e upgrades</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:var(--nv);margin-bottom:3px">&#8594; RPi 4 (upgrade)</div>
+          <div style="font-size:11px;color:var(--mu)">Mesmo software, apenas troca o hardware. RPi 4 tem Gigabit Ethernet real, USB 3.0 e 4-8GB RAM — 10x mais rapido para eventos muito grandes.</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:var(--nv);margin-bottom:3px">&#8594; PostgreSQL (banco externo)</div>
+          <div style="font-size:11px;color:var(--mu)">Para eventos recorrentes ou historico multi-evento, substituir SQLite por PostgreSQL no proprio RPi ou servidor remoto.</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:var(--nv);margin-bottom:3px">&#8594; Display local (LCD/touchscreen)</div>
+          <div style="font-size:11px;color:var(--mu)">RPi 7" touchscreen no GPIO — pode ser o proprio painel de senhas fisico ou monitor de administracao local.</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:var(--nv);margin-bottom:3px">&#8594; Multi-RPi (clusters)</div>
+          <div style="font-size:11px;color:var(--mu)">Para festas muito grandes: um RPi por setor, sincronizados via Ethernet com banco compartilhado.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-compare" class="sec">
+  <div class="pg-title">Comparativo — Tres Versoes</div>
+  <div class="pg-sub">Resumo completo de hardware, software, capacidades e custo para ajudar na escolha certa.</div>
+
+  <div class="card mb20">
+    <div class="card-hd">Matriz de funcionalidades</div>
+    <div class="tbl-w"><table>
+      <thead><tr>
+        <th>Funcionalidade</th>
+        <th><span class="bdg b-or">Stick</span></th>
+        <th><span class="bdg b-pu">Pro</span></th>
+        <th><span class="bdg b-bl">Server (RPi)</span></th>
+      </tr></thead>
+      <tbody>
+        <tr><td><strong>Hardware base</strong></td><td>ESP32-ETH01</td><td>ESP32-ETH01</td><td>Raspberry Pi 3B</td></tr>
+        <tr><td><strong>Sistema operacional</strong></td><td>Firmware RTOS</td><td>Firmware RTOS</td><td>Linux (RPi OS)</td></tr>
+        <tr><td><strong>Operadores simultaneos</strong></td><td style="color:var(--er)">1</td><td style="color:var(--er)">1</td><td style="color:var(--ok)">Ilimitados</td></tr>
+        <tr><td><strong>Impressoras suportadas</strong></td><td style="color:var(--er)">1 (Ethernet)</td><td style="color:var(--er)">1 (TTL interna)</td><td style="color:var(--ok)">USB + N de rede</td></tr>
+        <tr><td><strong>Roteamento por categoria</strong></td><td style="color:var(--er)">Nao</td><td style="color:var(--er)">Nao</td><td style="color:var(--ok)">Sim</td></tr>
+        <tr><td><strong>Banco de dados</strong></td><td>JSON / LittleFS</td><td>JSON / LittleFS</td><td>SQLite relacional</td></tr>
+        <tr><td><strong>Armazenamento</strong></td><td>~1.4MB LittleFS</td><td>~1.4MB LittleFS</td><td>32GB microSD</td></tr>
+        <tr><td><strong>Capacidade de pedidos</strong></td><td>~1000/dia</td><td>~1000/dia</td><td>Ilimitado (pratico)</td></tr>
+        <tr><td><strong>Gestao de operadores</strong></td><td style="color:var(--er)">Nao</td><td style="color:var(--er)">Nao</td><td style="color:var(--ok)">Sim (roles)</td></tr>
+        <tr><td><strong>Dashboard com graficos</strong></td><td>Basico (SVG)</td><td>Basico (SVG)</td><td>Completo (Chart.js)</td></tr>
+        <tr><td><strong>Relatorios CSV</strong></td><td>Sim</td><td>Sim</td><td>Sim (completo)</td></tr>
+        <tr><td><strong>Painel de senhas</strong></td><td>Sim (WS)</td><td>Sim (WS)</td><td>Sim (WS dedicado)</td></tr>
+        <tr><td><strong>Fila da cozinha</strong></td><td>Sim</td><td>Sim</td><td>Sim (multi-operador)</td></tr>
+        <tr><td><strong>Controle de estoque</strong></td><td>Sim</td><td>Sim</td><td>Sim (SQLite)</td></tr>
+        <tr><td><strong>SSID Wi-Fi</strong></td><td>COMANDABOX-XXXX</td><td>COMANDABOX-XXXX</td><td>Configuravel</td></tr>
+        <tr><td><strong>Factory reset</strong></td><td>GPIO32 (5s boot)</td><td>GPIO32 (5s boot)</td><td>SSH / script</td></tr>
+        <tr><td><strong>OTA update</strong></td><td>Via /api/update</td><td>Via /api/update</td><td>git pull + pm2 reload</td></tr>
+        <tr><td><strong>Requer internet</strong></td><td style="color:var(--ok)">Nao</td><td style="color:var(--ok)">Nao</td><td style="color:var(--ok)">Nao (totalmente offline)</td></tr>
+        <tr><td><strong>Configuracao inicial</strong></td><td>5 min</td><td>2 min</td><td>30-60 min</td></tr>
+        <tr><td><strong>Alimentacao</strong></td><td>USB-C 5V</td><td>AC 110/220V</td><td>micro-USB 5V/2.5A</td></tr>
+        <tr><td><strong>Dimensoes (aprox)</strong></td><td>65x40x18mm</td><td>150x100x80mm</td><td>Standard RPi case</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="card mb20">
+    <div class="card-hd">Comparativo de hardware e custo</div>
+    <div class="tbl-w"><table>
+      <thead><tr><th>Especificacao</th><th>Stick</th><th>Pro</th><th>Server (RPi)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CPU</strong></td><td>2x 240MHz LX6</td><td>2x 240MHz LX6</td><td>4x 1.2GHz A53</td></tr>
+        <tr><td><strong>RAM</strong></td><td>320KB util</td><td>320KB util</td><td>1GB DDR2</td></tr>
+        <tr><td><strong>Storage</strong></td><td>1.4MB LittleFS</td><td>1.4MB LittleFS</td><td>32GB microSD</td></tr>
+        <tr><td><strong>USB</strong></td><td>Nenhum</td><td>Nenhum</td><td>4x USB 2.0</td></tr>
+        <tr><td><strong>Ethernet</strong></td><td>100Mbps (LAN8720)</td><td>100Mbps (LAN8720)</td><td>100Mbps (via USB)</td></tr>
+        <tr><td><strong>Wi-Fi</strong></td><td>802.11n AP</td><td>802.11n AP</td><td>802.11n AP/Client</td></tr>
+        <tr><td><strong>Consumo</strong></td><td>~1.4W</td><td>~12W (c/ impressora)</td><td>~4-6W</td></tr>
+        <tr><td><strong>Custo hardware</strong></td><td>R$ 53</td><td>R$ 287-307</td><td>R$ 420-450</td></tr>
+        <tr><td><strong>Custo total kit</strong></td><td>R$ 53 + impressora existente</td><td>R$ 287-307</td><td>R$ 750-1.920 (kit basico)</td></tr>
+        <tr><td><strong>Preco sugerido venda</strong></td><td>R$ 150-200</td><td>R$ 550-650</td><td>R$ 1.500-2.500</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hd">Arvore de decisao — qual versao escolher?</div>
+      <div style="font-size:12px;display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px;background:var(--bg);border-radius:8px;border-left:3px solid var(--or)">
+          <strong>Tenho so 1 caixa e ja tenho impressora de rede?</strong><br>
+          <span style="color:var(--mu)">→ ComandaBox Stick (mais barato, facil)</span>
+        </div>
+        <div style="padding:10px;background:var(--bg);border-radius:8px;border-left:3px solid var(--pu)">
+          <strong>Tenho so 1 caixa e nao tenho impressora de rede?</strong><br>
+          <span style="color:var(--mu)">→ ComandaBox Pro (plug & play, tudo incluso)</span>
+        </div>
+        <div style="padding:10px;background:var(--bg);border-radius:8px;border-left:3px solid var(--inf)">
+          <strong>Varios caixas OU varios balcoes de retirada?</strong><br>
+          <span style="color:var(--mu)">→ ComandaBox Server (RPi) — unica opcao</span>
+        </div>
+        <div style="padding:10px;background:var(--bg);border-radius:8px;border-left:3px solid var(--inf)">
+          <strong>Evento recorrente/fixo ou lanchonete permanente?</strong><br>
+          <span style="color:var(--mu)">→ ComandaBox Server — banco de dados, historico, relatorios avancados</span>
+        </div>
+        <div style="padding:10px;background:var(--bg);border-radius:8px;border-left:3px solid var(--ok)">
+          <strong>Quero escalar depois?</strong><br>
+          <span style="color:var(--mu)">→ Compre varios Stick/Pro para eventos pequenos, e Server para os grandes. Nao sao excludentes.</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">Roadmap de funcionalidades futuras</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--brd)">
+          <span class="bdg b-gn" style="flex-shrink:0">v1.1</span>
+          <div style="font-size:12px">OTA update via interface admin (Stick/Pro). Push de firmware sem cabo USB.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--brd)">
+          <span class="bdg b-gn" style="flex-shrink:0">v1.2</span>
+          <div style="font-size:12px">Modo multi-unidade Stick: varios Sticks sincronizados via broadcast UDP para painel central.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--brd)">
+          <span class="bdg b-am" style="flex-shrink:0">v2.0</span>
+          <div style="font-size:12px">Server: cardapio por QR code (cliente faz pedido no proprio celular). Operador apenas confirma.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--brd)">
+          <span class="bdg b-am" style="flex-shrink:0">v2.1</span>
+          <div style="font-size:12px">Integracao com TEF (Stone, PagSeguro) para impressao automatica apos confirmacao de pagamento.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--brd)">
+          <span class="bdg b-pu" style="flex-shrink:0">v3.0</span>
+          <div style="font-size:12px">App Android/iOS nativo (React Native) para interface do operador com haptic feedback.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:7px 0">
+          <span class="bdg b-pu" style="flex-shrink:0">v3.1</span>
+          <div style="font-size:12px">Dashboard na nuvem para acompanhar multiplos eventos simultaneos em tempo real.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" style="position:fixed;bottom:20px;right:20px;background:var(--nv);color:#fff;padding:10px 16px;border-radius:10px;font-size:12px;font-weight:500;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:9999;transform:translateY(60px);opacity:0;transition:all .25s;display:none"></div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
+  document.querySelectorAll(".tb").forEach(b=>b.classList.remove("on"));
+  document.getElementById("sec-"+id).classList.add("on");
+  const idx={overview:0,stick:1,pro:2,rpi:3,compare:4};
+  document.querySelectorAll(".tb")[idx[id]].classList.add("on");
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
