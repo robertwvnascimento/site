@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; base-uri 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; manifest-src 'self'; connect-src 'self'; object-src 'none'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0b1722" />
+  <meta name="description" content="XôPedras — marque cada garrafa que você bebe, acompanhe sua meta diária de água e receba lembretes." />
+  <title>XôPedras — controle de água</title>
+
+  <link rel="manifest" href="./xopedras.webmanifest" />
+  <link rel="icon" href="./xopedras-favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="./xopedras-apple-touch.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="XôPedras" />
+
+  <link rel="stylesheet" href="./xopedras.css" />
+</head>
+<body>
+  <div class="app" id="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand__mark" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M12 2.5C12 2.5 5.5 9.7 5.5 14.2a6.5 6.5 0 0 0 13 0C18.5 9.7 12 2.5 12 2.5Z" fill="url(#bm)"/>
+          <defs><linearGradient id="bm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38d4f0"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+        </svg>
+        <span class="brand__name">XôPedras</span>
+      </div>
+      <button class="iconbtn" id="openSettings" type="button" aria-label="Abrir ajustes">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9.4 4 .1-1-.1-1 2-1.6-2-3.5-2.4 1a7.7 7.7 0 0 0-1.7-1l-.4-2.6H9.1L8.7 4a7.7 7.7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.6L4.5 11l.1 1-2 1.6 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h5.8l.4-2.6c.6-.3 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.6Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </header>
+
+    <div class="install" id="installBar" hidden>
+      <span class="install__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="install__txt">
+        <strong>Instalar o XôPedras</strong>
+        <span>Atalho na tela inicial, abre em tela cheia.</span>
+      </div>
+      <button class="install__btn" id="installBtn" type="button">Instalar</button>
+      <button class="install__x" id="installDismiss" type="button" aria-label="Agora não">&times;</button>
+    </div>
+
+    <main class="stage">
+      <p class="eyebrow"><span id="dateLabel">hoje</span></p>
+
+      <!-- HERO: o copo que enche -->
+      <div class="vessel" role="img" aria-label="Nível de hidratação do dia">
+        <svg class="vessel__svg" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#38d4f0"/>
+              <stop offset="55%" stop-color="#2a9cf0"/>
+              <stop offset="100%" stop-color="#2563eb"/>
+            </linearGradient>
+            <clipPath id="glassClip">
+              <path d="M44 26 H156 a10 10 0 0 1 10 10 l-8 196 a18 18 0 0 1 -18 16 H60 a18 18 0 0 1 -18 -16 l-8 -196 a10 10 0 0 1 10 -10 Z"/>
+            </clipPath>
+          </defs>
+
+          <!-- água -->
+          <g clip-path="url(#glassClip)">
+            <rect x="0" y="0" width="200" height="280" fill="#0e1d2b"/>
+            <g id="water" class="water">
+              <g class="waves">
+                <path class="wave wave--back" d="M-200 12 q50 -16 100 0 t100 0 t100 0 t100 0 V300 H-200 Z"/>
+                <path class="wave wave--front" d="M-200 16 q50 16 100 0 t100 0 t100 0 t100 0 V300 H-200 Z"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- contorno do copo -->
+          <path class="glass__outline"
+                d="M44 26 H156 a10 10 0 0 1 10 10 l-8 196 a18 18 0 0 1 -18 16 H60 a18 18 0 0 1 -18 -16 l-8 -196 a10 10 0 0 1 10 -10 Z"
+                fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3"/>
+          <line x1="46" y1="24" x2="154" y2="24" stroke="rgba(255,255,255,.35)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+
+        <div class="vessel__readout">
+          <div class="liters"><span id="litersNow">0,0</span><span class="liters__unit"> L</span></div>
+          <div class="goalline">de <span id="litersGoal">5,0</span> L</div>
+        </div>
+      </div>
+
+      <!-- garrafas em "pips" -->
+      <div class="bottles" id="bottles" aria-label="Garrafas bebidas hoje"></div>
+      <p class="remaining" id="remaining">Toque no botão a cada garrafa de 800 ml.</p>
+
+      <!-- ações -->
+      <div class="actions">
+        <button class="logbtn" id="logBtn" type="button">
+          <span class="logbtn__plus" aria-hidden="true">+</span>
+          <span class="logbtn__txt">Bebi uma garrafa</span>
+          <span class="logbtn__sub" id="logSub">800 ml</span>
+        </button>
+        <button class="undo" id="undoBtn" type="button" disabled aria-label="Desfazer última garrafa">Desfazer</button>
+      </div>
+
+      <!-- histórico -->
+      <section class="history" aria-label="Últimos 7 dias">
+        <h2 class="history__title">Últimos 7 dias</h2>
+        <div class="history__bars" id="historyBars"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Painel de ajustes -->
+  <div class="sheet" id="settingsSheet" hidden>
+    <div class="sheet__backdrop" id="sheetBackdrop"></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet__grab" aria-hidden="true"></div>
+      <h2 id="sheetTitle" class="sheet__title">Ajustes</h2>
+
+      <button class="installrow" id="installBtn2" type="button" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Instalar na tela inicial
+      </button>
+
+      <label class="field">
+        <span class="field__label">Meta diária</span>
+        <span class="field__row">
+          <input class="field__input" id="goalInput" type="number" inputmode="decimal" min="0.5" step="0.1" />
+          <span class="field__suffix">L</span>
+        </span>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Tamanho da garrafa</span>
+        <span class="field__row">
+          <input class="field__input" id="bottleInput" type="number" inputmode="numeric" min="50" step="50" />
+          <span class="field__suffix">ml</span>
+        </span>
+      </label>
+
+      <hr class="sheet__div" />
+
+      <div class="toggle">
+        <div>
+          <div class="toggle__label">Lembretes</div>
+          <div class="toggle__hint" id="notifHint">Avisos para você não esquecer de beber.</div>
+        </div>
+        <button class="switch" id="notifSwitch" type="button" role="switch" aria-checked="false" aria-label="Ativar lembretes">
+          <span class="switch__knob"></span>
+        </button>
+      </div>
+
+      <div class="reminder-config" id="reminderConfig" hidden>
+        <label class="field">
+          <span class="field__label">A cada</span>
+          <span class="field__row">
+            <input class="field__input" id="intervalInput" type="number" inputmode="numeric" min="15" step="5" />
+            <span class="field__suffix">min</span>
+          </span>
+        </label>
+        <div class="field-pair">
+          <label class="field">
+            <span class="field__label">Início</span>
+            <input class="field__input" id="startInput" type="time" />
+          </label>
+          <label class="field">
+            <span class="field__label">Fim</span>
+            <input class="field__input" id="endInput" type="time" />
+          </label>
+        </div>
+        <button class="ghostbtn" id="testNotif" type="button">Enviar um lembrete de teste</button>
+        <p class="note" id="bgNote"></p>
+      </div>
+
+      <hr class="sheet__div" />
+      <button class="dangerbtn" id="resetToday" type="button">Zerar o dia de hoje</button>
+
+      <button class="sheet__close" id="closeSettings" type="button">Concluir</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="./xopedras.js" defer></script>
+</body>
+</html>
