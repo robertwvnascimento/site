@@ -43,14 +43,16 @@ O service worker do XôPedras é registrado com **escopo `./xopedras`**, ou seja
 
 > O botão "Instalar" só aparece quando o Chrome considera o app instalável (precisa de HTTPS + manifest + service worker, tudo já incluído) e quando ele ainda **não** está instalado. Em iPhone não existe esse botão: lá a instalação é via **Compartilhar → Adicionar à Tela de Início**.
 
-### Para os lembretes não morrerem em segundo plano (importante na Realme UI)
+### Para os lembretes não morrerem em segundo plano (Android com economia de bateria)
 
-A Realme UI / ColorOS é agressiva com bateria e mata tarefas em segundo plano — isso afeta **qualquer** app, inclusive o Chrome. Faça uma vez:
+Vários fabricantes Android (Xiaomi/MIUI, Oppo/Realme/ColorOS, Samsung, etc.) matam tarefas em segundo plano de forma agressiva — isso afeta **qualquer** app, inclusive o navegador. Se os lembretes atrasarem com o app fechado, faça uma vez (os nomes variam por aparelho):
 
-- **Ajustes → Apps → Chrome → Uso da bateria** → permita **execução em segundo plano** / desative a economia.
-- Em alguns aparelhos: **Ajustes → Bateria → ⋮ → Otimização de bateria → Chrome → Não otimizar**.
-- Se existir **Inicialização automática (Autostart)**, ative para o Chrome.
-- Mantenha as **notificações do Chrome** ligadas no Android.
+- **Ajustes → Apps → (seu navegador) → Bateria** → permita **execução em segundo plano** / desative a economia.
+- **Ajustes → Bateria → Otimização de bateria → (navegador) → Não otimizar**.
+- Se existir **Inicialização automática (Autostart)**, ative para o navegador.
+- Mantenha as **notificações do navegador** ligadas no Android.
+
+> No seu Realme 12 Pro+ (Realme UI), o caminho costuma ser **Ajustes → Apps → Gerenciamento de apps → Chrome → Uso de bateria → Permitir atividade em segundo plano**.
 
 ## Sobre o alcance dos lembretes (transparência técnica)
 

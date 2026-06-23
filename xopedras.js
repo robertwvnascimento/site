@@ -239,13 +239,13 @@
     if (Notification.permission === "denied") {
       el.notifHint.textContent = "As notificações estão bloqueadas. Libere nas permissões do site no Android.";
     } else {
-      el.notifHint.textContent = "Avisos para você não esquecer de beber.";
+      el.notifHint.textContent = "Avisos para você não esquecer de beber. O app funciona normalmente sem eles.";
     }
   }
   function updateBgNote() {
     el.bgNote.textContent = triggersSupported
-      ? "Os lembretes funcionam mesmo com o app fechado. Se não chegarem, libere a execução em segundo plano do Chrome nos ajustes de bateria do Android."
-      : "Neste aparelho, os lembretes só disparam com o app aberto (mesmo em segundo plano). Mantenha o XôPedras instalado na tela inicial e libere a bateria do Chrome nos ajustes do Android.";
+      ? "Os lembretes funcionam mesmo com o app fechado. Se algum não chegar, libere a execução em segundo plano do navegador nos ajustes de bateria do Android."
+      : "Neste aparelho, os lembretes só disparam com o app aberto (mesmo em segundo plano). Instale o XôPedras na tela inicial e, em aparelhos com economia de bateria agressiva (Xiaomi, Oppo, Realme, Samsung), libere a execução em segundo plano do navegador.";
   }
 
   async function getReg() { return navigator.serviceWorker.ready; }
