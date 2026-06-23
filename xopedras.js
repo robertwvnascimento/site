@@ -5,13 +5,36 @@
 (() => {
   const STORAGE_KEY = "xopedras.v1";
   const MAX_TRIGGER_SLOTS = 24; // limite de notificações agendadas de uma vez
-  const TITLE = "Hora de beber água 💧";
+  const TITLE = "XôPedras 💧";
+
+  // Frases dos lembretes — uma diferente a cada notificação.
+  const MESSAGES = [
+    "Bebe água agora. Ou prefere sentir aquela dorzinha de novo? 😬",
+    "Lembra da dor nos rins? Pois é. Bora de água. 💧",
+    "Pedra nos rins ODEIA água. Faz por mal: manda um copo. 😈",
+    "Seus rins mandaram um oi — e pediram água, com urgência.",
+    "Água agora ou choro depois. Você escolhe. 💧",
+    "Aquela cólica renal tá só esperando você esquecer. Não dá esse gostinho a ela.",
+    "Hidrata aí, campeão. Pedra nenhuma te derruba hoje. 💪💧",
+    "Seu xixi tá pedindo socorro (e mais transparente, por favor). Bebe água.",
+    "Água é bem mais barata que cirurgia. Bora beber. 💧",
+    "Xô, pedras! Um copo d'água agora e segue o jogo. 💧",
+    "Não é sede, é estratégia anti-pedra. Bebe já.",
+    "Menos pedra, mais água. Teus rins agradecem (e tu também). 💧",
+  ];
+  // Sorteia um índice diferente do anterior.
+  function nextMsgIndex(prev) {
+    if (MESSAGES.length < 2) return 0;
+    let i;
+    do { i = Math.floor(Math.random() * MESSAGES.length); } while (i === prev);
+    return i;
+  }
 
   const DEFAULTS = {
     settings: {
       goalMl: 5000,
       bottleMl: 800,
-      reminder: { enabled: false, intervalMin: 90, start: "07:00", end: "23:00", lastFired: 0 },
+      reminder: { enabled: false, intervalMin: 90, start: "07:00", end: "23:00", lastFired: 0, lastMsg: -1 },
     },
     days: {}, // "YYYY-MM-DD": [ { t: epochMs, ml: number } ]
   };
@@ -288,12 +311,13 @@
       const reg = await getReg();
       await clearReminders();
       const slots = buildSlots();
-      const body = `Mais uma garrafa de ${state.settings.bottleMl} ml. Você consegue!`;
+      let mi = s.lastMsg;
       for (const ts of slots) {
+        mi = nextMsgIndex(mi);
         try {
           await reg.showNotification(TITLE, {
             tag: `xopedras-rem-${ts}`,
-            body,
+            body: MESSAGES[mi],
             icon: "./xopedras-icon-192.png",
             badge: "./xopedras-icon-192.png",
             showTrigger: new TimestampTrigger(ts),
@@ -303,6 +327,7 @@
           });
         } catch {}
       }
+      s.lastMsg = mi; save();
     } else {
       startFallback();
     }
@@ -325,12 +350,13 @@
       if (due && withinWindow()) {
         try {
           const reg = await getReg();
+          const mi = nextMsgIndex(s.lastMsg);
           await reg.showNotification(TITLE, {
             tag: `xopedras-rem-${now}`,
-            body: `Mais uma garrafa de ${state.settings.bottleMl} ml.`,
+            body: MESSAGES[mi],
             icon: "./xopedras-icon-192.png", badge: "./xopedras-icon-192.png", data: { type: "reminder" },
           });
-          s.lastFired = now; save();
+          s.lastFired = now; s.lastMsg = mi; save();
         } catch {}
       }
     }, 30000);
@@ -368,9 +394,9 @@
     if (!ok) { toast("Permissão de notificação não concedida."); return; }
     try {
       const reg = await getReg();
-      await reg.showNotification("XôPedras 💧", {
+      await reg.showNotification(TITLE, {
         tag: "xopedras-test",
-        body: "É assim que seus lembretes vão chegar. Bora beber!",
+        body: MESSAGES[nextMsgIndex(state.settings.reminder.lastMsg)],
         icon: "./xopedras-icon-192.png", badge: "./xopedras-icon-192.png",
       });
     } catch { toast("Não consegui enviar o teste."); }
