@@ -1,40 +1,46 @@
-/* TENOR — service worker (offline app shell) */
-const CACHE = "tenor-v3";
-const ASSETS = [
-  "./tenorapp.html",
-  "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./icon-maskable-512.png"
-];
+/* Patrimon — Service Worker
+   App shell em cache (offline) + bibliotecas CDN cacheadas após 1º uso. */
+'use strict';
+const VERSAO = 'patrimon-v3';        // ↑ mude ao publicar nova versão
+const CACHE_APP = VERSAO + '-app';
+const CACHE_CDN = VERSAO + '-cdn';
+const SHELL = ['./patrimon.html','./config.js','./manifest.webmanifest','./logo.png',
+  './icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png','./favicon.ico','./favicon-32.png'];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE_APP).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())
-  );
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => !k.startsWith(VERSAO)).map(k => caches.delete(k)))
+  ).then(() => self.clients.claim()));
 });
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+  if (e.request.method !== 'GET') return;
 
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET") return;
-  const url = new URL(req.url);
-  // Never cache cross-origin (YouTube, Drive, Google Fonts) — let them hit network
-  if (url.origin !== self.location.origin) return;
-  // App shell / navigations: cache-first, fall back to cached index.html offline
-  e.respondWith(
-    caches.match(req).then((hit) => {
-      if (hit) return hit;
-      return fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-        return res;
-      }).catch(() => {
-        if (req.mode === "navigate") return caches.match("./tenorapp.html");
-      });
-    })
-  );
+  // Firestore/Auth: sempre rede (o SDK tem cache offline próprio)
+  if (url.hostname.endsWith('googleapis.com')) return;
+
+  if (url.origin === location.origin) {
+    e.respondWith(
+      caches.match(e.request, { ignoreSearch: true }).then(hit => {
+        const rede = fetch(e.request).then(resp => {
+          if (resp && resp.ok) caches.open(CACHE_APP).then(c => c.put(e.request, resp.clone()));
+          return resp;
+        }).catch(() => hit);
+        return hit || rede;
+      })
+    );
+    return;
+  }
+  const cdns = ['cdnjs.cloudflare.com','cdn.jsdelivr.net','tessdata.projectnaptha.com','www.gstatic.com'];
+  if (cdns.includes(url.hostname)) {
+    e.respondWith(
+      caches.match(e.request).then(hit => hit || fetch(e.request).then(resp => {
+        if (resp && (resp.ok || resp.type === 'opaque')) caches.open(CACHE_CDN).then(c => c.put(e.request, resp.clone()));
+        return resp;
+      }))
+    );
+  }
 });
