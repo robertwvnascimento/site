@@ -1,125 +1,141 @@
-# Patrimon — Inventário Patrimonial Inteligente
+# Patrimon — Inventário Patrimonial Inteligente (v3)
 
-Sistema web/PWA para conferência de bens patrimoniais (Aviso 028/2026), 100% gratuito:
-**site no GitHub Pages + banco de dados em tempo real no Firebase (plano gratuito do Google)**.
-Quem usa só acessa o link — sem login, sem instalação obrigatória — e tudo que salvar
-sincroniza na hora com os demais aparelhos.
+Sistema web/PWA gratuito para o levantamento físico de bens (Aviso 028/2026):
+**GitHub Pages (site) + Firebase (login, banco em tempo real e log de movimentações)**.
 
-## Stack e arquitetura (organizada e em boas práticas)
-```
-GitHub Pages (estático, branch main, pasta /site)
- ├─ patrimon.html ............. aplicação (UI + lógica + base de 888 bens embutida)
- ├─ config.js ................. ÚNICO ponto de configuração (chaves do Firebase)
- ├─ sw.js ..................... service worker (offline / cache versionado)
- ├─ manifest.webmanifest ...... PWA (instalável)
- └─ logo.png, favicon.ico, icon-*.png
-Firebase (gratuito, plano Spark)
- ├─ Authentication (anônimo) .. identifica cada aparelho sem pedir senha
- └─ Firestore ................. coleções: conferencias / naoRelacionados / bensExtra
-```
-- **Local-first:** cada ação salva primeiro no aparelho e é enviada à nuvem em segundo plano.
-  Sem internet, o trabalho continua e o Firestore envia as pendências sozinho quando a conexão volta.
-- **Sem config no `config.js`, o sistema roda em modo local** (com exportar/importar backup) —
-  ou seja, você pode publicar já e ativar a nuvem depois, sem risco.
-- O selo no topo mostra o estado: **Sincronizado · Salvando… · Offline · Modo local**.
+## Novidades desta versão
+- **Login obrigatório** no modo online, com dois papéis: **Administrador** (acesso total) e
+  **Colaborador** (tudo, exceto: importar planilha do Protheus, importar/mesclar backup,
+  zona de risco e a tela de usuários).
+- **Movimentações**: menu com o histórico de tudo (logins, conferências, exclusões, importações,
+  exportações), com filtros por pessoa/patrimônio, tipo de ação e período.
+- Bens **fora da relação** agora aparecem na aba **Itens** (chip "Fora da relação"), com ficha
+  própria para editar/excluir, e viraram um card próprio nos Relatórios.
+- Layout dos Relatórios corrigido no celular (filtros empilhados, tabelas com rolagem própria).
+- Nome do sistema abaixo do logo; **botão voltar** do celular navega entre telas/fichas em vez
+  de fechar o app.
 
----
+## Arquivos
+`patrimon.html` (app) · `config.js` (chaves do Firebase) · `sw.js` (offline) ·
+`manifest.webmanifest` · `logo.png` · ícones/favicon · este LEIA-ME.
 
-## PARTE 1 — Publicar no GitHub Pages (2 min)
-1. No repositório **robertwvnascimento.github.io**, branch **main**, abra (ou crie) a pasta **`site/`**.
-2. Envie **todos** os arquivos desta pasta para dentro de `site/` (Add file → Upload files → Commit).
-   > Substitua os arquivos da versão anterior. As conferências já feitas nos celulares **não se perdem** (ficam no aparelho) e serão enviadas à nuvem automaticamente quando você concluir a Parte 2.
-3. Acesse: **https://robertwvnascimento.github.io/site/patrimon.html** ✅ (já funciona, em modo local)
+## PARTE 1 — Publicar (branch main)
+1. Suba/substitua **todos** os arquivos na pasta **`site/`** do repositório `robertwvnascimento.github.io`.
+2. Acesse **https://robertwvnascimento.github.io/site/patrimon.html**.
+> Sem `config.js` preenchido o sistema roda em **modo local** (sem login, dados só no aparelho).
 
-## PARTE 2 — Ativar a nuvem em tempo real (~10 min, uma única vez)
-1. Entre em **https://console.firebase.google.com** com uma conta Google e clique em **Criar um projeto** → nome `patrimon` → pode desativar o Google Analytics → Criar.
-2. Menu esquerdo **Criação → Authentication** → *Vamos começar* → aba **Sign-in method** → habilite **Anônimo** → Salvar.
-3. Menu **Criação → Firestore Database** → *Criar banco de dados* → local `southamerica-east1 (São Paulo)` → iniciar no **modo de produção** → Criar.
-4. Ainda no Firestore, aba **Regras**, apague tudo e cole as regras abaixo → **Publicar**:
+## PARTE 2 — Nuvem com login (refazer esta parte, uma única vez)
+
+### 2.1 Ativar o login por e-mail/senha
+Console do Firebase → **Authentication → Sign-in method** → habilite **E-mail/senha**.
+(O provedor **Anônimo**, ativado na versão anterior, pode ser desativado — não é mais usado.)
+
+### 2.2 Criar o PRIMEIRO administrador (você)
+1. **Authentication → Users → Adicionar usuário** → seu e-mail + uma senha → Adicionar.
+2. Na lista, copie o **UID** desse usuário.
+3. **Firestore Database → Dados → Iniciar coleção** → ID da coleção: `usuarios` →
+   ID do documento: **cole o UID** → campos:
+   - `nome` (string) → seu nome
+   - `email` (string) → seu e-mail
+   - `papel` (string) → `admin`
+   → Salvar.
+> Os próximos usuários você cria **dentro do próprio Patrimon** (Menu → Usuários e permissões).
+
+### 2.3 Publicar as NOVAS regras de segurança (substituem as antigas)
+Firestore → aba **Regras** → apague tudo, cole e **Publicar**:
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function aut() { return request.auth != null; }
-    function txt(campo, max) {
-      return request.resource.data[campo] is string && request.resource.data[campo].size() <= max;
+    function cadastrado() {
+      return aut() && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
     }
+    function admin() {
+      return cadastrado()
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.papel == 'admin';
+    }
+    function txt(c, m) {
+      return request.resource.data[c] is string && request.resource.data[c].size() <= m;
+    }
+
+    match /usuarios/{uid} {
+      allow read: if aut() && (request.auth.uid == uid || admin());
+      allow create, update: if admin()
+        && txt('nome', 80) && txt('email', 120)
+        && request.resource.data.papel in ['admin', 'colaborador'];
+      allow delete: if admin();
+    }
+
     match /conferencias/{pat} {
-      allow read: if aut();
-      allow write: if aut()
+      allow read: if cadastrado();
+      allow write: if cadastrado()
         && pat.matches('^[0-9]{6,14}$')
-        && request.resource.data.st in ['POSSE','NLOC']
-        && txt('setor',120) && txt('obs',1000) && txt('por',80)
+        && request.resource.data.st in ['POSSE', 'NLOC']
+        && txt('setor', 120) && txt('obs', 1000) && txt('por', 80)
         && request.resource.data.ts is number;
-      allow delete: if aut();
+      allow delete: if cadastrado();
     }
+
     match /naoRelacionados/{id} {
-      allow read, delete: if aut();
-      allow write: if aut()
-        && txt('desc',300) && txt('pat',40) && txt('ent',20)
-        && txt('setor',120) && txt('obs',1000) && txt('por',80)
+      allow read, delete: if cadastrado();
+      allow write: if cadastrado()
+        && txt('desc', 300) && txt('pat', 40) && txt('ent', 20)
+        && txt('setor', 120) && txt('obs', 1000) && txt('por', 80)
         && request.resource.data.ts is number;
     }
+
     match /bensExtra/{pat} {
-      allow read: if aut();
-      allow create, update: if aut()
+      allow read: if cadastrado();
+      allow create, update: if admin()
         && pat.matches('^[0-9]{6,14}$')
         && request.resource.data.row is list
         && request.resource.data.row.size() >= 14;
       allow delete: if false;
     }
+
+    match /logs/{id} {
+      allow read: if cadastrado();
+      allow create: if cadastrado()
+        && txt('acao', 40) && txt('nome', 80) && txt('alvo', 60) && txt('det', 300)
+        && request.resource.data.ts is number;
+      allow update, delete: if false;
+    }
+
     match /{tudo=**} { allow read, write: if false; }
   }
 }
 ```
-5. Volte à **Visão geral do projeto** → ícone **`</>` (Web)** → apelido `patrimon-web` → Registrar app.
-   O Firebase mostra um bloco `const firebaseConfig = { apiKey: ... }`.
-6. Abra o arquivo **`site/config.js`** no GitHub (lápis ✏️), troque `window.PATRIMON_CONFIG = null;` por:
+O que elas garantem **no servidor** (não só na tela): apenas usuários cadastrados em
+`usuarios` leem/gravam; só **admin** mexe em usuários e na base importada (`bensExtra`);
+o **log é imutável** (ninguém edita nem apaga movimentações); e todo dado gravado é
+validado (formato do nº de patrimônio, tipos e tamanhos).
+
+### 2.4 Chaves no config.js
+`site/config.js` deve conter **apenas** isto (sem comentário em volta, sem linha `= null`):
 ```js
 window.PATRIMON_CONFIG = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
+  apiKey: "…", authDomain: "…", projectId: "…",
+  storageBucket: "…", messagingSenderId: "…", appId: "…"
 };
 ```
-   (copiando os valores do bloco do Firebase) e faça o commit.
-7. Recarregue o Patrimon: o selo no topo deve mudar para **● Sincronizado**. Pronto — a partir daí,
-   qualquer alteração de qualquer pessoa aparece nos outros aparelhos em segundos, e o que já tinha
-   sido conferido em modo local é enviado automaticamente.
+Recarregue o Patrimon 2× (por causa do cache offline). Deve aparecer a **tela de login** →
+entre com o e-mail/senha do passo 2.2 → selo **● Sincronizado**.
 
-### Segurança — leia antes de divulgar o link
-- As chaves do `config.js` **não são segredo** (apenas identificam o projeto); quem protege o banco
-  são as **regras acima**, que validam formato, tamanho e tipos de tudo que entra.
-- Sem tela de login (requisito de "só acessar e usar"), **qualquer pessoa com o link consegue registrar
-  conferências**. O risco é baixo (dados de inventário, link não indexado, tudo validado e com backup),
-  mas se um dia quiser restringir, dá para trocar o login anônimo por e-mail/senha com contas criadas
-  por você — me peça que eu gero essa versão.
-- Rotina recomendada: **exportar a planilha completa 1x por dia** durante o inventário (backup natural).
-- Repositórios `*.github.io` são públicos; a relação de bens fica visível a quem tiver o link
-  (dados institucionais, sem dados pessoais além do nome da responsável, que já consta na relação oficial).
+## Dia a dia
+- **Criar a equipe:** Menu → Usuários e permissões → nome, e-mail, senha provisória e papel.
+  O colega entra com esses dados e pode trocar a senha em "Esqueci minha senha".
+- **Movimentações:** Menu → Movimentações. Filtre por texto (pessoa, nº do patrimônio, detalhe),
+  por ação ou por período. No modo online mostra as 500 mais recentes de toda a equipe.
+- **Fora da relação:** cadastre em "Novo bem"; o item aparece em **Itens** (chip azul) —
+  toque nele para editar ou excluir. Sai na aba `3-NÃO RELACIONADOS` da planilha exportada.
+- Conferência, scanner, relatórios, exportação e importações funcionam como antes.
 
----
-
-## Usando o Patrimon
-- **Escanear:** código de barras lido automaticamente; botão **Ler número (OCR)** para etiquetas só
-  com números; ou digite os últimos dígitos. Achou → ficha abre → **EM POSSE / NÃO LOCALIZADO**,
-  setor (lista + "Outro"), observação, conferente → Salvar.
-- **Novo bem:** bens físicos que não constam na relação (saem na aba `3-NÃO RELACIONADOS`).
-- **Relatórios:** totais por status/entidade/setor + exportação **filtrada** ou **completa** —
-  a completa mantém o formato original do Protheus (abas `1-PARâMETROS` e `2-RELAÇÃO`, mesmas
-  colunas e patrimônios com zeros à esquerda) com as colunas de conferência ao final.
-- **Dados → Importar planilha:** recebeu uma Relação nova do Protheus? Importe o .xlsx — o Patrimon
-  confere item por item pelo nº de patrimônio (recuperando zeros à esquerda que o Excel corta),
-  **não duplica nada** e cadastra só os bens novos, preservando todas as conferências. No modo online,
-  os bens novos também sincronizam para toda a equipe.
-- **Instalar como app:** botão **Instalar** no topo (Android/desktop) ou, no iPhone,
-  Compartilhar → *Adicionar à Tela de Início*.
-
-## Manutenção
-- Ao publicar qualquer alteração nos arquivos, aumente `VERSAO` no `sw.js`
-  (ex.: `patrimon-v3`) para os aparelhos baixarem a novidade.
-- Limites do plano gratuito do Firebase (50 mil leituras e 20 mil gravações/dia): para 3 conferentes
-  e ~900 bens, o uso do inventário inteiro fica muito abaixo disso.
+## Observações de segurança
+- As restrições de colaborador são reforçadas no servidor onde importa (usuários e base
+  importada só por admin; logs imutáveis). A "zona de risco" usa exclusões permitidas a
+  usuários cadastrados — por isso ela só aparece para admin e fica registrada no log;
+  mantenha o hábito de exportar a planilha/backup diariamente.
+- A relação de bens embutida continua pública (repositório `*.github.io`); conferências,
+  usuários e logs ficam no Firestore, acessíveis apenas com login.
+- Ao publicar qualquer alteração, aumente `VERSAO` no `sw.js` (ex.: `patrimon-v5`).
