@@ -1,7 +1,7 @@
 /* Patrimon — Service Worker
    App shell em cache (offline) + bibliotecas CDN cacheadas após 1º uso. */
 'use strict';
-const VERSAO = 'patrimon-v4';        // ↑ mude ao publicar nova versão
+const VERSAO = 'patrimon-v5';        // ↑ mude ao publicar nova versão
 const CACHE_APP = VERSAO + '-app';
 const CACHE_CDN = VERSAO + '-cdn';
 const SHELL = ['./patrimon.html','./config.js','./manifest.webmanifest','./logo.png',

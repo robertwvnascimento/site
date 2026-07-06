@@ -21,6 +21,8 @@
   --nloc:#B3341F; --nloc-bg:#FBE9E4;
   --pend:#6E7883; --pend-bg:#ECEFF3;
   --info:#2A4D8F; --info-bg:#EAEFFA;
+  --baixa:#B7860B; --baixa-bg:#FBF1D6; --baixa-btn:#E7B008;
+  --transf:#6D4BB0; --transf-bg:#EEE8FA;
   --focus:#2456C4; --safe-b:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;min-width:0}
@@ -122,6 +124,27 @@ select.chip.on{background-color:var(--navy);color:#fff}
 .stbtn{padding:16px 8px;border-radius:12px;font-weight:800;font-size:.92rem;border:2px solid var(--line);background:#fff;color:var(--ink2)}
 .stbtn.posse.on{background:var(--verde);border-color:var(--verde);color:#fff}
 .stbtn.nloc.on{background:var(--nloc);border-color:var(--nloc);color:#fff}
+.acbtn{padding:15px 8px;border-radius:12px;font-weight:800;font-size:.9rem;border:2px solid var(--line);background:#fff;color:var(--ink2);display:flex;align-items:center;justify-content:center;gap:7px}
+.acbtn .ck{width:18px;height:18px;border-radius:5px;border:2px solid currentColor;flex-shrink:0;position:relative}
+.acbtn.on.baixa{background:var(--baixa-btn);border-color:var(--baixa-btn);color:#3D2E00}
+.acbtn.on.transf{background:var(--transf);border-color:var(--transf);color:#fff}
+.acbtn.on .ck::after{content:"✓";position:absolute;inset:-4px 0 0 1px;font-size:14px;font-weight:900}
+.item.act-bx::before{background:var(--baixa-btn)}
+.item.act-tr::before{background:var(--transf)}
+.mini.aBX{background:var(--baixa-bg);color:var(--baixa)}
+.mini.aTR{background:var(--transf-bg);color:var(--transf)}
+.chip.cBX.on{background:var(--baixa-btn);border-color:var(--baixa-btn);color:#3D2E00}
+.chip.cTR.on{background:var(--transf);border-color:var(--transf);color:#fff}
+.kpi.kbaixa b{color:var(--baixa)}.kpi.ktransf b{color:var(--transf)}
+/* Foto do bem */
+.fotowrap{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.fotobtn{padding:11px 13px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:.86rem;display:inline-flex;align-items:center;gap:7px}
+.fotobtn svg{width:18px;height:18px;stroke:var(--navy)}
+.fotoprev{position:relative;margin-top:10px}
+.fotoprev img{width:100%;max-height:260px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block}
+.fotoprev .rm{position:absolute;top:8px;right:8px;background:rgba(18,26,50,.72);color:#fff;border-radius:8px;padding:7px 11px;font-weight:800;font-size:.8rem}
+.fotomini{width:34px;height:34px;border-radius:7px;object-fit:cover;border:1px solid var(--line);flex-shrink:0}
+.fotoload{font-size:.78rem;color:var(--ink2);margin-top:8px}
 .field{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:11px;background:#fff;font-size:.95rem}
 textarea.field{min-height:74px;resize:vertical}
 .btnrow{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
@@ -238,6 +261,8 @@ body.papel-admin nav .so-admin{display:flex}
         <button class="chip" data-st="PEND" type="button">Pendentes</button>
         <button class="chip" data-st="POSSE" type="button">Em posse</button>
         <button class="chip" data-st="NLOC" type="button">Não localizados</button>
+        <button class="chip cBX" data-st="BX" type="button">Aguardando baixa</button>
+        <button class="chip cTR" data-st="TR" type="button">Aguardando transferência</button>
         <button class="chip" data-st="FORA" type="button">Fora da relação</button>
         <select class="chip" id="fEnt" aria-label="Filtrar por entidade"><option value="">Entidade</option></select>
         <select class="chip" id="fSetor" aria-label="Filtrar por setor"><option value="">Setor</option></select>
@@ -285,6 +310,14 @@ body.papel-admin nav .so-admin{display:flex}
     <textarea class="field" id="nObs" placeholder="Estado do bem, nº de série, detalhes…"></textarea>
     <span class="lbl">Conferido por</span>
     <input class="field" id="nPor" placeholder="Seu nome" autocomplete="off">
+    <span class="lbl">Foto do bem</span>
+    <div class="fotowrap">
+      <button class="fotobtn" id="nFotoCam" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Tirar foto</button>
+      <button class="fotobtn" id="nFotoGal" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Galeria</button>
+    </div>
+    <input type="file" id="nFotoCamInput" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="nFotoGalInput" accept="image/*" style="display:none">
+    <div id="nFotoPrev"></div>
     <div class="btnrow"><button class="btn pri" id="btnNovoSalvar" type="button">Salvar bem encontrado</button></div>
   </section>
 
@@ -323,7 +356,11 @@ body.papel-admin nav .so-admin{display:flex}
       </button>
       <button class="menubtn so-admin so-nuvem" id="mConfig" type="button" style="display:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
-        <span>Usuários e permissões<small>Criar usuários e definir administrador / colaborador</small></span>
+        <span>Usuários e permissões<small>Criar, editar, remover usuários e definir papéis</small></span>
+      </button>
+      <button class="menubtn so-nuvem" id="mSenha" type="button" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>Trocar minha senha<small>Alterar a senha da sua conta</small></span>
       </button>
       <div class="bloco">
         <h3>Sincronização em nuvem</h3>
@@ -405,12 +442,35 @@ body.papel-admin nav .so-admin{display:flex}
         <span class="lbl">Papel</span>
         <select class="field" id="cuPapel"><option value="colaborador">Colaborador</option><option value="admin">Administrador</option></select>
         <div class="btnrow"><button class="btn pri" id="btnCriarUsu" type="button">Criar usuário</button></div>
-        <p class="hint">Passe o e-mail e a senha provisória ao colega; ele pode trocar a senha em "Esqueci minha senha" na tela de entrada.</p>
+        <p class="hint">Passe o e-mail e a senha provisória ao colega; ele pode trocar a própria senha em Menu → Trocar minha senha.</p>
       </div>
       <span class="lbl">Usuários cadastrados</span>
       <div id="usuLista"><div class="vazio">Carregando…</div></div>
+      <p class="hint">Editar nome/papel e remover acesso valem imediatamente. Definir a senha de outra pessoa ou apagar a conta de login exigem servidor (Admin SDK); por isso, para senha use "Enviar link de redefinição" ao usuário.</p>
+    </div>
+
+    <!-- SUB: Trocar minha senha -->
+    <div id="subSenha" style="display:none">
+      <button class="voltar" type="button" data-voltar>← Voltar ao menu</button>
+      <h2 class="sec">Trocar minha senha</h2>
+      <div class="bloco">
+        <p>Para sua segurança, confirme a senha atual antes de definir a nova.</p>
+        <span class="lbl">Senha atual</span>
+        <input class="field" id="psAtual" type="password" autocomplete="current-password">
+        <span class="lbl">Nova senha (mín. 6 caracteres)</span>
+        <input class="field" id="psNova" type="password" autocomplete="new-password">
+        <span class="lbl">Repetir a nova senha</span>
+        <input class="field" id="psNova2" type="password" autocomplete="new-password">
+        <div class="loginerro" id="psErro" role="alert"></div>
+        <div class="btnrow"><button class="btn pri" id="btnTrocarSenha" type="button">Salvar nova senha</button></div>
+      </div>
     </div>
   </section>
+
+  <!-- Modal de edição de usuário (admin) -->
+  <div class="sheet" id="sheetUsu" role="dialog" aria-modal="true" aria-label="Editar usuário">
+    <div class="sheetin" id="sheetUsuIn"></div>
+  </div>
 </main>
 
 <!-- ============ FICHA ============ -->
@@ -465,7 +525,8 @@ function persist(){
 const Nuvem = {
   ativa:false,
   salvarOv(p,d){}, apagarOv(p){}, salvarNovo(n){}, apagarNovo(id){}, salvarExtra(r){},
-  salvarLog(l){}, limparTudo(){ return Promise.resolve(); }
+  salvarLog(l){}, limparTudo(){ return Promise.resolve(); },
+  salvarFoto(chave,b64){}, apagarFoto(chave){}, lerFoto(chave){ return Promise.resolve(null); }
 };
 function nuvemStatus(cls,txt){ const el=document.getElementById('nuvem'); el.className='nuvem '+cls; document.getElementById('nuvemTxt').textContent=txt; }
 
@@ -479,6 +540,60 @@ function setorAtual(pat,i){ const o=ov[pat]; return (o&&o.setor)?o.setor:(ALL[i]
 function fmtData(iso){ if(!iso)return''; const [a,m,d]=String(iso).split('-'); return d+'/'+m+'/'+a; }
 function fmtHora(ts){ const d=new Date(ts); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
 let toastT; function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none', 2800); }
+
+/* ================= FOTOS =================
+   Guardadas comprimidas: localmente em IndexedDB (offline, cota grande) e,
+   no modo online, espelhadas no Firestore (coleção "fotos"), carregadas SOB
+   DEMANDA ao abrir a ficha — nunca via onSnapshot — para não estourar a cota.
+   O Firebase Storage não está no plano gratuito (Spark), por isso base64. */
+const FOTO_MAX = 1000;      // maior lado, em px
+const FOTO_Q   = 0.55;      // qualidade JPEG
+let _db=null;
+function idb(){
+  if(_db) return Promise.resolve(_db);
+  return new Promise((ok,err)=>{
+    try{
+      const r=indexedDB.open('patrimon-fotos',1);
+      r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains('fotos')) r.result.createObjectStore('fotos'); };
+      r.onsuccess=()=>{ _db=r.result; ok(_db); };
+      r.onerror=()=>err(r.error);
+    }catch(e){ err(e); }
+  });
+}
+function idbGet(chave){ return idb().then(db=>new Promise((ok)=>{ try{ const t=db.transaction('fotos','readonly').objectStore('fotos').get(chave); t.onsuccess=()=>ok(t.result||null); t.onerror=()=>ok(null); }catch(e){ ok(null); } })).catch(()=>null); }
+function idbSet(chave,b64){ return idb().then(db=>new Promise((ok)=>{ try{ const t=db.transaction('fotos','readwrite').objectStore('fotos').put(b64,chave); t.onsuccess=()=>ok(true); t.onerror=()=>ok(false); }catch(e){ ok(false); } })).catch(()=>false); }
+function idbDel(chave){ return idb().then(db=>new Promise((ok)=>{ try{ const t=db.transaction('fotos','readwrite').objectStore('fotos').delete(chave); t.onsuccess=()=>ok(true); t.onerror=()=>ok(false); }catch(e){ ok(false); } })).catch(()=>false); }
+
+function comprimirFoto(file){
+  return new Promise((ok,err)=>{
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let {width:w,height:h}=img;
+      if(Math.max(w,h)>FOTO_MAX){ const f=FOTO_MAX/Math.max(w,h); w=Math.round(w*f); h=Math.round(h*f); }
+      const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      let q=FOTO_Q, b64=cv.toDataURL('image/jpeg',q);
+      while(b64.length>880000 && q>0.3){ q-=0.1; b64=cv.toDataURL('image/jpeg',q); }
+      if(b64.length>900000){ err(new Error('grande')); return; }
+      ok(b64);
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); err(new Error('imagem')); };
+    img.src=url;
+  });
+}
+/* fotoRascunho: foto ainda não salva na ficha aberta (chave '' = sem chave definida) */
+let fotoRascunho={chave:'',b64:null,alterada:false};
+async function carregarFoto(chave){
+  if(!chave) return null;
+  const local=await idbGet(chave);
+  if(local) return local;
+  if(Nuvem.ativa){ const remoto=await Nuvem.lerFoto(chave); if(remoto){ idbSet(chave,remoto); return remoto; } }
+  return null;
+}
+function salvarFotoDe(chave,b64){ idbSet(chave,b64); if(Nuvem.ativa) Nuvem.salvarFoto(chave,b64); }
+function apagarFotoDe(chave){ idbDel(chave); if(Nuvem.ativa) Nuvem.apagarFoto(chave); }
+async function temFotoLocal(chave){ return chave ? !!(await idbGet(chave)) : false; }
 
 /* ---- Log de movimentações ---- */
 function log(acao, alvo, det){
@@ -494,6 +609,7 @@ function aplicarPermissoes(){
   document.body.classList.toggle('papel-admin', USUARIO.papel==='admin');
   document.body.classList.toggle('nuvem-on', Nuvem.ativa);
   $('#mConfig').style.display = (USUARIO.papel==='admin' && Nuvem.ativa) ? 'flex' : 'none';
+  $('#mSenha').style.display = Nuvem.ativa ? 'flex' : 'none';
   $('#btnBkpImp').style.display = USUARIO.papel==='admin' ? 'block' : 'none';
   if(Nuvem.ativa){
     $('#uNome').textContent=USUARIO.nome||USUARIO.email;
@@ -533,8 +649,10 @@ function mostrarSub(sub){
   $('#menuHome').style.display = sub?'none':'block';
   $('#subLog').style.display = sub==='log'?'block':'none';
   $('#subConfig').style.display = sub==='config'?'block':'none';
+  $('#subSenha').style.display = sub==='senha'?'block':'none';
   if(sub==='log') renderLog();
   if(sub==='config') carregarUsuarios();
+  if(sub==='senha'){ $('#psAtual').value='';$('#psNova').value='';$('#psNova2').value='';$('#psErro').textContent=''; }
   window.scrollTo(0,0);
 }
 function aplicarEstado(st){
@@ -553,6 +671,7 @@ history.replaceState({v:'tela',tab:'itens',sub:''},'');
 $$('nav button').forEach(b=>b.addEventListener('click',()=>navegar(b.dataset.tab,'')));
 $('#mLog').addEventListener('click',()=>navegar('menu','log'));
 $('#mConfig').addEventListener('click',()=>navegar('menu','config'));
+$('#mSenha').addEventListener('click',()=>navegar('menu','senha'));
 $$('[data-voltar]').forEach(b=>b.addEventListener('click',()=>history.back()));
 
 /* ================= LISTA (bens da relação + fora da relação) ================= */
@@ -582,21 +701,28 @@ function popularSelects(){
   $('#nEnt').innerHTML=ents.map(v=>'<option>'+esc(v)+'</option>').join('');
 }
 
+function acBx(o){ return !!(o&&o.bx); }
+function acTr(o){ return !!(o&&o.tr); }
 function filtrar(){
-  const q=norm(filtro.q), out=[];
-  if(filtro.st!=='FORA'){
+  const q=norm(filtro.q), out=[], f=filtro.st;
+  if(f!=='FORA'){
     for(let i=0;i<ALL.length;i++){
-      const r=ALL[i], pat=r[C.PAT], st=stOf(pat);
-      if(filtro.st&&st!==filtro.st) continue;
+      const r=ALL[i], pat=r[C.PAT], o=ov[pat], st=stOf(pat);
+      if(f==='BX'){ if(!acBx(o)) continue; }
+      else if(f==='TR'){ if(!acTr(o)) continue; }
+      else if(f && st!==f) continue;
       if(filtro.ent&&r[C.ENT]!==filtro.ent) continue;
       if(filtro.setor&&setorAtual(pat,i)!==filtro.setor) continue;
       if(q && !(pat.includes(q) || norm(r[C.DESC]).includes(q) || norm(r[C.DET]).includes(q))) continue;
       out.push({t:'b',i:i});
     }
   }
-  if(!filtro.st || filtro.st==='FORA' || filtro.st==='POSSE'){
+  const novoOK = !f || f==='FORA' || f==='POSSE' || f==='BX' || f==='TR';
+  if(novoOK){
     for(let j=0;j<novos.length;j++){
       const n=novos[j];
+      if(f==='BX' && !acBx(n)) continue;
+      if(f==='TR' && !acTr(n)) continue;
       if(filtro.ent&&n.ent!==filtro.ent) continue;
       if(filtro.setor&&n.setor!==filtro.setor) continue;
       if(q && !(String(n.pat).includes(q) || norm(n.desc).includes(q) || norm(n.obs).includes(q))) continue;
@@ -605,22 +731,33 @@ function filtrar(){
   }
   return out;
 }
+function acTags(o){
+  return (acBx(o)?'<span class="mini aBX">Baixa</span>':'')+(acTr(o)?'<span class="mini aTR">Transferência</span>':'');
+}
 function linhaHTML(e){
   if(e.t==='n'){
-    const n=novos[e.j];
-    return '<button class="item st-F" type="button" data-novo="'+esc(n.id)+'">'
+    const n=novos[e.j], acls=(acBx(n)?' act-bx':'')+(acTr(n)?' act-tr':'');
+    return '<button class="item st-F'+acls+'" type="button" data-novo="'+esc(n.id)+'">'
+      +(n.foto?'<img class="fotomini" data-fk="N:'+esc(n.id)+'" alt="">':'')
       +'<span class="plaq mono">'+esc(n.pat)+'</span>'
       +'<span class="imeta"><span class="idesc">'+esc(n.desc)+'</span>'
       +'<span class="itags"><span class="mini ent">'+esc(n.ent)+'</span>'+(n.setor?'<span class="mini">'+esc(n.setor)+'</span>':'')
-      +'<span class="mini stF">Fora da relação</span></span></span></button>';
+      +'<span class="mini stF">Fora da relação</span>'+acTags(n)+'</span></span></button>';
   }
-  const r=ALL[e.i], pat=r[C.PAT], st=stOf(pat), setor=setorAtual(pat,e.i);
-  const cls=st==='POSSE'?'st-P':(st==='NLOC'?'st-N':'');
+  const r=ALL[e.i], pat=r[C.PAT], o=ov[pat], st=stOf(pat), setor=setorAtual(pat,e.i);
+  const cls=(st==='POSSE'?'st-P':(st==='NLOC'?'st-N':''))+(acBx(o)?' act-bx':'')+(acTr(o)?' act-tr':'');
   const stTag=st==='POSSE'?'<span class="mini stP">Em posse</span>':(st==='NLOC'?'<span class="mini stN">Não localizado</span>':'<span class="mini">Pendente</span>');
   return '<button class="item '+cls+'" type="button" data-pat="'+esc(pat)+'">'
+    +((o&&o.foto)?'<img class="fotomini" data-fk="'+esc(pat)+'" alt="">':'')
     +'<span class="plaq mono">'+esc(pat)+'</span>'
     +'<span class="imeta"><span class="idesc">'+esc(r[C.DESC])+'</span>'
-    +'<span class="itags"><span class="mini ent">'+esc(r[C.ENT])+'</span>'+(setor?'<span class="mini">'+esc(setor)+'</span>':'')+stTag+'</span></span></button>';
+    +'<span class="itags"><span class="mini ent">'+esc(r[C.ENT])+'</span>'+(setor?'<span class="mini">'+esc(setor)+'</span>':'')+stTag+acTags(o)+'</span></span></button>';
+}
+/* preenche as miniaturas de forma assíncrona (evita segurar o render) */
+function preencherMinis(){
+  $$('#lista img.fotomini[data-fk]').forEach(async img=>{
+    const b64=await carregarFoto(img.dataset.fk); if(b64) img.src=b64;
+  });
 }
 function renderLista(){
   const ids=filtrar();
@@ -632,6 +769,7 @@ function renderLista(){
   if(!ids.length) html='<div class="vazio">Nenhum bem com esses filtros.<br>Encontrou um bem que não está na relação? Cadastre em <b>Novo bem</b>.</div>';
   $('#lista').innerHTML=html;
   const bm=$('#btnMais'); if(bm) bm.addEventListener('click',()=>{limite+=200;renderLista();});
+  preencherMinis();
 }
 function rerender(){ popularSelects(); renderLista(); renderProgresso(); }
 $('#lista').addEventListener('click',e=>{
@@ -659,6 +797,64 @@ function fecharFicha(){ if(history.state&&history.state.v==='sheet') history.bac
 $('#sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') fecharFicha(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&$('#sheet').classList.contains('on')) fecharFicha(); });
 
+/* --- Bloco "Ações a serem realizadas" (baixa/transferência) --- */
+function acoesHTML(o){
+  return '<span class="lbl">Ações a serem realizadas</span>'
+   +'<div class="stbtns">'
+   +'<button class="acbtn baixa'+(acBx(o)?' on':'')+'" type="button" data-ac="bx"><span class="ck"></span>BAIXAR PATRIMÔNIO</button>'
+   +'<button class="acbtn transf'+(acTr(o)?' on':'')+'" type="button" data-ac="tr"><span class="ck"></span>TRANSFERIR PATRIMÔNIO</button>'
+   +'</div>';
+}
+function wireAcoes(estado){
+  $$('#sheetin .acbtn').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.ac; estado[k]=!estado[k]; b.classList.toggle('on',estado[k]);
+  }));
+}
+/* --- Campo de foto (tirar/galeria) reutilizável --- */
+function fotoHTML(){
+  return '<span class="lbl">Foto do bem</span>'
+   +'<div class="fotowrap">'
+   +'<button class="fotobtn" type="button" id="fFotoCam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Tirar foto</button>'
+   +'<button class="fotobtn" type="button" id="fFotoGal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Galeria</button>'
+   +'</div>'
+   +'<input type="file" id="fFotoCamInput" accept="image/*" capture="environment" style="display:none">'
+   +'<input type="file" id="fFotoGalInput" accept="image/*" style="display:none">'
+   +'<div id="fFotoPrev"><div class="fotoload" id="fFotoLoad">Carregando foto…</div></div>';
+}
+function renderPrev(cont,b64){
+  cont.innerHTML = b64
+    ? '<div class="fotoprev"><img src="'+b64+'" alt="Foto do bem"><button class="rm" type="button" id="fFotoRm">Remover ✕</button></div>'
+    : '';
+  const rm=cont.querySelector('#fFotoRm');
+  if(rm) rm.addEventListener('click',()=>{ fotoRascunho={chave:fotoRascunho.chave,b64:null,alterada:true}; renderPrev(cont,null); });
+}
+async function wireFoto(chave){
+  fotoRascunho={chave:chave,b64:null,alterada:false};
+  const prev=$('#fFotoPrev');
+  const atual = await carregarFoto(chave);
+  fotoRascunho.b64 = atual;
+  renderPrev(prev, atual);
+  const escolher=async(file)=>{
+    if(!file) return;
+    $('#fFotoLoad')&&($('#fFotoPrev').innerHTML='<div class="fotoload">Processando foto…</div>');
+    try{
+      const b64=await comprimirFoto(file);
+      fotoRascunho={chave:chave,b64:b64,alterada:true};
+      renderPrev(prev,b64);
+    }catch(e){ prev.innerHTML=''; toast(e.message==='grande'?'Foto muito grande mesmo comprimida. Tente outra.':'Não foi possível ler a imagem.'); }
+  };
+  $('#fFotoCam').addEventListener('click',()=>$('#fFotoCamInput').click());
+  $('#fFotoGal').addEventListener('click',()=>$('#fFotoGalInput').click());
+  $('#fFotoCamInput').addEventListener('change',e=>{ escolher(e.target.files[0]); e.target.value=''; });
+  $('#fFotoGalInput').addEventListener('change',e=>{ escolher(e.target.files[0]); e.target.value=''; });
+}
+/* aplica a foto (rascunho) na chave e devolve 1/0 se há foto */
+function aplicarFoto(chave){
+  if(!fotoRascunho.alterada || fotoRascunho.chave!==chave) return undefined; // sem mudança
+  if(fotoRascunho.b64){ salvarFotoDe(chave,fotoRascunho.b64); return 1; }
+  apagarFotoDe(chave); return 0;
+}
+
 function abrirFicha(pat){
   const i=byPat.get(pat); if(i===undefined) return;
   const r=ALL[i], o=ov[pat]||{};
@@ -680,6 +876,7 @@ function abrirFicha(pat){
    +'<span class="lbl">Status da conferência</span>'
    +'<div class="stbtns"><button class="stbtn posse'+(o.st==='POSSE'?' on':'')+'" type="button" data-st="POSSE">✓ EM POSSE</button>'
    +'<button class="stbtn nloc'+(o.st==='NLOC'?' on':'')+'" type="button" data-st="NLOC">✗ NÃO LOCALIZADO</button></div>'
+   +acoesHTML(o)
    +'<span class="lbl">Setor onde o bem está</span>'
    +'<select class="field" id="fSetorSel">'+setores.map(s=>'<option'+(s===setorSel?' selected':'')+'>'+esc(s)+'</option>').join('')
    +'<option value=""'+(!setorSel?' selected':'')+'>— sem setor —</option><option value="__OUTRO__"'+(ehOutro?' selected':'')+'>Outro (digitar)…</option></select>'
@@ -688,29 +885,39 @@ function abrirFicha(pat){
    +'<textarea class="field" id="fObs" placeholder="Ex.: bem sem etiqueta (pedir 2ª via), avariado…">'+esc(o.obs||'')+'</textarea>'
    +'<span class="lbl">Conferido por</span>'
    +'<input class="field" id="fPor" placeholder="Seu nome" value="'+esc(o.por||localStorage.getItem(LS.NOME)||USUARIO.nome||'')+'">'
+   +fotoHTML()
    +'<div class="btnrow"><button class="btn sec" type="button" id="fLimpar">Voltar a pendente</button><button class="btn pri" type="button" id="fSalvar">Salvar conferência</button></div>');
   let stSel=o.st||'';
+  const ac={bx:acBx(o),tr:acTr(o)};
   $$('#sheetin .stbtn').forEach(b=>b.addEventListener('click',()=>{
     stSel=b.dataset.st;
     $$('#sheetin .stbtn').forEach(x=>x.classList.toggle('on',x.dataset.st===stSel));
   }));
+  wireAcoes(ac);
+  wireFoto(pat);
   $('#fSetorSel').addEventListener('change',e=>{ $('#fSetorOutro').style.display = e.target.value==='__OUTRO__' ? 'block':'none'; });
   $('#xFecha').addEventListener('click',fecharFicha);
   $('#fLimpar').addEventListener('click',()=>{
+    apagarFotoDe(pat);
     delete ov[pat]; persist(); Nuvem.apagarOv(pat);
     log('PENDENTE',pat,r[C.DESC].slice(0,60));
     posSalvar('Bem voltou para pendente.');
   });
   $('#fSalvar').addEventListener('click',()=>{
-    if(!stSel){ toast('Escolha EM POSSE ou NÃO LOCALIZADO.'); return; }
+    if(!stSel && !ac.bx && !ac.tr){ toast('Escolha um status ou uma ação a ser realizada.'); return; }
     let setor=$('#fSetorSel').value;
     if(setor==='__OUTRO__') setor=$('#fSetorOutro').value.trim();
     const por=sanit($('#fPor').value.trim(),80);
     if(por) localStorage.setItem(LS.NOME,por);
-    const d={st:stSel,setor:sanit(setor,120),obs:sanit($('#fObs').value.trim(),1000),por:por,ts:Date.now()};
+    const foto = aplicarFoto(pat);
+    const d={setor:sanit(setor,120),obs:sanit($('#fObs').value.trim(),1000),por:por,ts:Date.now(),bx:!!ac.bx,tr:!!ac.tr};
+    if(stSel) d.st=stSel;
+    d.foto = (foto===undefined) ? (o.foto?1:0) : foto;
     ov[pat]=d; persist(); Nuvem.salvarOv(pat,d);
-    log(stSel==='POSSE'?'CONFERENCIA':'NAO_LOCALIZADO',pat,(d.setor?d.setor+' · ':'')+r[C.DESC].slice(0,50));
-    posSalvar(stSel==='POSSE'?'Salvo: EM POSSE ✓':'Salvo: NÃO LOCALIZADO');
+    const acao = stSel ? (stSel==='POSSE'?'CONFERENCIA':'NAO_LOCALIZADO') : (ac.bx||ac.tr?'CONFERENCIA':'PENDENTE');
+    const detAc=[ac.bx?'baixar':'',ac.tr?'transferir':''].filter(Boolean).join('/');
+    log(acao,pat,(detAc?'['+detAc+'] ':'')+(d.setor?d.setor+' · ':'')+r[C.DESC].slice(0,40));
+    posSalvar('Salvo ✓');
   });
 }
 function abrirFichaNovo(id){
@@ -733,11 +940,17 @@ function abrirFichaNovo(id){
    +'<input class="field" id="eNSetorOutro" placeholder="Digite o setor…" style="margin-top:7px;'+(ehOutro?'':'display:none')+'" value="'+(ehOutro?esc(n.setor):'')+'">'
    +'<span class="lbl">Observação</span>'
    +'<textarea class="field" id="eNObs">'+esc(n.obs||'')+'</textarea>'
+   +acoesHTML(n)
+   +fotoHTML()
    +'<div class="btnrow"><button class="btn sec" type="button" id="eNExcluir" style="color:var(--nloc);border-color:var(--nloc)">Excluir</button><button class="btn pri" type="button" id="eNSalvar">Salvar alterações</button></div>');
+  const chave='N:'+id, ac={bx:acBx(n),tr:acTr(n)};
   $('#xFecha').addEventListener('click',fecharFicha);
+  wireAcoes(ac);
+  wireFoto(chave);
   $('#eNSetor').addEventListener('change',e=>{ $('#eNSetorOutro').style.display=e.target.value==='__OUTRO__'?'block':'none'; });
   $('#eNExcluir').addEventListener('click',()=>{
     if(!confirm('Excluir este bem cadastrado fora da relação?')) return;
+    apagarFotoDe(chave);
     novos.splice(j,1); persist(); Nuvem.apagarNovo(id);
     log('EXCLUIU_NOVO',n.pat,n.desc.slice(0,60));
     posSalvar('Bem excluído.');
@@ -746,7 +959,9 @@ function abrirFichaNovo(id){
     const desc=sanit($('#eNDesc').value.trim(),300);
     if(!desc){ toast('Informe a descrição.'); return; }
     let setor=$('#eNSetor').value; if(setor==='__OUTRO__') setor=$('#eNSetorOutro').value.trim();
-    const nn={...n, pat:sanit($('#eNPat').value.trim(),40)||'SEM ETIQUETA', desc:desc, ent:sanit($('#eNEnt').value,20), setor:sanit(setor,120), obs:sanit($('#eNObs').value.trim(),1000), ts:Date.now()};
+    const foto=aplicarFoto(chave);
+    const nn={...n, pat:sanit($('#eNPat').value.trim(),40)||'SEM ETIQUETA', desc:desc, ent:sanit($('#eNEnt').value,20), setor:sanit(setor,120), obs:sanit($('#eNObs').value.trim(),1000), ts:Date.now(), bx:!!ac.bx, tr:!!ac.tr};
+    nn.foto = (foto===undefined) ? (n.foto?1:0) : foto;
     novos[j]=nn; persist(); Nuvem.salvarNovo(nn);
     log('EDITOU_NOVO',nn.pat,desc.slice(0,60));
     posSalvar('Alterações salvas ✓');
@@ -864,29 +1079,49 @@ $('#manual').addEventListener('input',e=>{
 
 /* ================= NOVO BEM ================= */
 $('#nSetor').addEventListener('change',e=>{ $('#nSetorOutro').style.display=e.target.value==='__OUTRO__'?'block':'none'; });
+let novoFoto=null;
+function renderNovoPrev(){
+  const c=$('#nFotoPrev');
+  c.innerHTML = novoFoto ? '<div class="fotoprev"><img src="'+novoFoto+'" alt="Foto"><button class="rm" type="button" id="nFotoRm">Remover ✕</button></div>' : '';
+  const rm=c.querySelector('#nFotoRm'); if(rm) rm.addEventListener('click',()=>{ novoFoto=null; renderNovoPrev(); });
+}
+async function novoEscolher(file){
+  if(!file) return;
+  $('#nFotoPrev').innerHTML='<div class="fotoload">Processando foto…</div>';
+  try{ novoFoto=await comprimirFoto(file); renderNovoPrev(); }
+  catch(e){ novoFoto=null; $('#nFotoPrev').innerHTML=''; toast(e.message==='grande'?'Foto muito grande. Tente outra.':'Não foi possível ler a imagem.'); }
+}
+$('#nFotoCam').addEventListener('click',()=>$('#nFotoCamInput').click());
+$('#nFotoGal').addEventListener('click',()=>$('#nFotoGalInput').click());
+$('#nFotoCamInput').addEventListener('change',e=>{ novoEscolher(e.target.files[0]); e.target.value=''; });
+$('#nFotoGalInput').addEventListener('change',e=>{ novoEscolher(e.target.files[0]); e.target.value=''; });
 $('#btnNovoSalvar').addEventListener('click',()=>{
   const desc=sanit($('#nDesc').value.trim(),300);
   if(!desc){ toast('Informe a descrição do bem.'); return; }
   let setor=$('#nSetor').value; if(setor==='__OUTRO__') setor=$('#nSetorOutro').value.trim();
   const por=sanit($('#nPor').value.trim(),80); if(por) localStorage.setItem(LS.NOME,por);
   const n={id:'N'+Date.now()+Math.floor(Math.random()*1000), pat:sanit($('#nPat').value.trim(),40)||'SEM ETIQUETA',
-    desc:desc, ent:sanit($('#nEnt').value,20), setor:sanit(setor,120), obs:sanit($('#nObs').value.trim(),1000), por:por, ts:Date.now()};
+    desc:desc, ent:sanit($('#nEnt').value,20), setor:sanit(setor,120), obs:sanit($('#nObs').value.trim(),1000), por:por, ts:Date.now(), bx:false, tr:false, foto:novoFoto?1:0};
+  if(novoFoto) salvarFotoDe('N:'+n.id, novoFoto);
   novos.push(n); persist(); Nuvem.salvarNovo(n);
   log('NOVO_BEM',n.pat,desc.slice(0,60));
-  $('#nPat').value='';$('#nDesc').value='';$('#nObs').value='';
+  $('#nPat').value='';$('#nDesc').value='';$('#nObs').value=''; novoFoto=null; renderNovoPrev();
   rerender(); toast('Salvo ✓ O bem já aparece na aba Itens (filtro "Fora da relação").');
 });
 
 /* ================= RELATÓRIOS ================= */
 function contagens(){
-  const c={POSSE:0,NLOC:0,PEND:0,ent:{},setor:{}};
+  const c={POSSE:0,NLOC:0,PEND:0,BX:0,TR:0,ent:{},setor:{}};
   for(let i=0;i<ALL.length;i++){
-    const r=ALL[i], pat=r[C.PAT], st=stOf(pat);
+    const r=ALL[i], pat=r[C.PAT], o=ov[pat], st=stOf(pat);
     c[st]++;
+    if(acBx(o)) c.BX++;
+    if(acTr(o)) c.TR++;
     (c.ent[r[C.ENT]]=c.ent[r[C.ENT]]||{POSSE:0,NLOC:0,PEND:0})[st]++;
     const s=setorAtual(pat,i)||'— sem setor —';
     (c.setor[s]=c.setor[s]||{POSSE:0,NLOC:0,PEND:0})[st]++;
   }
+  for(const n of novos){ if(acBx(n)) c.BX++; if(acTr(n)) c.TR++; }
   return c;
 }
 function renderRel(){
@@ -897,7 +1132,9 @@ function renderRel(){
    +'<div class="kpi kposse"><b>'+c.POSSE+'</b><span>Em posse</span></div>'
    +'<div class="kpi knloc"><b>'+c.NLOC+'</b><span>Não localizados</span></div>'
    +'<div class="kpi"><b>'+c.PEND+'</b><span>Pendentes</span></div>'
-   +'<div class="kpi kfora"><b>'+novos.length+'</b><span>Fora da relação</span></div>';
+   +'<div class="kpi kfora"><b>'+novos.length+'</b><span>Fora da relação</span></div>'
+   +'<div class="kpi kbaixa"><b>'+c.BX+'</b><span>Aguardando baixa</span></div>'
+   +'<div class="kpi ktransf"><b>'+c.TR+'</b><span>Aguardando transferência</span></div>';
   const tab=(titulo,obj)=>'<div class="tabwrap"><table><thead><tr><th>'+titulo+'</th><th style="text-align:right">Em posse</th><th style="text-align:right">Não loc.</th><th style="text-align:right">Pend.</th></tr></thead><tbody>'
     +Object.keys(obj).sort().map(k=>'<tr><td>'+esc(k)+'</td><td class="num" style="color:var(--posse)">'+obj[k].POSSE+'</td><td class="num" style="color:var(--nloc)">'+obj[k].NLOC+'</td><td class="num">'+obj[k].PEND+'</td></tr>').join('')
     +'</tbody></table></div>';
@@ -909,14 +1146,14 @@ async function garantirXLSX(){
   await carregarScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
 }
 const HEADERS=['Filial_Local','Código_Local','Nome_Local','Responsável_Local','Código_Setor','Descrição_Setor','Responsável_Setor','Patrimônio','Descrição_Patrimônio','Entidade','Data_Aquisição','Valor','Valor Residual','Série','Descrição Detalhada'];
-const HEADERS_EXTRA=['Status_Inventário','Setor_Conferido','Observação_Conferência','Conferido_Por','Data_Conferência'];
+const HEADERS_EXTRA=['Status_Inventário','Setor_Conferido','Observação_Conferência','Conferido_Por','Data_Conferência','Aguardando_Baixa','Aguardando_Transferência'];
 function linhaExport(i){
   const r=ALL[i], pat=r[C.PAT], o=ov[pat]||{};
   const st=o.st==='POSSE'?'EM POSSE':(o.st==='NLOC'?'NÃO LOCALIZADO':'PENDENTE');
   return [r[C.FILIAL], r[C.CODLOCAL]?Number(r[C.CODLOCAL]):'', r[C.NOMELOCAL], r[C.RESPLOCAL],
     r[C.CODSETOR]?Number(r[C.CODSETOR]):'', r[C.SETOR], '', pat, r[C.DESC], r[C.ENT],
     r[C.DATA]?new Date(r[C.DATA]+'T00:00:00'):'', r[C.VALOR], r[C.VRES], r[C.SERIE], r[C.DET],
-    st, o.setor||'', o.obs||'', o.por||'', o.ts?new Date(o.ts):''];
+    st, o.setor||'', o.obs||'', o.por||'', o.ts?new Date(o.ts):'', acBx(o)?'SIM':'', acTr(o)?'SIM':''];
 }
 async function exportar(ids,nome){
   await garantirXLSX();
@@ -925,13 +1162,13 @@ async function exportar(ids,nome){
   XLSX.utils.book_append_sheet(wb,p,'1-PARâMETROS');
   const aoa=[['RELAÇÃO DE BENS POR LOCALIZAÇÃO'],[...HEADERS,...HEADERS_EXTRA],...ids.map(linhaExport)];
   const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
-  ws['!cols']=[{wch:10},{wch:9},{wch:32},{wch:24},{wch:11},{wch:22},{wch:14},{wch:12},{wch:42},{wch:9},{wch:12},{wch:10},{wch:11},{wch:12},{wch:60},{wch:16},{wch:22},{wch:32},{wch:20},{wch:18}];
+  ws['!cols']=[{wch:10},{wch:9},{wch:32},{wch:24},{wch:11},{wch:22},{wch:14},{wch:12},{wch:42},{wch:9},{wch:12},{wch:10},{wch:11},{wch:12},{wch:60},{wch:16},{wch:22},{wch:32},{wch:20},{wch:18},{wch:16},{wch:16}];
   XLSX.utils.book_append_sheet(wb,ws,'2-RELAÇÃO');
   if(novos.length){
-    const aoaN=[['BENS DE POSSE NÃO CONSTANTES NA RELAÇÃO GERAL'],['Patrimônio','Descrição','Entidade','Setor','Observação','Conferido_Por','Data_Conferência'],
-      ...novos.map(n=>[n.pat,n.desc,n.ent,n.setor,n.obs,n.por,new Date(n.ts)])];
+    const aoaN=[['BENS DE POSSE NÃO CONSTANTES NA RELAÇÃO GERAL'],['Patrimônio','Descrição','Entidade','Setor','Observação','Conferido_Por','Data_Conferência','Aguardando_Baixa','Aguardando_Transferência'],
+      ...novos.map(n=>[n.pat,n.desc,n.ent,n.setor,n.obs,n.por,new Date(n.ts),acBx(n)?'SIM':'',acTr(n)?'SIM':''])];
     const wsN=XLSX.utils.aoa_to_sheet(aoaN,{cellDates:true});
-    wsN['!cols']=[{wch:14},{wch:44},{wch:9},{wch:22},{wch:36},{wch:20},{wch:18}];
+    wsN['!cols']=[{wch:14},{wch:44},{wch:9},{wch:22},{wch:36},{wch:20},{wch:18},{wch:16},{wch:18}];
     XLSX.utils.book_append_sheet(wb,wsN,'3-NÃO RELACIONADOS');
   }
   const d=new Date(), pad=n=>String(n).padStart(2,'0');
@@ -1030,10 +1267,13 @@ $('#fileBkp').addEventListener('change',async e=>{
     for(const pat in b.ov){
       if(!byPat.has(pat)) continue;
       const seu=b.ov[pat];
-      if(!seu||typeof seu!=='object'||!['POSSE','NLOC'].includes(seu.st)) continue;
+      if(!seu||typeof seu!=='object') continue;
+      const temSt=['POSSE','NLOC'].includes(seu.st);
+      if(!temSt && !seu.bx && !seu.tr) continue;
       const meu=ov[pat];
       if(!meu||(Number(seu.ts)||0)>(Number(meu.ts)||0)){
-        const d={st:seu.st,setor:sanit(seu.setor,120),obs:sanit(seu.obs,1000),por:sanit(seu.por,80),ts:Number(seu.ts)||Date.now()};
+        const d={setor:sanit(seu.setor,120),obs:sanit(seu.obs,1000),por:sanit(seu.por,80),ts:Number(seu.ts)||Date.now(),bx:!!seu.bx,tr:!!seu.tr,foto:seu.foto?1:0};
+        if(temSt) d.st=seu.st;
         ov[pat]=d; Nuvem.salvarOv(pat,d); atualizados++;
       }
     }
@@ -1041,7 +1281,7 @@ $('#fileBkp').addEventListener('change',async e=>{
       const ids=new Set(novos.map(n=>n.id));
       for(const n of b.novos){
         if(n&&n.id&&!ids.has(String(n.id))&&n.desc){
-          const nn={id:sanit(n.id,40),pat:sanit(n.pat,40)||'SEM ETIQUETA',desc:sanit(n.desc,300),ent:sanit(n.ent,20),setor:sanit(n.setor,120),obs:sanit(n.obs,1000),por:sanit(n.por,80),ts:Number(n.ts)||Date.now()};
+          const nn={id:sanit(n.id,40),pat:sanit(n.pat,40)||'SEM ETIQUETA',desc:sanit(n.desc,300),ent:sanit(n.ent,20),setor:sanit(n.setor,120),obs:sanit(n.obs,1000),por:sanit(n.por,80),ts:Number(n.ts)||Date.now(),bx:!!n.bx,tr:!!n.tr,foto:n.foto?1:0};
           novos.push(nn); Nuvem.salvarNovo(nn); novosAdd++;
         }
       }
@@ -1135,21 +1375,76 @@ $('#btnCriarUsu').addEventListener('click',async()=>{
 let usuariosCache=[];
 function carregarUsuarios(){ if(window.FB) FB.ouvirUsuarios(); renderUsuarios(); }
 function renderUsuarios(){
-  $('#usuLista').innerHTML = usuariosCache.length ? usuariosCache.map(u=>
-    '<div class="usuitem"><div class="uinfo"><b>'+esc(u.nome)+(u.uid===USUARIO.uid?' (você)':'')+'</b><span>'+esc(u.email)+'</span></div>'
-    +'<select data-uid="'+esc(u.uid)+'" '+(u.uid===USUARIO.uid?'disabled':'')+'>'
-    +'<option value="colaborador"'+(u.papel!=='admin'?' selected':'')+'>Colaborador</option>'
-    +'<option value="admin"'+(u.papel==='admin'?' selected':'')+'>Administrador</option></select></div>').join('')
-    : '<div class="vazio">Nenhum usuário carregado ainda.</div>';
+  $('#usuLista').innerHTML = usuariosCache.length ? usuariosCache.map(u=>{
+    const eu=u.uid===USUARIO.uid;
+    return '<div class="usuitem"><div class="uinfo"><b>'+esc(u.nome)+(eu?' (você)':'')+'</b><span>'+esc(u.email)+'</span></div>'
+    +'<span class="papel'+(u.papel==='admin'?' adm':'')+'">'+(u.papel==='admin'?'Admin':'Colab.')+'</span>'
+    +'<button class="xclose" type="button" data-edit="'+esc(u.uid)+'">Editar</button></div>';
+  }).join('') : '<div class="vazio">Nenhum usuário carregado ainda.</div>';
 }
-$('#usuLista').addEventListener('change',async e=>{
-  const s=e.target.closest('select[data-uid]'); if(!s||!window.FB) return;
-  const u=usuariosCache.find(x=>x.uid===s.dataset.uid); if(!u) return;
+$('#usuLista').addEventListener('click',e=>{
+  const b=e.target.closest('[data-edit]'); if(!b) return;
+  abrirEdicaoUsuario(b.dataset.edit);
+});
+function fecharSheetUsu(){ $('#sheetUsu').classList.remove('on'); document.body.style.overflow=''; }
+$('#sheetUsu').addEventListener('click',e=>{ if(e.target.id==='sheetUsu') fecharSheetUsu(); });
+function abrirEdicaoUsuario(uid){
+  const u=usuariosCache.find(x=>x.uid===uid); if(!u||!window.FB) return;
+  const eu=u.uid===USUARIO.uid;
+  $('#sheetUsuIn').innerHTML=
+    '<div class="sheethead"><h2 class="sec" style="margin:0">Editar usuário</h2><button class="xclose" type="button" id="euFecha">Fechar ✕</button></div>'
+   +'<span class="lbl">Nome</span><input class="field" id="euNome" value="'+esc(u.nome)+'">'
+   +'<span class="lbl">E-mail (login)</span><input class="field" value="'+esc(u.email)+'" disabled>'
+   +'<p class="hint" style="margin-top:4px">O e-mail de login não é alterável pelo app (exige servidor). Para trocá-lo, crie um novo usuário e remova este.</p>'
+   +'<span class="lbl">Papel</span><select class="field" id="euPapel"'+(eu?' disabled':'')+'><option value="colaborador"'+(u.papel!=='admin'?' selected':'')+'>Colaborador</option><option value="admin"'+(u.papel==='admin'?' selected':'')+'>Administrador</option></select>'
+   +(eu?'<p class="hint">Você não pode mudar o próprio papel nem remover a si mesmo (evita ficar sem administrador).</p>':'')
+   +'<div class="btnrow"><button class="btn pri" type="button" id="euSalvar">Salvar</button></div>'
+   +'<span class="lbl">Senha</span>'
+   +'<p class="hint" style="margin-top:0">Definir a senha de outra pessoa exige servidor (Admin SDK). Envie um link para o próprio usuário criar uma nova senha:</p>'
+   +'<div class="btnrow"><button class="btn sec" type="button" id="euReset">Enviar link de redefinição</button></div>'
+   +(eu?'':'<div class="btnrow"><button class="btn sec" type="button" id="euRemover" style="color:var(--nloc);border-color:var(--nloc)">Remover acesso ao sistema</button></div>'
+   +'<p class="hint">Remover acesso apaga o perfil e impede a entrada no Patrimon imediatamente. A conta de login continua existindo no Firebase (só um servidor pode excluí-la), mas fica sem qualquer acesso.</p>');
+  $('#sheetUsu').classList.add('on'); document.body.style.overflow='hidden';
+  $('#euFecha').addEventListener('click',fecharSheetUsu);
+  $('#euSalvar').addEventListener('click',async()=>{
+    const nome=sanit($('#euNome').value.trim(),80); if(!nome){ toast('Informe o nome.'); return; }
+    const papel=eu?u.papel:$('#euPapel').value;
+    try{
+      await FB.editarUsuario(u.uid,nome,papel);
+      log('USUARIO','',`Editou ${u.email}: nome "${nome}", ${papel==='admin'?'administrador':'colaborador'}`);
+      toast('Usuário atualizado ✓'); fecharSheetUsu();
+    }catch(err){ toast('Falha ao salvar.'); }
+  });
+  $('#euReset').addEventListener('click',async()=>{
+    try{ await FB.resetSenha(u.email); log('USUARIO','',`Enviou redefinição de senha para ${u.email}`); toast('Link enviado para '+u.email+' ✓'); }
+    catch(err){ toast('Falha ao enviar o link.'); }
+  });
+  const rm=$('#euRemover');
+  if(rm) rm.addEventListener('click',async()=>{
+    if(!confirm('Remover o acesso de '+u.nome+' ao Patrimon?')) return;
+    try{ await FB.removerUsuario(u.uid); log('USUARIO','',`Removeu acesso de ${u.nome} (${u.email})`); toast('Acesso removido.'); fecharSheetUsu(); }
+    catch(err){ toast('Falha ao remover.'); }
+  });
+}
+
+/* Trocar a própria senha (qualquer usuário) */
+$('#btnTrocarSenha').addEventListener('click',async()=>{
+  if(!window.FB){ return; }
+  const atual=$('#psAtual').value, nova=$('#psNova').value, nova2=$('#psNova2').value;
+  $('#psErro').textContent='';
+  if(!atual){ $('#psErro').textContent='Digite sua senha atual.'; return; }
+  if(nova.length<6){ $('#psErro').textContent='A nova senha precisa ter ao menos 6 caracteres.'; return; }
+  if(nova!==nova2){ $('#psErro').textContent='A confirmação não confere.'; return; }
+  $('#btnTrocarSenha').disabled=true;
   try{
-    await FB.mudarPapel(u.uid,s.value);
-    log('USUARIO','',`Alterou ${u.nome} para ${s.value==='admin'?'administrador':'colaborador'}`);
-    toast('Permissão atualizada ✓');
-  }catch(err){ toast('Falha ao alterar permissão.'); s.value=u.papel; }
+    await FB.trocarSenha(atual,nova);
+    log('USUARIO','','Alterou a própria senha');
+    toast('Senha alterada ✓'); history.back();
+  }catch(e){
+    const c=String(e&&e.code);
+    $('#psErro').textContent = c.includes('wrong-password')||c.includes('invalid-credential') ? 'Senha atual incorreta.' : 'Não foi possível alterar a senha.';
+  }
+  $('#btnTrocarSenha').disabled=false;
 });
 
 /* ================= PWA ================= */
@@ -1178,8 +1473,11 @@ window.__patrimon = {
     if(!byPat.has(pat)) return;
     if(d===null){ if(ov[pat]) delete ov[pat]; }
     else{
-      if(!d||!['POSSE','NLOC'].includes(d.st)) return;
-      ov[pat]={st:d.st,setor:sanit(d.setor,120),obs:sanit(d.obs,1000),por:sanit(d.por,80),ts:Number(d.ts)||Date.now()};
+      const temSt=['POSSE','NLOC'].includes(d.st);
+      if(!d || (!temSt && !d.bx && !d.tr)) return;
+      const e={setor:sanit(d.setor,120),obs:sanit(d.obs,1000),por:sanit(d.por,80),ts:Number(d.ts)||Date.now(),bx:!!d.bx,tr:!!d.tr,foto:d.foto?1:0};
+      if(temSt) e.st=d.st;
+      ov[pat]=e;
     }
     persist();
   },
@@ -1188,7 +1486,7 @@ window.__patrimon = {
     if(n===null){ if(idx>=0) novos.splice(idx,1); }
     else{
       if(!n||!n.desc) return;
-      const nn={id:sanit(id,40),pat:sanit(n.pat,40)||'SEM ETIQUETA',desc:sanit(n.desc,300),ent:sanit(n.ent,20),setor:sanit(n.setor,120),obs:sanit(n.obs,1000),por:sanit(n.por,80),ts:Number(n.ts)||Date.now()};
+      const nn={id:sanit(id,40),pat:sanit(n.pat,40)||'SEM ETIQUETA',desc:sanit(n.desc,300),ent:sanit(n.ent,20),setor:sanit(n.setor,120),obs:sanit(n.obs,1000),por:sanit(n.por,80),ts:Number(n.ts)||Date.now(),bx:!!n.bx,tr:!!n.tr,foto:n.foto?1:0};
       if(idx>=0) novos[idx]=nn; else novos.push(nn);
     }
     persist();
@@ -1217,7 +1515,8 @@ const P = window.__patrimon;
 if (cfg && cfg.apiKey && cfg.projectId) {
   try {
     const { initializeApp, deleteApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
-    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, createUserWithEmailAndPassword } =
+    const { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, createUserWithEmailAndPassword,
+            updatePassword, reauthenticateWithCredential, EmailAuthProvider } =
       await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
     const { initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
             collection, doc, setDoc, deleteDoc, onSnapshot, getDocs, getDoc, writeBatch, query, orderBy, limit } =
@@ -1257,6 +1556,17 @@ if (cfg && cfg.apiKey && cfg.projectId) {
         const u = window.__usuCache && window.__usuCache[uid] || {};
         return setDoc(doc(db,'usuarios',uid),{nome:u.nome||'',email:u.email||'',papel:papel==='admin'?'admin':'colaborador',criadoEm:u.criadoEm||Date.now()});
       },
+      editarUsuario: (uid,nome,papel)=>{
+        const u = window.__usuCache && window.__usuCache[uid] || {};
+        return setDoc(doc(db,'usuarios',uid),{nome:nome,email:u.email||'',papel:papel==='admin'?'admin':'colaborador',criadoEm:u.criadoEm||Date.now()});
+      },
+      removerUsuario: (uid)=> deleteDoc(doc(db,'usuarios',uid)),
+      async trocarSenha(atual,nova){
+        const u=auth.currentUser; if(!u) throw new Error('sem sessão');
+        const cred=EmailAuthProvider.credential(u.email, atual);
+        await reauthenticateWithCredential(u, cred);
+        await updatePassword(u, nova);
+      },
       ouvirUsuarios(){
         if(this._ouvindoUsu) return; this._ouvindoUsu=true;
         parar.push(onSnapshot(collection(db,'usuarios'), s=>{
@@ -1277,8 +1587,11 @@ if (cfg && cfg.apiKey && cfg.projectId) {
     P.Nuvem.apagarNovo  = (id)   => apagar(doc(db,'naoRelacionados',id));
     P.Nuvem.salvarExtra = (row)  => gravar(doc(db,'bensExtra',String(row[P.C.PAT])), {row:row, ts:Date.now()});
     P.Nuvem.salvarLog   = (l)    => gravar(doc(collection(db,'logs')), l);
+    P.Nuvem.salvarFoto  = (chave,b64)=> gravar(doc(db,'fotos',chave), {b64:b64, ts:Date.now()});
+    P.Nuvem.apagarFoto  = (chave)=> apagar(doc(db,'fotos',chave));
+    P.Nuvem.lerFoto     = async (chave)=>{ try{ const d=await getDoc(doc(db,'fotos',chave)); return d.exists()?(d.data().b64||null):null; }catch(e){ return null; } };
     P.Nuvem.limparTudo  = async ()=>{
-      for (const col of ['conferencias','naoRelacionados']) {
+      for (const col of ['conferencias','naoRelacionados','fotos']) {
         const snap = await getDocs(collection(db,col));
         let batch = writeBatch(db), n=0;
         for (const d of snap.docs) { batch.delete(d.ref); if(++n===400){ await batch.commit(); batch=writeBatch(db); n=0; } }

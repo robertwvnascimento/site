@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function aut() { return request.auth != null; }
+
+    function cadastrado() {
+      return aut() && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+
+    function admin() {
+      return cadastrado()
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.papel == 'admin';
+    }
+
+    function txt(c, m) {
+      return request.resource.data[c] is string && request.resource.data[c].size() <= m;
+    }
+
+    // Perfis de acesso. O próprio usuário lê o seu; só admin cria/edita/apaga.
+    match /usuarios/{uid} {
+      allow read: if aut() && (request.auth.uid == uid || admin());
+      allow create, update: if admin()
+        && txt('nome', 80) && txt('email', 120)
+        && request.resource.data.papel in ['admin', 'colaborador'];
+      allow delete: if admin();
+    }
+
+    // Conferências dos bens da relação (1 documento por nº de patrimônio).
+    // st (status) é opcional: um bem pode ter só ações marcadas (baixa/transferência).
+    match /conferencias/{pat} {
+      allow read: if cadastrado();
+      allow write: if cadastrado()
+        && pat.matches('^[0-9]{6,14}$')
+        && (!('st' in request.resource.data) || request.resource.data.st in ['POSSE', 'NLOC'])
+        && txt('setor', 120) && txt('obs', 1000) && txt('por', 80)
+        && request.resource.data.ts is number;
+      allow delete: if cadastrado();
+    }
+
+    // Fotos dos bens (base64 comprimido). O Firebase Storage exige plano Blaze;
+    // por isso a foto vai comprimida no Firestore, com teto de tamanho.
+    match /fotos/{chave} {
+      allow read: if cadastrado();
+      allow write: if cadastrado()
+        && request.resource.data.b64 is string
+        && request.resource.data.b64.size() < 950000
+        && request.resource.data.ts is number;
+      allow delete: if cadastrado();
+    }
+
+    // Bens "de posse" encontrados fora da relação.
+    match /naoRelacionados/{id} {
+      allow read, delete: if cadastrado();
+      allow write: if cadastrado()
+        && txt('desc', 300) && txt('pat', 40) && txt('ent', 20)
+        && txt('setor', 120) && txt('obs', 1000) && txt('por', 80)
+        && request.resource.data.ts is number;
+    }
+
+    // Bens adicionados por importação de planilha (base). Só admin escreve; ninguém apaga.
+    match /bensExtra/{pat} {
+      allow read: if cadastrado();
+      allow create, update: if admin()
+        && pat.matches('^[0-9]{6,14}$')
+        && request.resource.data.row is list
+        && request.resource.data.row.size() >= 14;
+      allow delete: if false;
+    }
+
+    // Trilha de auditoria. Qualquer cadastrado cria; NINGUÉM edita ou apaga.
+    match /logs/{id} {
+      allow read: if cadastrado();
+      allow create: if cadastrado()
+        && txt('acao', 40) && txt('nome', 80) && txt('alvo', 60) && txt('det', 300)
+        && request.resource.data.ts is number;
+      allow update, delete: if false;
+    }
+
+    // Tudo o que não foi liberado acima é negado.
+    match /{tudo=**} { allow read, write: if false; }
+  }
+}
